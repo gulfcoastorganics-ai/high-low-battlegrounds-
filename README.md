@@ -1,5 +1,14 @@
 # HIGH / LOW: BATTLEGROUND V8 — AURUM ELITE
 
+## Premium Arena Characters — V2 Art & UI
+
+**[Play the premium portrait build](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-premium-character-v2/arena/index.html)**
+
+Four original high-detail painted characters (Astra Vale, Seraphine Rose, Cassian Gold and Elder Rowan) now ship as local WebP assets, with a more compact, cinematic lobby, refined illustrated card UI, and matching collection/character inspection. The other 20 character portraits still use the original vector artwork. The original V8 rules are untouched. [Artwork scope and verification](arena/PREMIUM_ART_PASS.md).
+
+---
+
+
 ## ✦ NEW: ORIGINAL CARD CHARACTERS — ARENA OVERHAUL
 
 **[Play the updated character Arena](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-character-overhaul/arena/index.html)** · **[Read the full game audit](arena/CHARACTER_AUDIT.md)**
