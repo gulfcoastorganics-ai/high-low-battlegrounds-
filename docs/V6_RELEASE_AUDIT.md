@@ -14,7 +14,7 @@
 | Medium | Game difficulty differs dramatically by board size | **Measured** in 100,000 simulated rounds; virtual multipliers still need design approval |
 | Medium | UI needed stronger mobile action placement | **Improved**: sticky thumb controls respecting bottom safe area; CSS selection and perspective effects |
 | High | Public multiplayer lacks deployed, independently tested secure backend | **Not completed**; backend roadmap remains non-operational |
-| Medium | Android build not verified on real hardware / emulator | **Pending** GitHub Actions compile and physical device QA |
+| Medium | Android app deployment requires cloud compilation and hardware QA | **Cloud compile passed** in GitHub Actions; emulator/physical installation and performance remain pending |
 | Low | Replay snapshots stored per turn (rather than compressed events) | **Deferred**; maximum ~44 turns is acceptable for offline performance |
 
 ## Gameplay invariants checked
@@ -33,7 +33,7 @@
 - Mobile screenshot at 390×844 has no horizontal overflow.
 - Tests saved in `tests/core.test.cjs` and `tests/browser_checks.py`, run in GitHub Actions via `.github/workflows/game-qa.yml`.
 - Simulations use 100,000 total rounds across 4 difficulty combinations and 2 strategies, reproducible seed 20261108.
-- **Not verified:** hosted origin storage across real reloads, real Android APK installation and smoothness, Safari/Firefox, public online PvP. Browser test environment uses controlled localStorage mock because test URLs are blocked.
+- **Android debug APK compiled successfully** in GitHub Actions run [42547279136](https://github.com/gulfcoastorganics-ai/high-low-battlegrounds-/actions/runs/42547279136); artifact `Battleground-V6-Android-APK` (1,159,154 bytes).\n- **Not verified:** hosted origin storage across real reloads, real Android APK installation and smoothness, Safari/Firefox, public online PvP. Browser test environment uses controlled localStorage mock because test URLs are blocked.
 
 ## Simulation results (12,500 rounds per row)
 
