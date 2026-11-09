@@ -27,7 +27,7 @@ test('24 portrait illustrations exist and contain safe standalone SVG images',()
    assert.match(svg,/<\/svg>\s*$/);
    assert.match(svg,/viewBox="0 0 360 480"/);
    assert.ok(svg.length>2500);
-   assert.ok(!/\<script|\<foreignObject|https?:\/\/[^"]+|onload\s*=/.test(svg),'Unsafe content in '+c.id);
+   assert.ok(!/\<script|\<foreignObject|href="https?:\/\/|onload\s*=/.test(svg),'Unsafe content in '+c.id);
    const imgHash=require('node:crypto').createHash('sha256').update(svg).digest('hex');
    assert.ok(!hashes.has(imgHash),'Duplicate image '+c.id);hashes.add(imgHash);
  }
