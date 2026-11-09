@@ -70,7 +70,7 @@ const a={idx,guess:state.guess,cardId:state.card,cardTarget:state.target};
 const valid=m.phase==='commit'&&idx!=null&&state.guess&&!A.inspectMove(m,i,a);
 const ability=state.card?A.CARDS[state.card]:null;
 const hint=state.error||(ability?(ability.target==='enemy'&&state.target==null?'Choose a living enemy target first.':ability.text):'Tactical cards are optional. Choose a gold-lit position and then HIGHER or LOWER.');
-return `<section class="matchhead"><div class="score-head enemy"><div><small>CONTENDER 0${j+1}</small><b>${esc(o.name)}</b></div><span class="score">${A.remaining(o)}</span></div>
+return `<div class="arena-match-shell"><div class="arena-combat"><section class="matchhead"><div class="score-head enemy"><div><small>CONTENDER 0${j+1}</small><b>${esc(o.name)}</b></div><span class="score">${A.remaining(o)}</span></div>
 <div class="roundlabel"><strong>${m.round==='sudden'?'SUDDEN DEATH':'ARENA DUEL'}</strong><span>DRAW ${String(m.turn).padStart(2,'0')} / ${m.maxTurns}</span></div>
 <div class="score-head"><span class="score">${A.remaining(p)}</span><div><small>NOW DECIDING</small><b>${esc(p.name)}</b></div></div></section>
 <div class="arena-main-grid"><section class="arena-stage">${tileGrid(m,j,false)}
@@ -81,10 +81,10 @@ ${tileGrid(m,i,true)}</section>
 <div class="prob-line">${odds('LOWER','lower','#e28f76')}${odds('HIGHER','higher','#8edcaa')}${odds('TIE / LOSS','tie','#ad9198')}</div></div>
 <div class="decision play-controls"><button class="guess-btn low${state.guess==='LOWER'?' active':''}" data-act="guess" data-value="LOWER">▼ LOWER</button>
 <button class="guess-btn high${state.guess==='HIGHER'?' active':''}" data-act="guess" data-value="HIGHER">▲ HIGHER</button>
-<button class="cta" data-act="lock" ${valid?'':'disabled'}>LOCK DECISION →</button><div class="action-hint">${esc(hint)}</div></div></section></div>
+<button class="cta" data-act="lock" ${valid?'':'disabled'}>LOCK DECISION →</button><div class="action-hint">${esc(hint)}</div></div></section></div></div>
 <section class="hand-shell"><div class="hand-header"><div><div class="section-label">THE TACTICAL HAND</div><b>${esc(p.name)} · ${p.hand.length} IN HAND</b></div><div class="focus"><i>✦</i> FOCUS ${m.round==='sudden'?'—':p.focus}/5</div></div>
 <div class="hand-cards">${m.round==='sudden'?'Sudden death is standard-card only.':p.hand.length?p.hand.map(tactical).join(''):'Your tactical hand is empty. Continue predicting with standard cards.'}</div>
-${ability?`<div style="font-size:11px;color:#e9d3a6">ACTIVE: ${esc(ability.name)} · ${esc(ability.text)} <button class="button" style="padding:6px 10px;margin-left:8px" data-act="clear">CANCEL</button></div>`:''}</section>`;
+${ability?`<div style="font-size:11px;color:#e9d3a6">ACTIVE: ${esc(ability.name)} · ${esc(ability.text)} <button class="button" style="padding:6px 10px;margin-left:8px" data-act="clear">CANCEL</button></div>`:''}</section></div>`;
 }
 function builder(){
 const deck=state.decks[state.editor],count={};deck.forEach(id=>count[id]=(count[id]||0)+1);
