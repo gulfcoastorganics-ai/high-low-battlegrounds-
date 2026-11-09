@@ -152,3 +152,49 @@ test('playing a single turn never reveals the next shuffled draw in recorded his
  assert.equal(Object.hasOwn(m.history[0],'nextDraw'),false);
 });
 })();
+
+(function extendedAbilityCoverage() {
+ const test=require('node:test'),assert=require('node:assert/strict'),A=require('../arena/engine.js');
+ const dealer=()=>Array.from({length:52},(_,i)=>i);
+ const match=(d=dealer())=>A.createMatch({dealer:d});
+ const pair=(m,a,b)=>{A.commit(m,0,a);return A.commit(m,1,b);};
+ test('Wide Angle offers six and Precision offers every ready position',()=>{
+   const m=match();assert.equal(A.offer(m,0,'survey').length,6);
+   assert.equal(A.offer(m,0,'precision').length,16);
+ });
+ test('Steady Hand protects equal-rank outcomes only',()=>{
+   const d=dealer();[d[13],d[16]]=[d[16],d[13]];
+   const m=match(d);m.players[0].hand=['steady'];
+   const ev=pair(m,{idx:0,guess:'HIGHER',cardId:'steady',cardTarget:0},{idx:0,guess:'HIGHER'});
+   assert.equal(ev.detail[0].tie,true);assert.equal(ev.detail[0].shield,true);
+   assert.equal(m.players[0].board[0].alive,true);assert.equal(m.players[1].board[0].alive,false);
+ });
+ test('Rooted Defense prevents heat/fatigue when the prediction succeeds',()=>{
+   const m=match();m.players[0].hand=['rooted'];m.players[0].board[0].heat=1;
+   pair(m,{idx:0,guess:'HIGHER',cardId:'rooted',cardTarget:0},{idx:0,guess:'HIGHER'});
+   assert.equal(m.players[0].board[0].heat,1);assert.equal(m.players[0].board[0].restUntil,0);
+ });
+ test('Dead Reckoning rewards only a genuinely unfavorable successful guess',()=>{
+   const d=dealer();[d[16],d[26]]=[d[26],d[16]];
+   const m=match(d);m.players[0].hand=['reckoning'];
+   const ev=pair(m,{idx:2,guess:'LOWER',cardId:'reckoning'},{idx:0,guess:'HIGHER'});
+   assert.equal(ev.detail[0].ok,true);
+   assert.ok(ev.detail[0].odds.lower/ev.detail[0].odds.total<.4);
+   assert.equal(m.players[0].focus,4);
+ });
+ test('Investment and Calculated Exchange change Focus and tactical hand correctly',()=>{
+   const m=match();m.players[0].hand=['investment'];
+   pair(m,{idx:0,guess:'HIGHER',cardId:'investment'},{idx:0,guess:'HIGHER'});
+   assert.equal(m.players[0].focus,4);
+   const n=match();n.players[0].hand=['exchange'];n.players[0].drawPile=['reserve'];
+   pair(n,{idx:0,guess:'HIGHER',cardId:'exchange'},{idx:0,guess:'HIGHER'});
+   assert.deepEqual(n.players[0].hand,['reserve']);
+   assert.deepEqual(n.players[0].drawPile,[]);
+ });
+ test('hand size cap and draw exhaustion cannot generate cards infinitely',()=>{
+   const m=match();const p=m.players[0];
+   p.drawPile=[];p.hand=Array(5).fill('survey');
+   pair(m,{idx:0,guess:'HIGHER'},{idx:0,guess:'HIGHER'});
+   assert.equal(p.hand.length,5);assert.equal(p.drawPile.length,0);
+ });
+})();
