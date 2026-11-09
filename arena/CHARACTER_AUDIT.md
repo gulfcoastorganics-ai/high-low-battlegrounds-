@@ -63,9 +63,9 @@ All turn effects resolve after both players lock decisions. The first locked dec
 
 GitHub Actions on `arena-character-overhaul` runs:
 - Original V8 embedded rule tests plus new Arena logic and character-asset validation.
-- Responsive Chromium user flows at 390px and 1366px: lobby, featured portrait inspection, collection browser, character inspector, local two-player commitments, concealed handoff, reveal and next turn.
+- Responsive Chromium user flows at 320px, 390px, 768px and 1366px: lobby, featured portrait inspection, collection browser, character inspector, local two-player commitments, concealed handoff, reveal and next turn.
 - 100,000 complete exploratory bot matches using balanced starter decks; tracks outcomes, draws, ability use and simulation errors.
-- Separate Android Gradle APK packaging workflow with full asset-copy guards.
+- Separate Android Gradle APK packaging workflow with full asset-copy guards. The original V8 Classic browser flow is also included in the character-overhaul regression pipeline; its two distinct HIGHER/LOWER button styles require explicit selector disambiguation.
 
 **Important:** Bot simulations provide regression and first-seat bias indicators, not human skill balance. A single device cannot verify secure online play or multiplayer latency. Physical Android/WebView tests remain outstanding.
 
