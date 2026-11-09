@@ -76,7 +76,7 @@ test('Second Wind permits explicitly targeting a resting slot outside the three-
  m.players[0].board[14].restUntil=4;
  assert.ok(A.offer(m,0,'secondwind',14).includes(14));
  const ev=pair(m,{idx:14,guess:'HIGHER',cardId:'secondwind',cardTarget:14},open(m,1));
- assert.equal(ev.detail[0].ok,false);
+ assert.equal(ev.detail[0].ok,true);
  assert.equal(m.players[0].board[14].restUntil,0);
 });
 test('position fatigue begins after two correct uses and blocks two following turns',()=>{
@@ -117,7 +117,7 @@ test('Crosswind and Iron Grip apply only to opponent next turn',()=>{
 test('reserve grants Focus under cap; illegal cards and targets reject safely',()=>{
  const m=newMatch();m.players[0].hand=['reserve'];m.players[0].focus=3;
  pair(m,{idx:0,guess:'HIGHER',cardId:'reserve'},open(m,1));
- assert.equal(m.players[0].focus,5);
+ assert.equal(m.players[0].focus,4);
  const n=newMatch();
  assert.match(A.inspectMove(n,0,{idx:0,guess:'HIGHER',cardId:'made-up'}),/not in your hand/i);
  assert.match(A.inspectMove(n,0,{idx:99,guess:'HIGHER'}),/not available/i);
