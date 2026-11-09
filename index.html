@@ -373,6 +373,37 @@
 #hlv5.aurum .slot.chosen .card3d{box-shadow:0 3px 0 #c1aa7f,0 6px 20px #e7d087aa}
 @media(max-width:450px){#hlv5.aurum .premium-back-frame{inset:5px}#hlv5.aurum .premium-back-pattern{inset:3px}#hlv5.aurum .premium-card-svg{border-radius:4px}}
 
+
+/* V8 ELITE: responsive, tactile arena and optional Tactical target windows. */
+#hlv5.aurum .command-side{align-self:start;gap:11px}
+#hlv5.aurum .decision-zone{margin-top:2px;border-top:1px solid #dfc38b36;padding-top:12px}
+#hlv5.aurum .selected-panel{min-height:77px;background:linear-gradient(145deg,#173a2c,#071e17);box-shadow:inset 0 1px 0 #f9e7b316}
+#hlv5.aurum .slot{transition:transform .2s cubic-bezier(.22,.9,.26,1),filter .2s}
+#hlv5.aurum .slot.chosen{transform:translateY(-9px) rotateX(4deg);filter:drop-shadow(0 15px 11px #0009)}
+#hlv5.aurum .slot:not(:disabled):hover{transform:translateY(-5px) rotateZ(-.6deg)}
+#hlv5.aurum .slot:focus-visible{outline:3px solid #f2d49a;outline-offset:4px}
+#hlv5.aurum .v8-tactical-hud{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;border:1px solid #e4bb7955;background:linear-gradient(120deg,#162e22,#081d17);padding:9px 12px;color:#bfcabb;font-size:10px;letter-spacing:.4px;margin:0 0 9px;border-radius:9px}
+#hlv5.aurum .v8-tactical-hud b{color:#f8d88f}
+#hlv5.aurum .v8-chip{display:inline-flex;background:#d8b46b22;color:#f7d890;border:1px solid #e6c98573;padding:4px 8px;border-radius:5px;font-weight:900;letter-spacing:1px;font-size:9px}
+#hlv5.aurum .v8-fatigue-note{opacity:.86}
+#hlv5.aurum .slot.v8-offered .card3d{box-shadow:0 0 0 2px #dfba73,0 0 17px #f4cd6080,0 8px 16px #0009}
+#hlv5.aurum .slot.v8-recovering:not(.dead){filter:grayscale(.5) brightness(.52)}
+#hlv5.aurum .slot.v8-unoffered:not(.dead){filter:saturate(.65) brightness(.55)}
+#hlv5.aurum .slot.v8-offered:before{content:'';position:absolute;inset:-4px;border:1px solid #f3d79166;border-radius:10px;box-shadow:0 0 7px #e9c0704c;pointer-events:none;z-index:1}
+#hlv5.aurum .v8-slot-label{position:absolute;z-index:9;bottom:4px;left:50%;transform:translateX(-50%);width:max-content;max-width:97%;padding:1px 4px;border-radius:3px;font:800 clamp(6px,.7vw,9px) system-ui,sans-serif;letter-spacing:.4px;color:#fde2a5;background:#071b15ec;border:1px solid #d6ae695a;pointer-events:none}
+#hlv5.aurum .v8-recovering .v8-slot-label{color:#b6c0ad}
+#hlv5.aurum .guess:not(:disabled):hover,#hlv5.aurum .quick-buttons button:not(:disabled):hover{filter:brightness(1.13);transform:translateY(-2px)}
+#hlv5.aurum .dealer-shoe .frontmost{animation:v8shoe 4s ease-in-out infinite alternate}
+@keyframes v8shoe{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-3px) rotate(0deg)}}
+.v8-draw{position:fixed;z-index:9999999;perspective:950px;pointer-events:auto;cursor:pointer;transition:left .68s cubic-bezier(.22,.8,.12,1),top .68s cubic-bezier(.22,.8,.12,1),transform .68s cubic-bezier(.22,.8,.12,1);filter:drop-shadow(0 9px 16px #000c)}
+.v8-draw-core{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .38s ease;transform:rotateY(180deg)}
+.v8-draw.face-up .v8-draw-core{transform:rotateY(0deg)}
+.v8-draw img,.v8-draw-back{position:absolute;inset:0;display:block;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:5px;border:2px solid #ffe9b6;object-fit:fill;background:#f7f4ee}
+.v8-draw-back{transform:rotateY(180deg);display:grid;place-items:center;background:repeating-linear-gradient(45deg,#102b37 0px,#102b37 7px,#315461 7px,#315461 14px);color:#edce90;font:45px Georgia,serif}
+@media(max-width:740px){#hlv5.aurum .v8-tactical-hud{margin:6px 0;font-size:9px;gap:5px 9px}#hlv5.aurum .v8-fatigue-note{display:none}#hlv5.aurum .command-side{margin-top:0}#hlv5.aurum .mobile-quick{position:relative}#hlv5.aurum .v8-slot-label{font-size:7px}}
+@media(max-width:380px){#hlv5.aurum .v8-slot-label{font-size:6px;padding:1px 2px}#hlv5.aurum .v8-tactical-hud{padding:7px 8px}}
+@media(prefers-reduced-motion:reduce){.v8-draw,.v8-draw-core{transition:none!important}#hlv5.aurum .dealer-shoe .frontmost{animation:none!important}}
+
 </style>
 <header class="top"><div class="brand"><div class="mark"><span>♠</span></div><div><strong>HIGH / LOW</strong><small>BATTLEGROUND <span class="brand-edition">AURUM EDITION</span></small></div></div><div style="text-align:right"><div class="rank"><span id="h5-level">LEVEL 01</span><b id="h5-wallet">$10.00</b></div><div class="xpbar"><span id="h5-progress" style="width:0%"></span></div><button class="soundbtn" id="h5-sound" aria-pressed="true">♫ SOUND ON</button></div></header>
 <div id="h5-content"></div>
