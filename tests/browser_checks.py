@@ -18,7 +18,7 @@ def run_round(p):
     for _ in range(55):
         if p.locator('#h5-again,#h5-next').count():return
         p.locator('[data-pos]:not([disabled])').first.click()
-        p.locator('[data-guess="HIGHER"]').click()
+        p.locator('[data-guess="HIGHER"]').last.click()
     raise AssertionError("Round never ended")
 with sync_playwright() as pw:
     browser=pw.chromium.launch(headless=True,executable_path=CHROME,args=['--no-sandbox'])
@@ -27,7 +27,7 @@ with sync_playwright() as pw:
     assert p.locator('[data-pos]').count()==16
     p.locator('[data-pos="0"]').click()
     p.emulate_media(reduced_motion='no-preference')
-    p.locator('[data-guess="HIGHER"]').click()
+    p.locator('[data-guess="HIGHER"]').last.click()
     p.set_content(HTML)
     assert p.locator('#h5-resume').count()==1
     p.locator('#h5-resume').click()
@@ -47,7 +47,7 @@ with sync_playwright() as pw:
     assert p.locator('.card3d.is-back').count()==9
     p.locator('[data-pos="0"]').click()
     assert 'HIDDEN CARD' in p.locator('.odds').inner_text()
-    p.locator('[data-guess="LOWER"]').click()
+    p.locator('[data-guess="LOWER"]').last.click()
     assert p.locator('.stat b').nth(1).inner_text()=='1'
     assert not errors,errors
     print("PASS blind visibility, concealed odds, 3×3")
