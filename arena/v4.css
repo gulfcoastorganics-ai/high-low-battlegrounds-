@@ -1,0 +1,154 @@
+/* V4 tactical hand workstation
+   Pure presentation: the shared dealer / card registry / lock sequence are unchanged.
+   At laptop and desktop widths the full tactical hand sits beside the battle rather
+   than a screenful below the prediction controls. Narrow viewports retain the
+   existing stacked touch-first flow. */
+:root{
+  --v4-blue:#8cb5e4;
+  --v4-heart:#f7a4a0;
+  --v4-diamond:#ffda8b;
+  --v4-club:#a4e0a5;
+}
+.arena-match-shell{min-width:0;max-width:1750px;margin:auto}
+.arena-combat{min-width:0}
+.arena-match-shell .matchhead{max-width:none}
+.arena-match-shell .arena-main-grid{max-width:none}
+.arena-match-shell .hand-shell{min-width:0}
+.arena-match-shell .tactcard-wrap .tactcard .tc-art img{
+  object-fit:cover;
+  image-rendering:auto;
+}
+.arena-match-shell .tactcard-wrap .tactcard::before{
+  border-color:#f6ddaa;
+  box-shadow:inset 0 0 0 2px #7b5d3b80;
+}
+.arena-match-shell .tactcard-wrap .tactcard:focus-visible{
+  outline:3px solid #fff0bd;outline-offset:3px;
+}
+.arena-match-shell .tactcard-inspect{
+  transition:background-color .14s ease,border-color .14s ease;
+}
+.arena-match-shell .tactcard-inspect:hover{
+  background:#315642;border-color:#ecd19b;
+}
+.arena-match-shell .tactcard.s-S{border-color:var(--v4-blue)}
+.arena-match-shell .tactcard.s-H{border-color:var(--v4-heart)}
+.arena-match-shell .tactcard.s-D{border-color:var(--v4-diamond)}
+.arena-match-shell .tactcard.s-C{border-color:var(--v4-club)}
+.arena-match-shell .tactcard.s-S .tc-cost{box-shadow:0 0 11px #7dc9ff66}
+.arena-match-shell .tactcard.s-H .tc-cost{box-shadow:0 0 11px #ff779577}
+.arena-match-shell .tactcard.s-D .tc-cost{box-shadow:0 0 11px #fbd47a77}
+.arena-match-shell .tactcard.s-C .tc-cost{box-shadow:0 0 11px #83da8990}
+.arena-match-shell .tactcard.active{filter:saturate(1.17)}
+.arena-match-shell .hand-header{position:relative}
+.arena-match-shell .hand-header:after{
+  content:"";height:1px;position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(90deg,#fbe4ae72,transparent 80%);
+}
+.arena-match-shell .focus{white-space:nowrap;font-size:11px}
+@media(min-width:1300px){
+  .arena-match-shell{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(257px,275px);
+    gap:13px;
+    align-items:start;
+    padding:0;
+  }
+  .arena-match-shell .matchhead{margin-top:18px;margin-bottom:13px}
+  .arena-match-shell .arena-main-grid{
+    grid-template-columns:minmax(0,1fr) minmax(237px,249px);
+    gap:10px;
+  }
+  .arena-match-shell .arena-stage{
+    grid-template-columns:minmax(0,1.04fr) minmax(0,.81fr) minmax(0,1.08fr);
+    gap:7px;
+  }
+  .arena-match-shell .war-panel{padding:11px 7px}
+  .arena-match-shell .war-panel .card-grid{gap:4px;padding:2px}
+  .arena-match-shell .war-label{letter-spacing:.7px}
+  .arena-match-shell .war-metrics{gap:9px}
+  .arena-match-shell .dealer-panel{padding:11px 8px}
+  .arena-match-shell .dealer-panel .dealer-title{font-size:17px}
+  .arena-match-shell .dealer-panel .overline{letter-spacing:1.1px;font-size:9px}
+  .arena-match-shell .dealer-panel .dealer-stage{height:161px}
+  .arena-match-shell .dealer-panel .shoe{height:141px;width:99px}
+  .arena-match-shell .dealer-panel .shoe:after{font-size:57px}
+  .arena-match-shell .dealer-panel .muted{font-size:9px}
+  .arena-match-shell .decision{padding:13px 10px}
+  .arena-match-shell .guess-btn{min-height:58px}
+  .arena-match-shell .hand-shell{
+    margin:18px 0 0;
+    padding:13px 11px;
+    position:sticky;
+    top:10px;
+    max-height:calc(100vh - 27px);
+    overflow:hidden;
+    box-shadow:inset 0 0 0 3px #03170f,0 16px 28px #000b;
+  }
+  .arena-match-shell .hand-header{
+    display:flex;align-items:flex-start;flex-wrap:wrap;gap:8px;
+    padding:0 0 10px;margin-bottom:11px;
+  }
+  .arena-match-shell .hand-header b{font-size:13px}
+  .arena-match-shell .hand-cards{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:9px 7px;
+    align-content:start;
+    min-height:0;
+    max-height:calc(100vh - 171px);
+    overflow-y:auto;
+    overflow-x:hidden;
+    scrollbar-width:thin;
+    padding:3px 4px 12px;
+  }
+  .arena-match-shell .tactcard-wrap{
+    min-width:0;
+    width:100%;
+    padding:0;
+  }
+  .arena-match-shell .tactcard-wrap .tactcard{
+    width:100%;min-width:0;height:181px;
+    border-radius:8px;
+  }
+  .arena-match-shell .tactcard-wrap .tactcard .tc-art{
+    inset:4px 4px 49px;
+    border-radius:4px 4px 0 0;
+  }
+  .arena-match-shell .tactcard-wrap .tactcard .tc-top{
+    font-size:8px;left:8px;right:7px;top:8px;
+  }
+  .arena-match-shell .tactcard-wrap .tc-cost{
+    width:24px;height:24px;font-size:12px;
+  }
+  .arena-match-shell .tactcard-wrap .tactcard .tc-bottom{
+    left:6px;right:6px;bottom:5px;
+    min-height:45px;padding:7px 5px 4px;
+  }
+  .arena-match-shell .tactcard-wrap .tc-bottom strong{font-size:10px}
+  .arena-match-shell .tactcard-wrap .tc-bottom small{font-size:8px}
+  .arena-match-shell .tactcard-wrap .tactcard-inspect{
+    min-height:28px;
+    padding:5px 0;
+    font-size:9px;
+  }
+}
+@media(min-width:1570px){
+  .arena-match-shell{grid-template-columns:minmax(0,1fr) 310px;gap:17px}
+  .arena-match-shell .arena-main-grid{grid-template-columns:minmax(0,1fr) 270px}
+  .arena-match-shell .tactcard-wrap .tactcard{height:200px}
+}
+@media(max-width:1299px){
+  .arena-match-shell{display:block}
+  .arena-match-shell .hand-shell{margin-top:15px}
+}
+@media(max-width:760px){
+  .arena-match-shell .hand-header{gap:8px;flex-wrap:wrap}
+  .arena-match-shell .hand-cards{scroll-snap-type:x proximity}
+  .arena-match-shell .tactcard-wrap{scroll-snap-align:start}
+}
+@media(prefers-reduced-motion:reduce){
+  .arena-match-shell .tactcard,.arena-match-shell .tactcard-inspect{
+    transition:none!important;
+  }
+}
