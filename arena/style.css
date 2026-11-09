@@ -103,6 +103,12 @@ h2,h3,h4,p{margin-top:0}.page-title{text-align:center;margin:40px auto 26px;max-
 }
 @media(prefers-reduced-motion:reduce){.tactcard-wrap .tc-art-shine{display:none}}
 
+@media(max-width:680px){
+  /* On small screens, put the rival overview first so decision controls follow your own board. */
+  .arena-stage>.war-panel.enemy{order:0}
+  .arena-stage>.dealer-panel{order:1}
+  .arena-stage>.war-panel.player{order:2}
+}
 @media(max-width:420px){
   .topbar{flex-wrap:wrap}
   .toplinks{width:100%;justify-content:flex-end}
