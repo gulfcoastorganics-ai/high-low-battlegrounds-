@@ -1,56 +1,45 @@
-# HIGH / LOW: BATTLEGROUND V6
+# HIGH / LOW: BATTLEGROUND V8 — AURUM ELITE
 
-A self-contained, offline HTML5 card survival game with optional local head-to-head play and an Android WebView wrapper.
+A polished, responsive HTML5 playing-card survival game with classic card art, cinematic dealer draws, and optional Tactical rules.
 
-## Play
+## Play in browser
 
-Open [index.html](./index.html) in a modern browser or host it on a static website. It includes the game engine, UI, CSS 3D cards, sound toggle and simulated practice credits with no build step.
+Open the **game page**, not the GitHub source-file viewer:
+https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/v8-aurum-elite/index.html
 
-**Core rules:** Deal 3×3 or 4×4 grid from a 52-card deck. Select a card and predict whether the next dealer card ranks higher or lower (aces high). Correct answers replace the card. Wrong answers and equal ranks permanently burn that space. Keep playing until the dealer shoe or playable spaces are gone. Score = number of dealer cards drawn. Local PvP uses the identical initial shuffle for both competitors and gives Player 2 an explicit handoff screen.
+On first use, the temporary HTML hosting service may show an external-content confirmation. Press **Open the page** to continue. For permanent public hosting, configure GitHub Pages or deploy these files as a static directory.
 
-## V6 changes
+## Two distinct rulesets
 
-- Atomic draw/save update before animations, preventing lost moves on reload.
-- Save replay validation: rejects duplicate cards, invalid directions, forged moves, impossible states and inconsistent history.
-- Restored save messages are generated afresh instead of interpreting stored HTML.
-- True information-limited probability assistant using only revealed cards.
-- Local PvP pass-device privacy interstitial.
-- Sticky mobile higher/lower controls, card lighting and tactile styling.
-- 100,000 simulated rounds with difficulty analysis and transparent virtual-credit balance warnings.
-- Browser and Node test suites, Android workflow and severity-ranked audit.
+**Classic:** The original game is unchanged. Every live position is selectable; correctly predicted dealer cards replace the board card, while wrong predictions or ties permanently burn the space.
+
+**Tactical Survival:** Exactly three *marked targets* are offered at the start of each turn, unless fewer eligible live positions remain. After two successful uses of a board position, that space rests for two following turns. Offers rotate predictably based on the public turn count and live/available positions, never future hidden cards. If every surviving position is resting, the earliest recovering position becomes temporarily eligible so a run cannot deadlock.
+
+All existing modes remain: 3×3 and 4×4, face-up and blind, solo and local same-deck PvP. Competitive score remains the number of dealer draws survived, with ties going to sudden death.
+
+## Mastery rating
+
+The additional post-round mastery measure (0–100) uses:
+- 50% dealer-deck progress
+- 30% live board positions remaining
+- 20% prediction accuracy
+
+Bronze <60; Silver 60–74; Gold 75–84; Platinum 85–91; Diamond >=92. This rating does **not** change the original game's win condition, competitive score, or virtual payout formula.
+
+## UI/UX
+- Premium **CC0** SVG cards in `assets/cards` with traditional illustrated courts and full number-card pip arrangements.
+- Dealer shoe and in-motion 3D card flights; tap a flying card to skip the reveal.
+- Sound from synthesized card-slide, impact, burn, and victory cues. Sound can be toggled.
+- Strategically limited targets visibly glow in Tactical; other cards are visibly unavailable.
+- Mobile selection/odds/decision controls remain directly under the board.
+- Reduced-motion preference is respected; all game state is committed before animation.
 
 ## Tests
 
-Node 22+ required:
+Run `node --test tests/v8-tactical.test.cjs`. A branch-only workflow `.github/workflows/v8-rules.yml` also runs those checks on push. Chromium browser checks covered 360px, 390px and desktop layouts; remote browser playtests verified live premium SVG artwork, 4×4 Tactical/Classic selection and one complete dealer draw.
 
-```sh
-node --test tests/core.test.cjs
-```
+## Limitations
 
-Browser tests require Python Playwright and a Chromium binary:
+Online multiplayer is **not active** and requires a server-authoritative backend. Virtual credits are for practice only and have no cash value. The native Android wrapper and its artifact have not been verified with this V8 source. The temporary raw.githack hosting link is not equivalent to a permanent deployment.
 
-```sh
-python -m pip install playwright
-python -m playwright install chromium
-python tests/browser_checks.py
-```
-
-When `/usr/bin/chromium` is absent the browser tests use Playwright's installed Chromium. The browser harness mocks browser storage because local URLs are blocked by the test environment; verify real persistence after deploying.
-
-See [V6 Audit](./docs/V6_RELEASE_AUDIT.md) for results, security limitations, and the simulation balance table.
-
-## Android
-
-GitHub Actions workflow [Build HIGH LOW Android APK](./.github/workflows/android-build.yml) copies the current root `index.html` into the native Android assets and builds the debug APK with Gradle. The artifact is `Battleground-V6-Android-APK`. If the cloud build succeeds, extract and install `app-debug.apk` on an Android test device. Play Store release requires release signing and further testing.
-
-**APK installation is not verified.** A native WebView app is not equivalent to a fully native Android game.
-
-## Online PvP
-
-The Online panel describes a roadmap, not a functioning service. Production multiplayer must use authenticated players, server-side shuffled hidden decks, transactional/idempotent move RPCs, strict RLS, rate limits, reconnect rules and independent two-client tests. Do not deploy the experimental legacy SQL prototypes unchanged.
-
-All stakes are fictional practice credits with no real monetary value. No deposits, withdrawals or cash prizes are supported.
-
-## Merge policy
-
-This is a proposed V6 development branch, not a verified finished online release. Review GitHub Actions, test on an Android device, and approve before merging to main.
+V8 uses the existing V7 premium deck base, preserving all original rules in Classic.
