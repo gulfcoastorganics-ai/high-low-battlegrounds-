@@ -27,8 +27,13 @@ try:
                     if attempt == 19:
                         raise
                     time.sleep(0.3)
-            page.get_by_text("READ THE ODDS.").wait_for()
+            page.get_by_text("RULE THE ARENA.").wait_for()
             assert page.locator(".hero-character img").count() == 4
+            assert page.locator('.hero-character[data-character="precision"] img').get_attribute("src").endswith("precision.webp")
+            assert page.locator('.hero-character[data-character="heartward"] img').get_attribute("src").endswith("heartward.webp")
+            assert page.locator('.hero-character[data-character="reserve"] img').get_attribute("src").endswith("reserve.webp")
+            assert page.locator('.hero-character[data-character="rooted"] img').get_attribute("src").endswith("rooted.webp")
+            page.wait_for_function("Array.from(document.querySelectorAll('.hero-character img')).every(img => img.complete && img.naturalWidth > 0)")
             assert page.evaluate("Object.keys(window.ArenaCharacters.byId).length") == 24
             page.locator('.hero-character[data-id="precision"]').click()
             page.locator(".inspect-modal").get_by_text("The Glass-Eyed Marshal").wait_for()
@@ -45,7 +50,7 @@ try:
                 page.locator('[data-act="close-inspect"]').click()
                 assert page.get_by_text("THE DECK FORGE").count() == 1
                 page.locator('[data-act="close"]').click()
-            page.locator('[data-act="start"]').click()
+            page.locator('[data-act="start"]').first.click()
             assert page.locator(".tactcard .tc-art img").count() >= 3
             page.locator(".tactcard-inspect").first.click()
             assert page.locator(".inspect-modal").count() == 1
