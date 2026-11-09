@@ -17,6 +17,7 @@ const leaders=['precision','heartward','reserve','rooted'];
 return '<section class="character-showcase"><div class="showcase-heading"><div><div class="overline">YOUR CHAMPIONS · FOUR FACTIONS</div><h3>THE LEGENDS OF THE TABLE</h3></div><span>24 CHARACTERS · 12 PLAYABLE</span></div><div class="showcase-grid">'+
 leaders.map(id=>{const ch=CH[id];return '<button type="button" class="hero-character s-'+ch.suit+'" data-character="'+id+'" data-act="inspect" data-id="'+id+'"><img src="'+portrait(id)+'" alt="" loading="lazy"><span><b>'+esc(ch.name)+'</b><small>'+esc(ch.title)+'</small></span></button>';}).join('')+'</div></section>';
 }
+function difficultyOptions(){return Object.entries(CPU.DIFFICULTIES).map(([key,p])=>'<option value="'+key+'"'+(state.cpuDifficulty===key?' selected':'')+'>'+p.label+'</option>').join('');}
 function lobby(){
 const panel=i=>`<article class="panel panel-glow">
  <img class="contender-portrait" src="${portrait(i===0?'precision':'heartward')}" alt="" aria-hidden="true" loading="eager" decoding="async">
@@ -29,8 +30,9 @@ const panel=i=>`<article class="panel panel-glow">
  <button class="button" style="width:100%;margin-top:12px" data-act="builder" data-player="${i}">DECK BUILDER / COLLECTION</button></article>`;
 return `<section class="page-title"><div class="overline">♠ &nbsp; ♥ &nbsp; THE COMPETITIVE TABLE &nbsp; ♦ &nbsp; ♣</div>
  <h2>RULE THE <em>ARENA.</em></h2>
- <p>Two rivals. One shared dealer. A tactical battlefield where every card matters.</p>
- <div class="hero-cta-row"><button class="cta hero-play" data-act="start">✦ PLAY LOCAL PVP</button><a href="../index.html" class="ghost-button hero-classic">ORIGINAL CLASSIC V8 ↗</a></div>
+ <p>Challenge a CPU opponent or battle a friend on one device. Shared draws, tactical abilities, and sixteen territories.</p>
+ <div class="hero-cta-row"><button class="cta hero-play cpu-play" data-act="start-cpu">⚔ PLAY VS CPU</button><button class="cta-secondary local-play" data-act="start">♟ LOCAL 2-PLAYER</button><a href="../index.html" class="ghost-button hero-classic">ORIGINAL CLASSIC V8 ↗</a></div>
+ <div class="cpu-setup"><label for="cpu-difficulty" class="section-label">CPU DIFFICULTY</label><select id="cpu-difficulty" aria-label="CPU difficulty" class="selector" data-change="cpu-difficulty">${difficultyOptions()}</select><p><b>Casual</b> makes beginner mistakes · <b>Standard</b> balances tactical choices · <b>Expert</b> evaluates public odds and abilities. No hidden dealer peeking.</p></div>
  </section>
  ${showcase()}
  <section class="loadout-heading"><div class="overline">THE WAR ROOM</div><h3>CHOOSE YOUR LOADOUT.</h3><p>Customize both decks before battling a friend or the CPU opponent.</p></section>
@@ -72,7 +74,7 @@ const valid=m.phase==='commit'&&idx!=null&&state.guess&&!A.inspectMove(m,i,a);
 const ability=state.card?A.CARDS[state.card]:null;
 const hint=state.error||(ability?(ability.target==='enemy'&&state.target==null?'Choose a living enemy target first.':ability.text):'Tactical cards are optional. Choose a gold-lit position and then HIGHER or LOWER.');
 return `<div class="arena-match-shell"><div class="arena-combat"><section class="matchhead"><div class="score-head enemy"><div><small>CONTENDER 0${j+1}</small><b>${esc(o.name)}</b></div><span class="score">${A.remaining(o)}</span></div>
-<div class="roundlabel"><strong>${m.round==='sudden'?'SUDDEN DEATH':'ARENA DUEL'}</strong><span>DRAW ${String(m.turn).padStart(2,'0')} / ${m.maxTurns}</span></div>
+<div class="roundlabel"><strong>${m.round==='sudden'?'SUDDEN DEATH':state.mode==='cpu'?'VS CPU · '+CPU.DIFFICULTIES[state.cpuDifficulty].label.toUpperCase():'ARENA DUEL'}</strong><span>DRAW ${String(m.turn).padStart(2,'0')} / ${m.maxTurns}</span></div>
 <div class="score-head"><span class="score">${A.remaining(p)}</span><div><small>NOW DECIDING</small><b>${esc(p.name)}</b></div></div></section>
 <div class="arena-main-grid"><section class="arena-stage">${tileGrid(m,j,false)}
 <div class="dealer-panel"><div class="overline">♠ &nbsp; THE SHARED DEALER &nbsp; ♠</div><div class="dealer-title">THE NEXT CARD</div><div class="dealer-stage"><div class="shoe"></div></div>
