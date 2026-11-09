@@ -116,6 +116,8 @@
     if(ids.length<=limit) return ids;
     const start=((turn-1)*3)%ids.length, result=[];
     for(let i=0;i<limit;i++) result.push(ids[(start+i)%ids.length]);
+    // Second Wind explicitly makes its selected recovering slot a legal target.
+    if(cardId==='secondwind' && ids.includes(cardTarget) && !result.includes(cardTarget)) result[result.length-1]=cardTarget;
     return result;
   }
   function price(m,playerIndex,id) {
