@@ -56,6 +56,7 @@ try:
                     elif state['overlay']=='reveal':
                         page.locator('[data-act="continue"]').click()
                     if page.evaluate("window.ArenaApp.getState().m.phase==='finished'"):break
+                    if page.evaluate("window.ArenaApp.getState().m.phase==='intermission'"):continue
                     check_turn(page)
                 assert page.evaluate("window.ArenaApp.getState().m.phase==='finished'")
                 assert page.locator('[data-act="rematch"]').count()==1
