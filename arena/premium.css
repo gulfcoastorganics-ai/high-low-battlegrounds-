@@ -184,3 +184,23 @@ body{background:#020906}
 @media(prefers-reduced-motion:reduce){
  .hero-character,.hero-character img,.tactcard-wrap .tactcard{transition:none!important}
 }
+
+/* Contender banners: premium character key art without obstructing deck controls. */
+.lobby-grid .panel{min-height:260px;isolation:isolate}
+.lobby-grid .panel .contender-portrait{
+ position:absolute;z-index:0;right:-13px;top:-30px;width:40%;height:calc(100% + 45px);
+ object-fit:cover;object-position:50% 18%;opacity:.84;pointer-events:none;
+ -webkit-mask-image:linear-gradient(to right,transparent 0%,black 24%,black 100%);
+ mask-image:linear-gradient(to right,transparent 0%,black 24%,black 100%);
+ filter:saturate(1.09) contrast(1.1);
+}
+.lobby-grid .panel:nth-child(2) .contender-portrait{object-position:55% 13%;opacity:.81}
+.lobby-grid .panel>:not(.contender-portrait){position:relative;z-index:2;max-width:69%}
+.lobby-grid .panel .player-ident{max-width:100%}
+.lobby-grid .panel:nth-child(2) .player-ident{max-width:69%}
+@media(max-width:800px){
+ .lobby-grid .panel{min-height:0}
+ .lobby-grid .panel .contender-portrait{display:none}
+ .lobby-grid .panel>:not(.contender-portrait),
+ .lobby-grid .panel:nth-child(2) .player-ident{max-width:100%}
+}
