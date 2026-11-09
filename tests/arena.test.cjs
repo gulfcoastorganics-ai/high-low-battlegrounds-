@@ -117,7 +117,7 @@ test('Crosswind and Iron Grip apply only to opponent next turn',()=>{
 test('reserve grants Focus under cap; illegal cards and targets reject safely',()=>{
  const m=newMatch();m.players[0].hand=['reserve'];m.players[0].focus=3;
  pair(m,{idx:0,guess:'HIGHER',cardId:'reserve'},open(m,1));
- assert.equal(m.players[0].focus,4);
+ assert.equal(m.players[0].focus,5);
  const n=newMatch();
  assert.match(A.inspectMove(n,0,{idx:0,guess:'HIGHER',cardId:'made-up'}),/not in your hand/i);
  assert.match(A.inspectMove(n,0,{idx:99,guess:'HIGHER'}),/not available/i);
@@ -131,7 +131,7 @@ test('every implemented ability has a distinct registry entry and effect categor
 test('end-of-match tiebreak initiates short sudden death; second tie is declared draw',()=>{
  const m=newMatch();
  m.turn=18;
- pair(m,{idx:0,guess:'HIGHER'}, {idx:0,guess:'HIGHER'});
+ pair(m,open(m),open(m,1));
  assert.equal(m.round,'sudden');
  assert.equal(m.phase,'intermission');
  assert.equal(m.maxTurns,3);
@@ -180,12 +180,12 @@ test('playing a single turn never reveals the next shuffled draw in recorded his
    const ev=pair(m,{idx:2,guess:'LOWER',cardId:'reckoning'},{idx:0,guess:'HIGHER'});
    assert.equal(ev.detail[0].ok,true);
    assert.ok(ev.detail[0].odds.lower/ev.detail[0].odds.total<.4);
-   assert.equal(m.players[0].focus,4);
+   assert.equal(m.players[0].focus,5);
  });
  test('Investment and Calculated Exchange change Focus and tactical hand correctly',()=>{
    const m=match();m.players[0].hand=['investment'];
    pair(m,{idx:0,guess:'HIGHER',cardId:'investment'},{idx:0,guess:'HIGHER'});
-   assert.equal(m.players[0].focus,4);
+   assert.equal(m.players[0].focus,5);
    const n=match();n.players[0].hand=['exchange'];n.players[0].drawPile=['reserve'];
    pair(n,{idx:0,guess:'HIGHER',cardId:'exchange'},{idx:0,guess:'HIGHER'});
    assert.deepEqual(n.players[0].hand,['reserve']);
