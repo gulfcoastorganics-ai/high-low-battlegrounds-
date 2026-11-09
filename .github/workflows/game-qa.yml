@@ -1,0 +1,32 @@
+name: V6 Game QA
+on:
+  push:
+    branches: [v6-audit-upgrade]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  game-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify embedded game rules
+        run: node --test tests/core.test.cjs
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install browser automation
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Test Chromium gameplay
+        run: python tests/browser_checks.py

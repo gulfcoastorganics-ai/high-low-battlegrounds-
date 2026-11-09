@@ -1,30 +1,56 @@
-# HIGH / LOW: BATTLEGROUND V5
+# HIGH / LOW: BATTLEGROUND V6
 
-A premium self-contained HTML5 higher/lower card battleground, with an Android app host.
+A self-contained, offline HTML5 card survival game with optional local head-to-head play and an Android WebView wrapper.
 
 ## Play
-- The entire **V5 game** is in root [index.html](./index.html). Download it and open in Chrome, or publish the repository with GitHub Pages.
-- Offline solo and local pass-and-play PvP both work without a server.
-- 3×3 or 4×4 grids; face-up or blind openings; correct predictions replace cards; wrong or equal-rank predictions burn spaces.
-- Players in a local duel receive the identical initial board and dealer draw sequence; equal scores trigger a fresh sudden-death deck.
 
-## V5 improvements
-- True front/back CSS 3D playing-card faces, staggered dealing, reduced-motion support and sound toggle.
-- Probability assistant based only on previously revealed card identities, not the hidden dealer deck.
-- Fictional practice credits, difficulty-weighted multipliers, XP, level, achievements represented by statistics, saved solo games and full turn-by-turn replay.
-- Emerald, Noir and Ruby table themes; mobile responsive controls.
+Open [index.html](./index.html) in a modern browser or host it on a static website. It includes the game engine, UI, CSS 3D cards, sound toggle and simulated practice credits with no build step.
+
+**Core rules:** Deal 3×3 or 4×4 grid from a 52-card deck. Select a card and predict whether the next dealer card ranks higher or lower (aces high). Correct answers replace the card. Wrong answers and equal ranks permanently burn that space. Keep playing until the dealer shoe or playable spaces are gone. Score = number of dealer cards drawn. Local PvP uses the identical initial shuffle for both competitors and gives Player 2 an explicit handoff screen.
+
+## V6 changes
+
+- Atomic draw/save update before animations, preventing lost moves on reload.
+- Save replay validation: rejects duplicate cards, invalid directions, forged moves, impossible states and inconsistent history.
+- Restored save messages are generated afresh instead of interpreting stored HTML.
+- True information-limited probability assistant using only revealed cards.
+- Local PvP pass-device privacy interstitial.
+- Sticky mobile higher/lower controls, card lighting and tactile styling.
+- 100,000 simulated rounds with difficulty analysis and transparent virtual-credit balance warnings.
+- Browser and Node test suites, Android workflow and severity-ranked audit.
+
+## Tests
+
+Node 22+ required:
+
+```sh
+node --test tests/core.test.cjs
+```
+
+Browser tests require Python Playwright and a Chromium binary:
+
+```sh
+python -m pip install playwright
+python -m playwright install chromium
+python tests/browser_checks.py
+```
+
+When `/usr/bin/chromium` is absent the browser tests use Playwright's installed Chromium. The browser harness mocks browser storage because local URLs are blocked by the test environment; verify real persistence after deploying.
+
+See [V6 Audit](./docs/V6_RELEASE_AUDIT.md) for results, security limitations, and the simulation balance table.
 
 ## Android
-The included [Android GitHub Actions workflow](./.github/workflows/android-build.yml) copies the latest root index.html into Android assets and builds a test debug APK. The native Android shell remains a source project until a cloud build succeeds; **a verified installable APK is not yet confirmed**.
 
-1. Open **Actions → Build HIGH LOW Android APK → Run workflow**.
-2. When the run finishes successfully, download the `Battleground-V5-Android-APK` artifact; its bundled game comes from the current root index.html.
-3. Unzip and install `app-debug.apk` on an Android device to test.
+GitHub Actions workflow [Build HIGH LOW Android APK](./.github/workflows/android-build.yml) copies the current root `index.html` into the native Android assets and builds the debug APK with Gradle. The artifact is `Battleground-V6-Android-APK`. If the cloud build succeeds, extract and install `app-debug.apk` on an Android test device. Play Store release requires release signing and further testing.
 
-## Multiplayer caveat
-Online PvP is **not connected** in the V5 in-chat/standalone game. The Online tab is an honest roadmap. An authoritative backend with auth, RLS, hidden decks, idempotent moves, matchmaking and independent two-device testing is required. See [Online architecture](./docs/ONLINE_ARCHITECTURE.md).
+**APK installation is not verified.** A native WebView app is not equivalent to a fully native Android game.
 
-## Testing
-V5 Playwright/Chromium smoke checks were performed for 390×844 and 1100×860 viewports, full solo round, save/resume, progression, probability assistant, hidden blind cards, replay and both local PvP turns. This does **not** establish deployed backend or physical Android QA.
+## Online PvP
 
-All stakes and rewards are fictional practice credits with no monetary value.
+The Online panel describes a roadmap, not a functioning service. Production multiplayer must use authenticated players, server-side shuffled hidden decks, transactional/idempotent move RPCs, strict RLS, rate limits, reconnect rules and independent two-client tests. Do not deploy the experimental legacy SQL prototypes unchanged.
+
+All stakes are fictional practice credits with no real monetary value. No deposits, withdrawals or cash prizes are supported.
+
+## Merge policy
+
+This is a proposed V6 development branch, not a verified finished online release. Review GitHub Actions, test on an Android device, and approve before merging to main.
