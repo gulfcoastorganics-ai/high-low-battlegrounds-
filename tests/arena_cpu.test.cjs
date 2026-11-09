@@ -40,6 +40,8 @@ test('CPU never reads future dealer or human committed prediction',()=>{
 test('CPU decisions do not change when only future dealer ordering changes',()=>{
  const x=make(),y=make();
  [y.m.dealer[16],y.m.dealer[51]]=[y.m.dealer[51],y.m.dealer[16]];
+ y.m.players[1].hand=x.m.players[1].hand.slice();
+ y.m.players[1].drawPile=x.m.players[1].drawPile.slice();
  A.commit(x.m,0,human(x.m));A.commit(y.m,0,human(y.m));
  const opts={difficulty:'expert',initialBoard:x.initial,rng:()=>.23};
  assert.deepEqual(CPU.choose(x.m,opts),CPU.choose(y.m,opts));
@@ -62,6 +64,8 @@ test('CPU stops using tactical abilities during sudden death',()=>{
 test('CPU never uses human private hand or opponent choice even with different cards',()=>{
  const x=make(),y=make();
  x.m.players[0].hand=['irongrip'];y.m.players[0].hand=['precision','precision','reserve'];
+ y.m.players[1].hand=x.m.players[1].hand.slice();
+ y.m.players[1].drawPile=x.m.players[1].drawPile.slice();
  A.commit(x.m,0,{idx:0,guess:'LOWER'});
  A.commit(y.m,0,{idx:0,guess:'HIGHER'});
  const options={difficulty:'expert',initialBoard:x.initial,rng:()=>.6};
