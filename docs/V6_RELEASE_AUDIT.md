@@ -33,7 +33,8 @@
 - Mobile screenshot at 390×844 has no horizontal overflow.
 - Tests saved in `tests/core.test.cjs` and `tests/browser_checks.py`, run in GitHub Actions via `.github/workflows/game-qa.yml`.
 - Simulations use 100,000 total rounds across 4 difficulty combinations and 2 strategies, reproducible seed 20261108.
-- **Android debug APK compiled successfully** in GitHub Actions run [42547279136](https://github.com/gulfcoastorganics-ai/high-low-battlegrounds-/actions/runs/42547279136); artifact `Battleground-V6-Android-APK` (1,159,154 bytes).\n- **Not verified:** hosted origin storage across real reloads, real Android APK installation and smoothness, Safari/Firefox, public online PvP. Browser test environment uses controlled localStorage mock because test URLs are blocked.
+- **Android debug APK compiled successfully** in GitHub Actions run [42547279136](https://github.com/gulfcoastorganics-ai/high-low-battlegrounds-/actions/runs/42547279136); artifact `Battleground-V6-Android-APK` (1,159,154 bytes).
+- **Not verified:** hosted origin storage across real reloads, real Android APK installation and smoothness, Safari/Firefox, public online PvP. Browser test environment uses controlled localStorage mock because test URLs are blocked.
 
 ## Simulation results (12,500 rounds per row)
 
@@ -53,7 +54,7 @@ These strategy models are not real player data, and may not predict strategic hu
 ## Planned but not implemented
 
 - Production Supabase Auth, transactional server-owned deck and moves, restricted RLS, private invite rooms, queue, live score events, reconnect handling, and real two-client tests.
-- Actual compiled/signed Android debug APK with an emulator / physical device QA report.
+- Android emulator or physical-device installation, gameplay and performance QA report.
 - 60 FPS hardware measurements and comprehensive accessibility audit.
 - New art assets and 3D models beyond existing CSS 3D card faces.
 
