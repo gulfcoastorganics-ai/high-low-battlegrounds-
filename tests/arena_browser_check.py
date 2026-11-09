@@ -31,7 +31,7 @@ try:
             if width == 390:
                 page.locator('[data-act="builder"][data-player="0"]').click()
                 page.get_by_text("THE DECK FORGE").wait_for()
-                assert page.locator(".builder-collection .builder-row").count() == 12
+                assert page.locator(".builder-collection .builder-row").count() == 24
                 page.locator('[data-act="close"]').click()
             page.locator('[data-act="start"]').click()
             page.locator(".war-panel.player .play-tile.eligible").first.click()
