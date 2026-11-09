@@ -19,8 +19,9 @@ jobs:
         run: |
           node --check arena/engine.js
           node --check arena/app.js
+          node --check arena/characters.js
       - name: Verify original V8 and new Arena rules
-        run: node --test tests/core.test.cjs tests/v8-tactical.test.cjs tests/arena.test.cjs
+        run: node --test tests/core.test.cjs tests/v8-tactical.test.cjs tests/arena.test.cjs tests/characters.test.cjs
       - name: Simulate 100,000 complete Arena matches
         run: node tests/arena_balance.cjs --games 100000
   browser:
