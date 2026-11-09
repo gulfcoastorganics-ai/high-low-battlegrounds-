@@ -65,8 +65,18 @@ try:
                 assert resp.ok, cid + " missing premium portrait"
                 assert resp.body()[8:12] == b"WEBP", cid + " invalid WebP"
 
+            # Two new portraits are dedicated high-resolution character artworks.
+            for cid in ("reckoning", "crosswind"):
+                src = "http://127.0.0.1:8898/arena/art-premium/" + cid + ".webp"
+                assert len(page.request.get(src).body()) > 60000, cid + " must be a dedicated painted asset"
             page.locator('[data-act="start"]').first.click()
+            assert page.locator(".arena-match-shell").count() == 1
             assert page.locator(".arena-main-grid").count() == 1
+            if width >= 1300:
+                combat_box = page.locator(".arena-combat").bounding_box()
+                hand_box = page.locator(".hand-shell").bounding_box()
+                assert hand_box["x"] >= combat_box["x"] + combat_box["width"] - 4, "Tactical hand must be a side panel on desktop"
+                assert page.locator(".hand-cards").evaluate("(el) => getComputedStyle(el).display") == "grid"
             if width >= 1220:
                 stage_box = page.locator(".arena-stage").bounding_box()
                 dock_box = page.locator(".action-dock").bounding_box()
