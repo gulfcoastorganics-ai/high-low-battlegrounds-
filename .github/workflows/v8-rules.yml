@@ -1,0 +1,19 @@
+name: Battleground V8 Tactical Tests
+on:
+  push:
+    branches: [v8-aurum-elite]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tactical-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run tactical and Classic invariants
+        run: node --test tests/v8-tactical.test.cjs
