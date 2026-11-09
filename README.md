@@ -43,3 +43,16 @@ Run `node --test tests/v8-tactical.test.cjs`. A branch-only workflow `.github/wo
 Online multiplayer is **not active** and requires a server-authoritative backend. Virtual credits are for practice only and have no cash value. The native Android wrapper and its artifact have not been verified with this V8 source. The temporary raw.githack hosting link is not equivalent to a permanent deployment.
 
 V8 uses the existing V7 premium deck base, preserving all original rules in Classic.
+
+
+---
+
+## NEW: BATTLEGROUNDS — THE ARENA (Phase 1)
+
+**Play local two-player collectible Arena:** [Open Arena in your browser](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/ccg-pvp-battlegrounds/arena/index.html)
+
+Arena lives in `arena/` on the independent `ccg-pvp-battlegrounds` branch. The original V8 `index.html` and Classic gameplay remain untouched.
+
+Phase 1 includes synchronized shared dealer draws, two independent 4×4 boards, 12 playable tactical cards, 12 upcoming collection concepts, the tactical deck forge, Focus, fatigue, legal target offers, local hotseat privacy handoff, win resolution, and sudden death.
+
+See [Arena Phase 1 technical notes](arena/README.md) for the full rules, limitations, testing instructions, and production roadmap. **Online matchmaking, real network secrecy, ranked play, and an authoritative backend are not implemented yet.**
