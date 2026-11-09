@@ -1,3 +1,11 @@
+## ⚔ NEW: PLAY VS CPU — SOLO ARENA
+
+The Arena now has **Play vs CPU** (Casual / Standard / Expert) and retains **Local 2-Player** hotseat. Pick your rival's deck, then lock a HIGHER or LOWER prediction; the CPU takes its legal turn immediately and the shared dealer reveals both results. No login or network is required.
+
+**[Play vs CPU in Arena](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-play-vs-cpu/arena/index.html)** · [Solo-mode rules and fairness](arena/CPU_MODE.md)
+
+---
+
 # HIGH / LOW: BATTLEGROUND V8 — AURUM ELITE
 
 ## Premium Arena Characters — V2 Art & UI

@@ -1,3 +1,11 @@
+## ⚔ NEW: PLAY VS CPU — SOLO ARENA
+
+The Arena now has **Play vs CPU** (Casual / Standard / Expert) and retains **Local 2-Player** hotseat. Pick your rival's deck, then lock a HIGHER or LOWER prediction; the CPU takes its legal turn immediately and the shared dealer reveals both results. No login or network is required.
+
+**[Play vs CPU in Arena](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-play-vs-cpu/arena/index.html)** · [Solo-mode rules and fairness](CPU_MODE.md)
+
+---
+
 > **Visual preview V3:** [Play the unified premium-art Arena](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-unified-art-v3/arena/index.html). All 12 playable cards use self-hosted illustrated portraits; see [V3 technical notes](UNIFIED_ART_V3.md) for quality limits and testing. The original rule engine and Classic Mode are unchanged.
 
 # HIGH / LOW: BATTLEGROUNDS — Arena Phase 1 + Original Character Overhaul

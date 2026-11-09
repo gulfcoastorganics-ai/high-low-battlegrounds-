@@ -3,9 +3,10 @@
 const A=globalThis.ArenaEngine,S={S:'♠',H:'♥',D:'♦',C:'♣'},G={precision:'✥',survey:'◉',reckoning:'⌖',heartward:'♥',secondwind:'❧',steady:'✧',reserve:'◆',exchange:'⟡',investment:'✦',crosswind:'✣',irongrip:'⚒',rooted:'♣'};
 const screen=document.getElementById('screen'),overlay=document.getElementById('overlay');
 const CH=globalThis.ArenaCharacters.byId,FACTIONS=globalThis.ArenaCharacters.factions;
+const CPU=globalThis.ArenaCPU;
 const PREMIUM_IDS=new Set(A.REGISTRY.map(c=>c.id));
 const portrait=id=>PREMIUM_IDS.has(id)?'./art-premium/'+id+'.webp':CH[id]?.portrait||'./art/precision.svg';
-const state={scene:'lobby',overlay:null,m:null,decks:[A.STARTERS.balanced.slice(),A.STARTERS.balanced.slice()],editor:0,chosen:null,guess:null,card:null,target:null,error:''};
+const state={scene:'lobby',overlay:null,m:null,mode:'hotseat',cpuDifficulty:'standard',cpuInitial:null,decks:[A.STARTERS.balanced.slice(),A.STARTERS.balanced.slice()],editor:0,chosen:null,guess:null,card:null,target:null,error:''};
 try{const d=JSON.parse(localStorage.getItem('hl-arena-decks-v1')||'null');if(Array.isArray(d)&&d.length===2&&d.every(x=>!A.validateDeck(x)))state.decks=d;}catch(_){}
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const image=id=>'../assets/cards/'+A.cardCode(id)+'.svg',pct=(n,d)=>d?Math.round(n/d*100):0,me=()=>state.m?.next??0;
@@ -16,6 +17,7 @@ const leaders=['precision','heartward','reserve','rooted'];
 return '<section class="character-showcase"><div class="showcase-heading"><div><div class="overline">YOUR CHAMPIONS · FOUR FACTIONS</div><h3>THE LEGENDS OF THE TABLE</h3></div><span>24 CHARACTERS · 12 PLAYABLE</span></div><div class="showcase-grid">'+
 leaders.map(id=>{const ch=CH[id];return '<button type="button" class="hero-character s-'+ch.suit+'" data-character="'+id+'" data-act="inspect" data-id="'+id+'"><img src="'+portrait(id)+'" alt="" loading="lazy"><span><b>'+esc(ch.name)+'</b><small>'+esc(ch.title)+'</small></span></button>';}).join('')+'</div></section>';
 }
+function difficultyOptions(){return Object.entries(CPU.DIFFICULTIES).map(([key,p])=>'<option value="'+key+'"'+(state.cpuDifficulty===key?' selected':'')+'>'+p.label+'</option>').join('');}
 function lobby(){
 const panel=i=>`<article class="panel panel-glow">
  <img class="contender-portrait" src="${portrait(i===0?'precision':'heartward')}" alt="" aria-hidden="true" loading="eager" decoding="async">
@@ -28,16 +30,17 @@ const panel=i=>`<article class="panel panel-glow">
  <button class="button" style="width:100%;margin-top:12px" data-act="builder" data-player="${i}">DECK BUILDER / COLLECTION</button></article>`;
 return `<section class="page-title"><div class="overline">♠ &nbsp; ♥ &nbsp; THE COMPETITIVE TABLE &nbsp; ♦ &nbsp; ♣</div>
  <h2>RULE THE <em>ARENA.</em></h2>
- <p>Two rivals. One shared dealer. A tactical battlefield where every card matters.</p>
- <div class="hero-cta-row"><button class="cta hero-play" data-act="start">✦ PLAY LOCAL PVP</button><a href="../index.html" class="ghost-button hero-classic">ORIGINAL CLASSIC V8 ↗</a></div>
+ <p>Challenge a CPU opponent or battle a friend on one device. Shared draws, tactical abilities, and sixteen territories.</p>
+ <div class="hero-cta-row"><button class="cta hero-play cpu-play" data-act="start-cpu">⚔ PLAY VS CPU</button><button class="cta-secondary local-play" data-act="start">♟ LOCAL 2-PLAYER</button><a href="../index.html" class="ghost-button hero-classic">ORIGINAL CLASSIC V8 ↗</a></div>
+ <div class="cpu-setup"><label for="cpu-difficulty" class="section-label">CPU DIFFICULTY</label><select id="cpu-difficulty" aria-label="CPU difficulty" class="selector" data-change="cpu-difficulty">${difficultyOptions()}</select><p><b>Casual</b> makes beginner mistakes · <b>Standard</b> balances tactical choices · <b>Expert</b> evaluates public odds and abilities. No hidden dealer peeking.</p></div>
  </section>
  ${showcase()}
- <section class="loadout-heading"><div class="overline">THE WAR ROOM</div><h3>CHOOSE YOUR LOADOUT.</h3><p>Both contenders begin with a balanced deck. Customise either one below.</p></section>
+ <section class="loadout-heading"><div class="overline">THE WAR ROOM</div><h3>CHOOSE YOUR LOADOUT.</h3><p>Customize both decks before battling a friend or the CPU opponent.</p></section>
  <section class="lobby-grid">${panel(0)}${panel(1)}</section>
  <section class="rules-strip"><div class="rule"><b>01 &nbsp; THE COMMON DRAW</b><span>Each player faces the same dealer sequence, but your battlegrounds evolve independently.</span></div>
  <div class="rule"><b>02 &nbsp; TERRITORY IS LIFE</b><span>Incorrect guesses and ties burn spaces. Use defense to survive.</span></div>
  <div class="rule"><b>03 &nbsp; STRATEGIC FOCUS</b><span>Collect Focus each turn and spend it on powerful tactical abilities.</span></div></section>
- <p class="fineprint" style="margin:17px auto 22px">Local hotseat: pass the device between locked decisions. Online ranked PvP is not active.</p>`;
+ <p class="fineprint" style="margin:17px auto 22px">Play the CPU instantly or pass the device for local two-player battles. Online matchmaking is not active.</p>`;
 }
 function tileGrid(m,index,ours){
 const p=m.players[index],isActive=ours&&m.phase==='commit',offer=A.offer(m,index,ours?state.card:null,ours?state.target:null);
@@ -71,7 +74,7 @@ const valid=m.phase==='commit'&&idx!=null&&state.guess&&!A.inspectMove(m,i,a);
 const ability=state.card?A.CARDS[state.card]:null;
 const hint=state.error||(ability?(ability.target==='enemy'&&state.target==null?'Choose a living enemy target first.':ability.text):'Tactical cards are optional. Choose a gold-lit position and then HIGHER or LOWER.');
 return `<div class="arena-match-shell"><div class="arena-combat"><section class="matchhead"><div class="score-head enemy"><div><small>CONTENDER 0${j+1}</small><b>${esc(o.name)}</b></div><span class="score">${A.remaining(o)}</span></div>
-<div class="roundlabel"><strong>${m.round==='sudden'?'SUDDEN DEATH':'ARENA DUEL'}</strong><span>DRAW ${String(m.turn).padStart(2,'0')} / ${m.maxTurns}</span></div>
+<div class="roundlabel"><strong>${m.round==='sudden'?'SUDDEN DEATH':state.mode==='cpu'?'VS CPU · '+CPU.DIFFICULTIES[state.cpuDifficulty].label.toUpperCase():'ARENA DUEL'}</strong><span>DRAW ${String(m.turn).padStart(2,'0')} / ${m.maxTurns}</span></div>
 <div class="score-head"><span class="score">${A.remaining(p)}</span><div><small>NOW DECIDING</small><b>${esc(p.name)}</b></div></div></section>
 <div class="arena-main-grid"><section class="arena-stage">${tileGrid(m,j,false)}
 <div class="dealer-panel"><div class="overline">♠ &nbsp; THE SHARED DEALER &nbsp; ♠</div><div class="dealer-title">THE NEXT CARD</div><div class="dealer-stage"><div class="shoe"></div></div>
@@ -122,11 +125,11 @@ const m=state.m,k=state.overlay;if(!k)return '';if(k==='inspect')return inspectM
 if(k==='pass')return `<div class="modal" role="dialog" aria-modal="true" style="max-width:540px;text-align:center"><div class="overline">DECISION LOCKED & SEALED</div><h2>PASS THE TABLE.</h2><p>Player 1 has committed a hidden decision. Hand the device to Player 2 without revealing the tactical hand.</p><button class="cta" data-act="ready">PLAYER 2 IS READY →</button></div>`;
 if(k==='sudden')return `<div class="modal" role="dialog" aria-modal="true" style="max-width:570px;text-align:center"><div class="overline">A DRAW AFTER REGULATION</div><h2>SUDDEN DEATH.</h2><p>Three new dealer draws. Equal fresh battlegrounds. No collectible abilities. If the game remains tied, a draw is declared.</p><button class="cta" data-act="sudden">BEGIN SUDDEN DEATH →</button></div>`;
 const ev=m.last;if(!ev)return '';
-const playerResults=ev.detail.map((d,i)=>`<div class="outcome ${d.ok?'win':d.shield?'':'lose'}"><strong>PLAYER ${i+1} · ${d.ok?'CORRECT':d.shield?'PROTECTED':'BURNED'}</strong><small>Target ${d.idx+1}: ${A.cardCode(d.reference)}<br>${d.guess} → ${A.cardCode(d.draw)}${d.tie?' · TIED RANK':''}</small><small>${d.cardId?esc(A.CARDS[d.cardId].name):'No tactical card'} · ${d.remaining} survivors</small></div>`).join('');
+const playerResults=ev.detail.map((d,i)=>`<div class="outcome ${d.ok?'win':d.shield?'':'lose'}"><strong>${state.mode==='cpu'?(i===0?'YOU':'CPU'):'PLAYER '+(i+1)} · ${d.ok?'CORRECT':d.shield?'PROTECTED':'BURNED'}</strong><small>Target ${d.idx+1}: ${A.cardCode(d.reference)}<br>${d.guess} → ${A.cardCode(d.draw)}${d.tie?' · TIED RANK':''}</small><small>${d.cardId?esc(A.CARDS[d.cardId].name):'No tactical card'} · ${d.remaining} survivors</small></div>`).join('');
 if(k==='finish'){
-const r=m.result,title=r.winner===null?'MATCH DRAW':'PLAYER '+(r.winner+1)+' WINS';
+const r=m.result,title=r.winner===null?'MATCH DRAW':state.mode==='cpu'?(r.winner===0?'YOU WIN!':'CPU WINS!'):'PLAYER '+(r.winner+1)+' WINS';
 return `<div class="modal" role="dialog" aria-modal="true"><div class="overline">✦ THE FINAL VERDICT ✦</div><h2>${title}</h2><p>${r.winner===null?'Even sudden death could not separate the contenders.':'Territory preservation decides the victor.'}</p>
-<img class="dealer-large" alt="Final dealer card" src="${image(ev.draw)}"><div class="results-grid">${r.scores.map((p,i)=>`<div class="outcome ${r.winner===i?'win':''}"><strong>PLAYER ${i+1}</strong><small>${p.survivors} live · ${p.hits} correct · ${p.burns} burned</small></div>`).join('')}</div>
+<img class="dealer-large" alt="Final dealer card" src="${image(ev.draw)}"><div class="results-grid">${r.scores.map((p,i)=>`<div class="outcome ${r.winner===i?'win':''}"><strong>${state.mode==='cpu'?(i===0?'YOU':'CPU'):'PLAYER '+(i+1)}</strong><small>${p.survivors} live · ${p.hits} correct · ${p.burns} burned</small></div>`).join('')}</div>
 <button class="cta" data-act="rematch">REMATCH / NEW SHUFFLE</button><button class="button" style="width:100%;margin-top:13px" data-act="lobby">RETURN TO DECK HALL</button></div>`;
 }
 return `<div class="modal" role="dialog" aria-modal="true"><div class="overline">SHARED DEALER · ${ev.round.toUpperCase()} DRAW ${ev.turn}</div><h2>THE CARD REVEALS.</h2><img class="dealer-large" alt="Dealer ${A.cardCode(ev.draw)}" src="${image(ev.draw)}"><div class="results-grid">${playerResults}</div><button class="cta" data-act="continue">CONTINUE →</button></div>`;
@@ -137,7 +140,14 @@ function render(){
  '<section class="sealed-table"><span>✥</span><h2>THE TABLE IS SEALED</h2><p>Decisions and tactical hands are hidden during handoffs and reveals.</p></section>':game();
  overlay.innerHTML=modalView();
 }
-function start(){const invalid=state.decks.map(A.validateDeck).filter(Boolean);if(invalid.length){state.error=invalid[0];alert(state.error);return;}state.m=A.createMatch({decks:state.decks.map(x=>x.slice())});state.scene='game';state.overlay=null;reset();render();}
+function start(){
+ const invalid=state.decks.map(A.validateDeck).filter(Boolean);
+ if(invalid.length){state.error=invalid[0];alert(state.error);return;}
+ const names=state.mode==='cpu'?['YOU','CPU · '+CPU.DIFFICULTIES[state.cpuDifficulty].label.toUpperCase()]:['PLAYER ONE','PLAYER TWO'];
+ state.m=A.createMatch({decks:state.decks.map(x=>x.slice()),names});
+ state.cpuInitial=state.mode==='cpu'?state.m.players[0].board.map(c=>c.card):null;
+ state.scene='game';state.overlay=null;reset();render();
+}
 document.addEventListener('click',event=>{
 const b=event.target.closest('[data-act]');if(!b)return;const x=b.dataset.act,id=b.dataset.id,i=Number(b.dataset.idx),m=state.m;
 if(x==='builder'){state.editor=Number(b.dataset.player);state.overlay='builder';}
@@ -147,10 +157,12 @@ if(x==='close')state.overlay=null;
 if(x==='add'){const d=state.decks[state.editor];if(d.length<12&&d.filter(k=>k===id).length<2)d.push(id);}
 if(x==='remove'){const d=state.decks[state.editor],idx=d.indexOf(id);if(idx>=0)d.splice(idx,1);}
 if(x==='save'&&!A.validateDeck(state.decks[state.editor])){try{localStorage.setItem('hl-arena-decks-v1',JSON.stringify(state.decks));}catch(_){}state.overlay=null;}
-if(x==='start'||x==='rematch'){start();return;}
-if(x==='lobby'){state.scene='lobby';state.overlay=null;state.m=null;reset();}
+if(x==='start-cpu'){state.mode='cpu';start();return;}
+if(x==='start'){state.mode='hotseat';start();return;}
+if(x==='rematch'){start();return;}
+if(x==='lobby'){state.scene='lobby';state.overlay=null;state.m=null;state.cpuInitial=null;reset();}
 if(x==='ready'){state.overlay=null;reset();}
-if(x==='sudden'){A.continueSuddenDeath(m);state.overlay=null;reset();}
+if(x==='sudden'){A.continueSuddenDeath(m);if(state.mode==='cpu')state.cpuInitial=m.players[0].board.map(c=>c.card);state.overlay=null;reset();}
 if(x==='continue'){state.overlay=m.phase==='intermission'?'sudden':null;reset();}
 if(x==='card'){
  const idx=state.chosen;
@@ -169,16 +181,25 @@ if(x==='own'){
 if(x==='guess')state.guess=b.dataset.value;
 if(x==='lock'){
  const n=me(),move={idx:state.chosen,guess:state.guess,cardId:state.card,cardTarget:state.target},err=A.inspectMove(m,n,move);
- if(err)state.error=err;else{A.commit(m,n,move);reset();state.overlay=m.next===1?'pass':m.phase==='finished'?'finish':'reveal';}
+ if(err)state.error=err;else{
+  A.commit(m,n,move);
+  if(state.mode==='cpu'){
+    const response=CPU.choose(m,{difficulty:state.cpuDifficulty,initialBoard:state.cpuInitial});
+    A.commit(m,1,response);
+  }
+  reset();
+  state.overlay=state.mode==='hotseat'&&m.next===1?'pass':m.phase==='finished'?'finish':'reveal';
+}
 }
 render();
 });
 document.addEventListener('change',event=>{
 const b=event.target.closest('[data-change]');if(!b)return;
+if(b.dataset.change==='cpu-difficulty'&&CPU.DIFFICULTIES[b.value])state.cpuDifficulty=b.value;
 if(b.dataset.change==='preset'&&A.STARTERS[b.value])state.decks[Number(b.dataset.player)]=A.STARTERS[b.value].slice();
 if(b.dataset.change==='starter'&&A.STARTERS[b.value])state.decks[state.editor]=A.STARTERS[b.value].slice();
 render();
 });
-globalThis.ArenaApp={getState:()=>state,render};
+globalThis.ArenaApp={getState:()=>state,render,start};
 render();
 })();
