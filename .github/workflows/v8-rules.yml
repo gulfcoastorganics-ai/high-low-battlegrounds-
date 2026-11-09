@@ -15,5 +15,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Parse bundled game JavaScript
+        run: |
+          node -e "const fs=require('node:fs'),vm=require('node:vm');let s=fs.readFileSync('index.html','utf8');let m=s.match(/<script>([\\s\\S]*?)<\\/script>/);if(!m)throw Error('Bundled JS missing');new vm.Script(m[1]);console.log('Bundled game script parses');"
       - name: Run tactical and Classic invariants
         run: node --test tests/v8-tactical.test.cjs
