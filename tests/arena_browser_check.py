@@ -31,7 +31,7 @@ try:
             assert page.locator(".hero-character img").count() == 4
             assert page.evaluate("Object.keys(window.ArenaCharacters.byId).length") == 24
             page.locator('.hero-character[data-id="precision"]').click()
-            page.get_by_text("The Glass-Eyed Marshal").wait_for()
+            page.locator(".inspect-modal").get_by_text("The Glass-Eyed Marshal").wait_for()
             assert page.locator(".inspect-visual img").count() == 1
             assert page.locator(".inspect-visual img").evaluate("(img) => img.complete && img.naturalWidth > 0")
             page.locator('[data-act="close-inspect"]').click()
@@ -41,7 +41,7 @@ try:
                 assert page.locator(".builder-collection .builder-row").count() == 24
                 assert page.locator(".builder-portrait").count() == 24
                 page.locator('.builder-inspect[data-id="heartward"]').click()
-                page.get_by_text("The Scarlet Bastion").wait_for()
+                page.locator(".inspect-modal").get_by_text("The Scarlet Bastion").wait_for()
                 page.locator('[data-act="close-inspect"]').click()
                 assert page.get_by_text("THE DECK FORGE").count() == 1
                 page.locator('[data-act="close"]').click()
