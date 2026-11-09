@@ -3,7 +3,8 @@
 const A=globalThis.ArenaEngine,S={S:'♠',H:'♥',D:'♦',C:'♣'},G={precision:'✥',survey:'◉',reckoning:'⌖',heartward:'♥',secondwind:'❧',steady:'✧',reserve:'◆',exchange:'⟡',investment:'✦',crosswind:'✣',irongrip:'⚒',rooted:'♣'};
 const screen=document.getElementById('screen'),overlay=document.getElementById('overlay');
 const CH=globalThis.ArenaCharacters.byId,FACTIONS=globalThis.ArenaCharacters.factions;
-const portrait=id=>CH[id]?.portrait||'./art/precision.svg';
+const PREMIUM_IDS=new Set(['precision','heartward','reserve','rooted']);
+const portrait=id=>PREMIUM_IDS.has(id)?'./art-premium/'+id+'.webp':CH[id]?.portrait||'./art/precision.svg';
 const state={scene:'lobby',overlay:null,m:null,decks:[A.STARTERS.balanced.slice(),A.STARTERS.balanced.slice()],editor:0,chosen:null,guess:null,card:null,target:null,error:''};
 try{const d=JSON.parse(localStorage.getItem('hl-arena-decks-v1')||'null');if(Array.isArray(d)&&d.length===2&&d.every(x=>!A.validateDeck(x)))state.decks=d;}catch(_){}
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -11,12 +12,13 @@ const image=id=>'../assets/cards/'+A.cardCode(id)+'.svg',pct=(n,d)=>d?Math.round
 const reset=()=>{state.chosen=null;state.guess=null;state.card=null;state.target=null;state.error='';};
 function starterName(deck){return Object.keys(A.STARTERS).find(n=>JSON.stringify(deck)===JSON.stringify(A.STARTERS[n]))||'custom';}
 function showcase(){
-const leaders=['precision','heartward','investment','rooted'];
-return '<section class="character-showcase"><div class="showcase-heading"><div><div class="overline">THE FIRST TWELVE · ORIGINAL ARENA LEGENDS</div><h3>MEET THE COMBATANTS</h3></div><span>24 CHARACTERS · 12 PLAYABLE</span></div><div class="showcase-grid">'+
-leaders.map(id=>{const ch=CH[id];return '<button type="button" class="hero-character s-'+ch.suit+'" data-act="inspect" data-id="'+id+'"><img src="'+portrait(id)+'" alt="" loading="lazy"><span><b>'+esc(ch.name)+'</b><small>'+esc(ch.title)+'</small></span></button>';}).join('')+'</div></section>';
+const leaders=['precision','heartward','reserve','rooted'];
+return '<section class="character-showcase"><div class="showcase-heading"><div><div class="overline">YOUR CHAMPIONS · FOUR FACTIONS</div><h3>THE LEGENDS OF THE TABLE</h3></div><span>24 CHARACTERS · 12 PLAYABLE</span></div><div class="showcase-grid">'+
+leaders.map(id=>{const ch=CH[id];return '<button type="button" class="hero-character s-'+ch.suit+'" data-character="'+id+'" data-act="inspect" data-id="'+id+'"><img src="'+portrait(id)+'" alt="" loading="lazy"><span><b>'+esc(ch.name)+'</b><small>'+esc(ch.title)+'</small></span></button>';}).join('')+'</div></section>';
 }
 function lobby(){
 const panel=i=>`<article class="panel panel-glow">
+ <img class="contender-portrait" src="${portrait(i===0?'precision':'heartward')}" alt="" aria-hidden="true" loading="eager" decoding="async">
  <div class="player-ident"><span class="portrait">${i+1}</span><div><div class="section-label">CONTENDER 0${i+1}</div><h3 class="panel-title" style="margin:4px 0">PLAYER ${i+1}</h3></div></div>
  <label class="section-label">TACTICAL LOADOUT</label>
  <select class="selector" data-change="preset" data-player="${i}">
@@ -25,15 +27,17 @@ const panel=i=>`<article class="panel panel-glow">
  <p class="fineprint">${state.decks[i].length}/12 cards · ${esc(A.validateDeck(state.decks[i])||'Arena-ready loadout')}</p>
  <button class="button" style="width:100%;margin-top:12px" data-act="builder" data-player="${i}">DECK BUILDER / COLLECTION</button></article>`;
 return `<section class="page-title"><div class="overline">♠ &nbsp; ♥ &nbsp; THE COMPETITIVE TABLE &nbsp; ♦ &nbsp; ♣</div>
- <h2>READ THE ODDS.<br><em>RULE THE ARENA.</em></h2>
- <p>Two rivals. One shared dealer. Sixteen territories each. Predict higher or lower, deploy tactical cards, and survive eighteen draws.</p></section>
+ <h2>RULE THE <em>ARENA.</em></h2>
+ <p>Two rivals. One shared dealer. A tactical battlefield where every card matters.</p>
+ <div class="hero-cta-row"><button class="cta hero-play" data-act="start">✦ PLAY LOCAL PVP</button><a href="../index.html" class="ghost-button hero-classic">ORIGINAL CLASSIC V8 ↗</a></div>
+ </section>
+ ${showcase()}
+ <section class="loadout-heading"><div class="overline">THE WAR ROOM</div><h3>CHOOSE YOUR LOADOUT.</h3><p>Both contenders begin with a balanced deck. Customise either one below.</p></section>
  <section class="lobby-grid">${panel(0)}${panel(1)}</section>
  <section class="rules-strip"><div class="rule"><b>01 &nbsp; THE COMMON DRAW</b><span>Each player faces the same dealer sequence, but your battlegrounds evolve independently.</span></div>
  <div class="rule"><b>02 &nbsp; TERRITORY IS LIFE</b><span>Incorrect guesses and ties burn spaces. Use defense to survive.</span></div>
  <div class="rule"><b>03 &nbsp; STRATEGIC FOCUS</b><span>Collect Focus each turn and spend it on powerful tactical abilities.</span></div></section>
- ${showcase()}
- <div class="lobby-actions"><button class="cta" data-act="start">ENTER LOCAL PVP ARENA ✦</button><a class="ghost-button" style="display:grid;place-items:center" href="../index.html">PLAY ORIGINAL CLASSIC V8 ↗</a></div>
- <p class="fineprint">Local hotseat: pass the device between locked decisions. Online ranked PvP is not active.</p>`;
+ <p class="fineprint" style="margin:17px auto 22px">Local hotseat: pass the device between locked decisions. Online ranked PvP is not active.</p>`;
 }
 function tileGrid(m,index,ours){
 const p=m.players[index],isActive=ours&&m.phase==='commit',offer=A.offer(m,index,ours?state.card:null,ours?state.target:null);
@@ -50,10 +54,10 @@ return `<section class="war-panel ${ours?'player active':'enemy'}"><div class="w
 function tactical(id){
 const c=A.CARDS[id],ch=CH[id],active=state.card===id,cost=state.m?A.price(state.m,me(),id):c.cost,afford=state.m.players[me()].focus>=cost;
 return `<div class="tactcard-wrap">
-<button type="button" class="tactcard s-${c.suit}${active?' active':''}" data-act="card" data-id="${id}" ${!afford?'disabled':''}
+<button type="button" class="tactcard s-${c.suit} rarity-${c.rarity}${active?' active':''}" data-character="${id}" data-act="card" data-id="${id}" ${!afford?'disabled':''}
  aria-pressed="${active}" aria-label="Play ${esc(ch.name)}: ${esc(c.name)}. ${esc(c.text)}">
   <span class="tc-top"><span>${S[c.suit]} ${c.rarity.toUpperCase()}</span><span class="tc-cost">${cost}</span></span>
-  <span class="tc-art"><img src="${portrait(id)}" alt="" loading="lazy"><span class="tc-art-shine"></span></span>
+  <span class="tc-art" data-character="${id}"><img src="${portrait(id)}" alt="" loading="lazy"><span class="tc-art-shine"></span></span>
   <span class="tc-bottom"><strong>${esc(ch.name)}</strong><small>${esc(c.name)}</small></span>
 </button><button type="button" class="tactcard-inspect" data-act="inspect" data-id="${id}" aria-label="Inspect ${esc(ch.name)}">ⓘ <span>DETAILS</span></button>
 </div>`;
@@ -86,7 +90,7 @@ function builder(){
 const deck=state.decks[state.editor],count={};deck.forEach(id=>count[id]=(count[id]||0)+1);
 const catalog=A.REGISTRY.map(c=>{
 const ch=CH[c.id];return `<div class="builder-item"><button class="builder-row" data-act="add" data-id="${c.id}" ${deck.length>=12||(count[c.id]||0)>=2?'disabled':''}>
-<img class="builder-portrait" src="${portrait(c.id)}" alt="" loading="lazy"><span class="builder-copy"><strong>${esc(ch.name)}</strong><small>${esc(ch.title)} · ${c.cost} Focus</small><small>${esc(c.name)} · ${esc(c.text)}</small></span></button>
+<span class="builder-portrait-wrap" data-character="${c.id}"><img class="builder-portrait" src="${portrait(c.id)}" alt="" loading="lazy"></span><span class="builder-copy"><strong>${esc(ch.name)}</strong><small>${esc(ch.title)} · ${c.cost} Focus</small><small>${esc(c.name)} · ${esc(c.text)}</small></span></button>
 <button type="button" class="builder-inspect" data-act="inspect" data-id="${c.id}">VIEW CHARACTER ↗</button></div>`;}).join('');
 const future=(globalThis.ArenaExpansion||[]).map(c=>{
 const ch=CH[c.id];return `<div class="builder-item preview"><button class="builder-row preview" disabled>
@@ -105,7 +109,7 @@ function inspectModal(){
  if(!ch||!c)return '<div class="modal">Character unavailable.</div>';
  const live=!!A.CARDS[id],suit=S[ch.suit];
  return `<div class="modal inspect-modal s-${ch.suit}" role="dialog" aria-modal="true" aria-label="Character details">
-  <div class="inspect-layout"><div class="inspect-visual"><img src="${portrait(id)}" alt="${esc(ch.name)}, ${esc(ch.title)}"><span class="inspect-rarity">${suit} ${esc(c.rarity.toUpperCase())} · ${live?'ARENA READY':'EXPANSION PREVIEW'}</span></div>
+  <div class="inspect-layout"><div class="inspect-visual" data-character="${id}"><img src="${portrait(id)}" alt="${esc(ch.name)}, ${esc(ch.title)}"><span class="inspect-rarity">${suit} ${esc(c.rarity.toUpperCase())} · ${live?'ARENA READY':'EXPANSION PREVIEW'}</span></div>
   <div class="inspect-copy"><div class="overline">${esc(FACTIONS[ch.suit].name)} · ${esc(FACTIONS[ch.suit].description)}</div>
   <h2>${esc(ch.name)}</h2><h3>${esc(ch.title)}</h3><blockquote>“${esc(ch.lore)}”</blockquote>
   <div class="inspect-ability"><div class="section-label">TACTICAL ABILITY</div><strong>${esc(c.name)} <span class="inspect-cost">✦ ${c.cost}</span></strong>

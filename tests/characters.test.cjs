@@ -32,3 +32,17 @@ test('24 portrait illustrations exist and contain safe standalone SVG images',()
    assert.ok(!hashes.has(imgHash),'Duplicate image '+c.id);hashes.add(imgHash);
  }
 });
+
+test('flagship premium portraits are real self-hosted WebP image assets',()=>{
+ for(const id of ['precision','heartward','reserve','rooted']){
+   const p=path.join('arena','art-premium',id+'.webp');
+   const bytes=fs.readFileSync(p);
+   assert.ok(bytes.length>20000,'Portrait should not be an empty placeholder: '+id);
+   assert.equal(bytes.subarray(0,4).toString('ascii'),'RIFF');
+   assert.equal(bytes.subarray(8,12).toString('ascii'),'WEBP');
+ }
+ const page=fs.readFileSync('arena/index.html','utf8');
+ assert.match(page,/premium\.css/);
+ const styles=fs.readFileSync('arena/premium.css','utf8');
+ assert.match(styles,/\.hero-character/);
+});

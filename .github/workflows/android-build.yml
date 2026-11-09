@@ -1,7 +1,7 @@
 name: Build HIGH LOW Android APK
 on:
   push:
-    branches: [main, v6-audit-upgrade, arena-character-overhaul]
+    branches: [main, v6-audit-upgrade, arena-character-overhaul, arena-premium-character-v2]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -40,6 +40,8 @@ jobs:
           test -s app/src/main/assets/index.html
           test -s app/src/main/assets/assets/cards/S-A.svg
           test -s app/src/main/assets/arena/art/precision.svg
+          test -s app/src/main/assets/arena/art-premium/precision.webp
+          test -s app/src/main/assets/arena/premium.css
       - name: Build installable debug APK
         run: gradle :app:assembleDebug --no-daemon --stacktrace
       - name: Publish APK artifact
