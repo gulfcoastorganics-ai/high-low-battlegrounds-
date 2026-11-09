@@ -1,26 +1,30 @@
-# HIGH / LOW: BATTLEGROUND — Android V4
+# HIGH / LOW: BATTLEGROUND V5
 
-This repository contains the complete standalone HTML5 game (root `index.html`) and a native Android WebView host.
+A premium self-contained HTML5 higher/lower card battleground, with an Android app host.
 
-## Download your Android APK
+## Play
+- The entire **V5 game** is in root [index.html](./index.html). Download it and open in Chrome, or publish the repository with GitHub Pages.
+- Offline solo and local pass-and-play PvP both work without a server.
+- 3×3 or 4×4 grids; face-up or blind openings; correct predictions replace cards; wrong or equal-rank predictions burn spaces.
+- Players in a local duel receive the identical initial board and dealer draw sequence; equal scores trigger a fresh sudden-death deck.
 
-1. Open **Actions** in this GitHub repository.
-2. Select **Build HIGH LOW Android APK**.
-3. GitHub Actions automatically builds when changes reach `main`; alternatively choose **Run workflow**.
-4. Wait for a green check mark, then open that workflow run.
-5. In **Artifacts**, download **Battleground-V4-Android-APK**.
-6. Extract `app-debug.apk`, then transfer/install it on your Android phone (approve installs from this source when Android prompts).
+## V5 improvements
+- True front/back CSS 3D playing-card faces, staggered dealing, reduced-motion support and sound toggle.
+- Probability assistant based only on previously revealed card identities, not the hidden dealer deck.
+- Fictional practice credits, difficulty-weighted multipliers, XP, level, achievements represented by statistics, saved solo games and full turn-by-turn replay.
+- Emerald, Noir and Ruby table themes; mobile responsive controls.
 
-Debug APKs are intended for testing. Play Store release requires developer signing and publishing steps.
+## Android
+The included [Android GitHub Actions workflow](./.github/workflows/android-build.yml) copies the latest root index.html into Android assets and builds a test debug APK. The native Android shell remains a source project until a cloud build succeeds; **a verified installable APK is not yet confirmed**.
 
-## Play HTML5 without Android
+1. Open **Actions → Build HIGH LOW Android APK → Run workflow**.
+2. When the run finishes successfully, download the `Battleground-V4-Android-APK` artifact; despite the artifact's older label, its bundled game comes from the current root index.html.
+3. Unzip and install `app-debug.apk` on an Android device to test.
 
-`index.html` is the self-contained V4 game. It supports solo and local PvP offline; online PvP requires a separately deployed Supabase service and must be tested with two devices.
+## Multiplayer caveat
+Online PvP is **not connected** in the V5 in-chat/standalone game. The Online tab is an honest roadmap. An authoritative backend with auth, RLS, hidden decks, idempotent moves, matchmaking and independent two-device testing is required. See [Online architecture](./docs/ONLINE_ARCHITECTURE.md).
 
-## Develop
+## Testing
+V5 Playwright/Chromium smoke checks were performed for 390×844 and 1100×860 viewports, full solo round, save/resume, progression, probability assistant, hidden blind cards, replay and both local PvP turns. This does **not** establish deployed backend or physical Android QA.
 
-Open this folder in Android Studio, use JDK 17 and Android SDK 35. Copy `index.html` to `app/src/main/assets/index.html` before building locally. The GitHub Actions workflow does this automatically. Use Gradle 8.11.1 to build `:app:assembleDebug`. Package name: `com.highlow.battleground` (Android 7.0+).
-
-The Android app serves its bundled HTML from `https://appassets.androidplatform.net/assets/index.html` using AndroidX `WebViewAssetLoader`, avoiding dangerous `file://` permissions. All wagers are simulated credits, not real-money payments or prizes.
-
-**Status:** Source published; APK compilation and physical-device verification must be established from GitHub Actions results, not assumed.
+All stakes and rewards are fictional practice credits with no monetary value.
