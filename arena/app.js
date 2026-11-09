@@ -140,7 +140,14 @@ function render(){
  '<section class="sealed-table"><span>✥</span><h2>THE TABLE IS SEALED</h2><p>Decisions and tactical hands are hidden during handoffs and reveals.</p></section>':game();
  overlay.innerHTML=modalView();
 }
-function start(){const invalid=state.decks.map(A.validateDeck).filter(Boolean);if(invalid.length){state.error=invalid[0];alert(state.error);return;}state.m=A.createMatch({decks:state.decks.map(x=>x.slice())});state.scene='game';state.overlay=null;reset();render();}
+function start(){
+ const invalid=state.decks.map(A.validateDeck).filter(Boolean);
+ if(invalid.length){state.error=invalid[0];alert(state.error);return;}
+ const names=state.mode==='cpu'?['YOU','CPU · '+CPU.DIFFICULTIES[state.cpuDifficulty].label.toUpperCase()]:['PLAYER ONE','PLAYER TWO'];
+ state.m=A.createMatch({decks:state.decks.map(x=>x.slice()),names});
+ state.cpuInitial=state.mode==='cpu'?state.m.players[0].board.map(c=>c.card):null;
+ state.scene='game';state.overlay=null;reset();render();
+}
 document.addEventListener('click',event=>{
 const b=event.target.closest('[data-act]');if(!b)return;const x=b.dataset.act,id=b.dataset.id,i=Number(b.dataset.idx),m=state.m;
 if(x==='builder'){state.editor=Number(b.dataset.player);state.overlay='builder';}
@@ -150,10 +157,12 @@ if(x==='close')state.overlay=null;
 if(x==='add'){const d=state.decks[state.editor];if(d.length<12&&d.filter(k=>k===id).length<2)d.push(id);}
 if(x==='remove'){const d=state.decks[state.editor],idx=d.indexOf(id);if(idx>=0)d.splice(idx,1);}
 if(x==='save'&&!A.validateDeck(state.decks[state.editor])){try{localStorage.setItem('hl-arena-decks-v1',JSON.stringify(state.decks));}catch(_){}state.overlay=null;}
-if(x==='start'||x==='rematch'){start();return;}
-if(x==='lobby'){state.scene='lobby';state.overlay=null;state.m=null;reset();}
+if(x==='start-cpu'){state.mode='cpu';start();return;}
+if(x==='start'){state.mode='hotseat';start();return;}
+if(x==='rematch'){start();return;}
+if(x==='lobby'){state.scene='lobby';state.overlay=null;state.m=null;state.cpuInitial=null;reset();}
 if(x==='ready'){state.overlay=null;reset();}
-if(x==='sudden'){A.continueSuddenDeath(m);state.overlay=null;reset();}
+if(x==='sudden'){A.continueSuddenDeath(m);if(state.mode==='cpu')state.cpuInitial=m.players[0].board.map(c=>c.card);state.overlay=null;reset();}
 if(x==='continue'){state.overlay=m.phase==='intermission'?'sudden':null;reset();}
 if(x==='card'){
  const idx=state.chosen;
@@ -172,12 +181,21 @@ if(x==='own'){
 if(x==='guess')state.guess=b.dataset.value;
 if(x==='lock'){
  const n=me(),move={idx:state.chosen,guess:state.guess,cardId:state.card,cardTarget:state.target},err=A.inspectMove(m,n,move);
- if(err)state.error=err;else{A.commit(m,n,move);reset();state.overlay=m.next===1?'pass':m.phase==='finished'?'finish':'reveal';}
+ if(err)state.error=err;else{
+  A.commit(m,n,move);
+  if(state.mode==='cpu'){
+    const response=CPU.choose(m,{difficulty:state.cpuDifficulty,initialBoard:state.cpuInitial});
+    A.commit(m,1,response);
+  }
+  reset();
+  state.overlay=state.mode==='hotseat'&&m.next===1?'pass':m.phase==='finished'?'finish':'reveal';
+}
 }
 render();
 });
 document.addEventListener('change',event=>{
 const b=event.target.closest('[data-change]');if(!b)return;
+if(b.dataset.change==='cpu-difficulty'&&CPU.DIFFICULTIES[b.value])state.cpuDifficulty=b.value;
 if(b.dataset.change==='preset'&&A.STARTERS[b.value])state.decks[Number(b.dataset.player)]=A.STARTERS[b.value].slice();
 if(b.dataset.change==='starter'&&A.STARTERS[b.value])state.decks[state.editor]=A.STARTERS[b.value].slice();
 render();
