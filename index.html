@@ -536,7 +536,7 @@ function animateDealerDraw(cardId,position,after){
  flyer.style.left=(from.left+from.width/2-w/2)+'px';flyer.style.top=(from.top+from.height/2-h/2)+'px';
  flyer.style.transform='rotate(-12deg) scale(.82)';document.body.appendChild(flyer);
  let done=false;const finish=()=>{if(done)return;done=true;flyer.remove();after()};
- flyer.onclick=finish;
+ flyer.title='Tap to skip reveal';flyer.onclick=finish;
  requestAnimationFrame(()=>requestAnimationFrame(()=>{
   flyer.style.left=(to.left+to.width/2-w/2)+'px';flyer.style.top=(to.top+to.height/2-h/2)+'px';
   flyer.style.transform='rotate(0deg) scale(1)';
@@ -583,7 +583,32 @@ function nextDuel(){if(page==='end'&&cfg.mode==='local'){if(player1===null){play
 function startSecondPlayer(){if(page!=='handoff')return;game=newGame(shared);game.steps.push(snapshot());selection=-1;locked=false;deal=true;page='play';paint()}
 function handoffHTML(){return `<div class="hero handoff-hero"><div class="kick">LOCAL DUEL · ROUND ${round}</div><div class="handoff-icon">⇆</div><h2>PASS THE<br>DEVICE.</h2><p>Player 01's round is complete. The table resets to the exact same shuffle for Player 02.</p></div><section class="pane handoff-pane"><div class="notice">PRIVATE HANDOFF · Previous choices and replay are concealed until both players finish.</div><button class="cta" id="h5-ready">PLAYER 02 · I'M READY →</button></section>`}
 
-function sound(type){if(!audioEnabled)return;try{if(!globalThis.AudioContext&&!globalThis.webkitAudioContext)return;const ctx=new (globalThis.AudioContext||globalThis.webkitAudioContext)(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.type=type==='burn'?'triangle':'sine';osc.frequency.value=type==='burn'?165:type==='win'?740:type==='deal'?350:type==='select'?475:620;gain.gain.value=.018;gain.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.11);osc.connect(gain).connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+.12);osc.onended=()=>ctx.close()}catch(e){}}
+let v8AudioContext=null;
+function sound(type){
+ if(!audioEnabled)return;
+ try{
+  const AC=globalThis.AudioContext||globalThis.webkitAudioContext;if(!AC)return;
+  if(!v8AudioContext)v8AudioContext=new AC();
+  const ctx=v8AudioContext;if(ctx.state==='suspended')ctx.resume().catch(()=>{});
+  const t=ctx.currentTime,duration=type==='deal'?.16:type==='burn'?.18:.075;
+  const count=Math.max(1,Math.ceil(ctx.sampleRate*duration)),noise=ctx.createBuffer(1,count,ctx.sampleRate),data=noise.getChannelData(0);
+  for(let i=0;i<count;i++){const envelope=Math.pow(1-i/count,1.7);data[i]=(Math.random()*2-1)*envelope;}
+  const src=ctx.createBufferSource();src.buffer=noise;
+  const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=type==='burn'?900:type==='deal'?1700:2600;
+  const volume=ctx.createGain();volume.gain.setValueAtTime(.0001,t);
+  volume.gain.exponentialRampToValueAtTime(type==='deal'?.036:.024,t+.006);
+  volume.gain.exponentialRampToValueAtTime(.0001,t+duration);
+  src.connect(lp);lp.connect(volume);volume.connect(ctx.destination);src.start(t);src.stop(t+duration);
+  if(['hit','burn','win'].includes(type)){
+   const pitches=type==='win'?[440,660,880]:[type==='burn'?175:640];
+   pitches.forEach((f,i)=>{const o=ctx.createOscillator(),v=ctx.createGain(),at=t+i*.085;o.type=type==='burn'?'triangle':'sine';
+    o.frequency.setValueAtTime(f,at);o.frequency.exponentialRampToValueAtTime(f*(type==='burn'?.71:1.05),at+.1);
+    v.gain.setValueAtTime(.0001,at);v.gain.exponentialRampToValueAtTime(.018,at+.018);v.gain.exponentialRampToValueAtTime(.0001,at+.17);
+    o.connect(v);v.connect(ctx.destination);o.start(at);o.stop(at+.18);
+   });
+  }
+ }catch(e){}
+}
 function guess(direction){
  if(page!=='play'||locked||selection<0||!eligibleTarget(selection)||game.shoe.length===0)return;
  locked=true;
@@ -602,7 +627,7 @@ function guess(direction){
  const done=()=>{if(turn!==epoch||page!=='play')return;locked=false;sound(ok?'hit':'burn');paint();const revealed=el.querySelector(`[data-pos="${idx}"]`);if(revealed){revealed.classList.add('reveal');setTimeout(()=>revealed.classList.remove('reveal'),380)}};
  if(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches){done();return;}
  const slot=el.querySelector(`[data-pos="${idx}"]`);if(slot)slot.classList.add('turn');
- animateDealerDraw(draw,idx,done);
+ sound('deal');animateDealerDraw(draw,idx,done);
 }
 root.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(locked&&b.id!=='h5-sound')return;if(b.dataset.setting){const k=b.dataset.setting,v=b.dataset.value;cfg[k]=k==='grid'||k==='stake'?Number(v):v==='true'?true:v==='false'?false:v;persist();paint();return}if(b.dataset.nav){if(page==='play')saveSession();++epoch;page=b.dataset.nav;locked=false;paint();return}if(b.dataset.pos!==undefined&&page==='play'&&!locked){const i=Number(b.dataset.pos);if(eligibleTarget(i)){selection=selection===i?-1:i;paint();if(selection>=0)sound('select')}return}if(b.dataset.guess){guess(b.dataset.guess);return}if(b.dataset.replay){replayStep=Math.max(0,Math.min(numPlayed(),replayStep+(b.dataset.replay==='next'?1:-1)));paint();return}switch(b.id){case'h5-start':begin();break;case'h5-again':begin();break;case'h5-next':nextDuel();break;case'h5-ready':startSecondPlayer();break;case'h5-rematch':nextDuel();break;case'h5-exit':if(page==='play')saveSession();++epoch;locked=false;page='setup';paint();break;case'h5-resume':resume();break;case'h5-sound':audioEnabled=!audioEnabled;persist();paint();break;case'h5-refill':wallet=1000;persist();paint();break;case'h5-local':cfg.mode='local';page='setup';paint();break;case'h5-odds':cfg.odds=true;persist();paint();break}});
 root.addEventListener('input',e=>{if(e.target.id==='h5-replay-range'&&page==='end'){replayStep=+e.target.value;const grid=el.querySelector('.replaygrid'),caption=el.querySelector('#h5-replay-caption');if(grid)grid.innerHTML=replayBoard();if(caption)caption.textContent=replayCaption();const kick=el.querySelector('.replay .kick');if(kick)kick.textContent=`⟲ INTERACTIVE REPLAY · ${replayStep}/${numPlayed()}`}});
