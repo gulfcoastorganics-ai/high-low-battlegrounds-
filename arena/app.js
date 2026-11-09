@@ -3,9 +3,10 @@
 const A=globalThis.ArenaEngine,S={S:'♠',H:'♥',D:'♦',C:'♣'},G={precision:'✥',survey:'◉',reckoning:'⌖',heartward:'♥',secondwind:'❧',steady:'✧',reserve:'◆',exchange:'⟡',investment:'✦',crosswind:'✣',irongrip:'⚒',rooted:'♣'};
 const screen=document.getElementById('screen'),overlay=document.getElementById('overlay');
 const CH=globalThis.ArenaCharacters.byId,FACTIONS=globalThis.ArenaCharacters.factions;
+const CPU=globalThis.ArenaCPU;
 const PREMIUM_IDS=new Set(A.REGISTRY.map(c=>c.id));
 const portrait=id=>PREMIUM_IDS.has(id)?'./art-premium/'+id+'.webp':CH[id]?.portrait||'./art/precision.svg';
-const state={scene:'lobby',overlay:null,m:null,decks:[A.STARTERS.balanced.slice(),A.STARTERS.balanced.slice()],editor:0,chosen:null,guess:null,card:null,target:null,error:''};
+const state={scene:'lobby',overlay:null,m:null,mode:'hotseat',cpuDifficulty:'standard',cpuInitial:null,decks:[A.STARTERS.balanced.slice(),A.STARTERS.balanced.slice()],editor:0,chosen:null,guess:null,card:null,target:null,error:''};
 try{const d=JSON.parse(localStorage.getItem('hl-arena-decks-v1')||'null');if(Array.isArray(d)&&d.length===2&&d.every(x=>!A.validateDeck(x)))state.decks=d;}catch(_){}
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const image=id=>'../assets/cards/'+A.cardCode(id)+'.svg',pct=(n,d)=>d?Math.round(n/d*100):0,me=()=>state.m?.next??0;
@@ -32,12 +33,12 @@ return `<section class="page-title"><div class="overline">♠ &nbsp; ♥ &nbsp; 
  <div class="hero-cta-row"><button class="cta hero-play" data-act="start">✦ PLAY LOCAL PVP</button><a href="../index.html" class="ghost-button hero-classic">ORIGINAL CLASSIC V8 ↗</a></div>
  </section>
  ${showcase()}
- <section class="loadout-heading"><div class="overline">THE WAR ROOM</div><h3>CHOOSE YOUR LOADOUT.</h3><p>Both contenders begin with a balanced deck. Customise either one below.</p></section>
+ <section class="loadout-heading"><div class="overline">THE WAR ROOM</div><h3>CHOOSE YOUR LOADOUT.</h3><p>Customize both decks before battling a friend or the CPU opponent.</p></section>
  <section class="lobby-grid">${panel(0)}${panel(1)}</section>
  <section class="rules-strip"><div class="rule"><b>01 &nbsp; THE COMMON DRAW</b><span>Each player faces the same dealer sequence, but your battlegrounds evolve independently.</span></div>
  <div class="rule"><b>02 &nbsp; TERRITORY IS LIFE</b><span>Incorrect guesses and ties burn spaces. Use defense to survive.</span></div>
  <div class="rule"><b>03 &nbsp; STRATEGIC FOCUS</b><span>Collect Focus each turn and spend it on powerful tactical abilities.</span></div></section>
- <p class="fineprint" style="margin:17px auto 22px">Local hotseat: pass the device between locked decisions. Online ranked PvP is not active.</p>`;
+ <p class="fineprint" style="margin:17px auto 22px">Play the CPU instantly or pass the device for local two-player battles. Online matchmaking is not active.</p>`;
 }
 function tileGrid(m,index,ours){
 const p=m.players[index],isActive=ours&&m.phase==='commit',offer=A.offer(m,index,ours?state.card:null,ours?state.target:null);
@@ -122,11 +123,11 @@ const m=state.m,k=state.overlay;if(!k)return '';if(k==='inspect')return inspectM
 if(k==='pass')return `<div class="modal" role="dialog" aria-modal="true" style="max-width:540px;text-align:center"><div class="overline">DECISION LOCKED & SEALED</div><h2>PASS THE TABLE.</h2><p>Player 1 has committed a hidden decision. Hand the device to Player 2 without revealing the tactical hand.</p><button class="cta" data-act="ready">PLAYER 2 IS READY →</button></div>`;
 if(k==='sudden')return `<div class="modal" role="dialog" aria-modal="true" style="max-width:570px;text-align:center"><div class="overline">A DRAW AFTER REGULATION</div><h2>SUDDEN DEATH.</h2><p>Three new dealer draws. Equal fresh battlegrounds. No collectible abilities. If the game remains tied, a draw is declared.</p><button class="cta" data-act="sudden">BEGIN SUDDEN DEATH →</button></div>`;
 const ev=m.last;if(!ev)return '';
-const playerResults=ev.detail.map((d,i)=>`<div class="outcome ${d.ok?'win':d.shield?'':'lose'}"><strong>PLAYER ${i+1} · ${d.ok?'CORRECT':d.shield?'PROTECTED':'BURNED'}</strong><small>Target ${d.idx+1}: ${A.cardCode(d.reference)}<br>${d.guess} → ${A.cardCode(d.draw)}${d.tie?' · TIED RANK':''}</small><small>${d.cardId?esc(A.CARDS[d.cardId].name):'No tactical card'} · ${d.remaining} survivors</small></div>`).join('');
+const playerResults=ev.detail.map((d,i)=>`<div class="outcome ${d.ok?'win':d.shield?'':'lose'}"><strong>${state.mode==='cpu'?(i===0?'YOU':'CPU'):'PLAYER '+(i+1)} · ${d.ok?'CORRECT':d.shield?'PROTECTED':'BURNED'}</strong><small>Target ${d.idx+1}: ${A.cardCode(d.reference)}<br>${d.guess} → ${A.cardCode(d.draw)}${d.tie?' · TIED RANK':''}</small><small>${d.cardId?esc(A.CARDS[d.cardId].name):'No tactical card'} · ${d.remaining} survivors</small></div>`).join('');
 if(k==='finish'){
-const r=m.result,title=r.winner===null?'MATCH DRAW':'PLAYER '+(r.winner+1)+' WINS';
+const r=m.result,title=r.winner===null?'MATCH DRAW':state.mode==='cpu'?(r.winner===0?'YOU WIN!':'CPU WINS!'):'PLAYER '+(r.winner+1)+' WINS';
 return `<div class="modal" role="dialog" aria-modal="true"><div class="overline">✦ THE FINAL VERDICT ✦</div><h2>${title}</h2><p>${r.winner===null?'Even sudden death could not separate the contenders.':'Territory preservation decides the victor.'}</p>
-<img class="dealer-large" alt="Final dealer card" src="${image(ev.draw)}"><div class="results-grid">${r.scores.map((p,i)=>`<div class="outcome ${r.winner===i?'win':''}"><strong>PLAYER ${i+1}</strong><small>${p.survivors} live · ${p.hits} correct · ${p.burns} burned</small></div>`).join('')}</div>
+<img class="dealer-large" alt="Final dealer card" src="${image(ev.draw)}"><div class="results-grid">${r.scores.map((p,i)=>`<div class="outcome ${r.winner===i?'win':''}"><strong>${state.mode==='cpu'?(i===0?'YOU':'CPU'):'PLAYER '+(i+1)}</strong><small>${p.survivors} live · ${p.hits} correct · ${p.burns} burned</small></div>`).join('')}</div>
 <button class="cta" data-act="rematch">REMATCH / NEW SHUFFLE</button><button class="button" style="width:100%;margin-top:13px" data-act="lobby">RETURN TO DECK HALL</button></div>`;
 }
 return `<div class="modal" role="dialog" aria-modal="true"><div class="overline">SHARED DEALER · ${ev.round.toUpperCase()} DRAW ${ev.turn}</div><h2>THE CARD REVEALS.</h2><img class="dealer-large" alt="Dealer ${A.cardCode(ev.draw)}" src="${image(ev.draw)}"><div class="results-grid">${playerResults}</div><button class="cta" data-act="continue">CONTINUE →</button></div>`;
@@ -179,6 +180,6 @@ if(b.dataset.change==='preset'&&A.STARTERS[b.value])state.decks[Number(b.dataset
 if(b.dataset.change==='starter'&&A.STARTERS[b.value])state.decks[state.editor]=A.STARTERS[b.value].slice();
 render();
 });
-globalThis.ArenaApp={getState:()=>state,render};
+globalThis.ArenaApp={getState:()=>state,render,start};
 render();
 })();
