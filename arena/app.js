@@ -2,12 +2,19 @@
 'use strict';
 const A=globalThis.ArenaEngine,S={S:'♠',H:'♥',D:'♦',C:'♣'},G={precision:'✥',survey:'◉',reckoning:'⌖',heartward:'♥',secondwind:'❧',steady:'✧',reserve:'◆',exchange:'⟡',investment:'✦',crosswind:'✣',irongrip:'⚒',rooted:'♣'};
 const screen=document.getElementById('screen'),overlay=document.getElementById('overlay');
+const CH=globalThis.ArenaCharacters.byId,FACTIONS=globalThis.ArenaCharacters.factions;
+const portrait=id=>CH[id]?.portrait||'./art/precision.svg';
 const state={scene:'lobby',overlay:null,m:null,decks:[A.STARTERS.balanced.slice(),A.STARTERS.balanced.slice()],editor:0,chosen:null,guess:null,card:null,target:null,error:''};
 try{const d=JSON.parse(localStorage.getItem('hl-arena-decks-v1')||'null');if(Array.isArray(d)&&d.length===2&&d.every(x=>!A.validateDeck(x)))state.decks=d;}catch(_){}
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const image=id=>'../assets/cards/'+A.cardCode(id)+'.svg',pct=(n,d)=>d?Math.round(n/d*100):0,me=()=>state.m?.next??0;
 const reset=()=>{state.chosen=null;state.guess=null;state.card=null;state.target=null;state.error='';};
 function starterName(deck){return Object.keys(A.STARTERS).find(n=>JSON.stringify(deck)===JSON.stringify(A.STARTERS[n]))||'custom';}
+function showcase(){
+const leaders=['precision','heartward','investment','rooted'];
+return '<section class="character-showcase"><div class="showcase-heading"><div><div class="overline">THE FIRST TWELVE · ORIGINAL ARENA LEGENDS</div><h3>MEET THE COMBATANTS</h3></div><span>24 CHARACTERS · 12 PLAYABLE</span></div><div class="showcase-grid">'+
+leaders.map(id=>{const ch=CH[id];return '<button type="button" class="hero-character s-'+ch.suit+'" data-act="inspect" data-id="'+id+'"><img src="'+portrait(id)+'" alt="" loading="lazy"><span><b>'+esc(ch.name)+'</b><small>'+esc(ch.title)+'</small></span></button>';}).join('')+'</div></section>';
+}
 function lobby(){
 const panel=i=>`<article class="panel panel-glow">
  <div class="player-ident"><span class="portrait">${i+1}</span><div><div class="section-label">CONTENDER 0${i+1}</div><h3 class="panel-title" style="margin:4px 0">PLAYER ${i+1}</h3></div></div>
@@ -24,6 +31,7 @@ return `<section class="page-title"><div class="overline">♠ &nbsp; ♥ &nbsp; 
  <section class="rules-strip"><div class="rule"><b>01 &nbsp; THE COMMON DRAW</b><span>Each player faces the same dealer sequence, but your battlegrounds evolve independently.</span></div>
  <div class="rule"><b>02 &nbsp; TERRITORY IS LIFE</b><span>Incorrect guesses and ties burn spaces. Use defense to survive.</span></div>
  <div class="rule"><b>03 &nbsp; STRATEGIC FOCUS</b><span>Collect Focus each turn and spend it on powerful tactical abilities.</span></div></section>
+ ${showcase()}
  <div class="lobby-actions"><button class="cta" data-act="start">ENTER LOCAL PVP ARENA ✦</button><a class="ghost-button" style="display:grid;place-items:center" href="../index.html">PLAY ORIGINAL CLASSIC V8 ↗</a></div>
  <p class="fineprint">Local hotseat: pass the device between locked decisions. Online ranked PvP is not active.</p>`;
 }
@@ -40,10 +48,15 @@ return `<section class="war-panel ${ours?'player active':'enemy'}"><div class="w
 <div class="card-grid">${tiles}</div><div class="war-metrics"><span>LIVE <b>${A.remaining(p)}/16</b></span><span>CORRECT <b>${p.hits}</b></span><span>FOCUS <b>${m.round==='sudden'?'—':p.focus}</b></span></div></section>`;
 }
 function tactical(id){
-const c=A.CARDS[id],active=state.card===id,cost=state.m?A.price(state.m,me(),id):c.cost,afford=state.m.players[me()].focus>=cost;
-return `<button class="tactcard s-${c.suit}${active?' active':''}" data-act="card" data-id="${id}" ${!afford?'disabled':''} aria-label="${esc(c.name)}: ${esc(c.text)}">
-<span class="tc-top"><span>${S[c.suit]} ${c.rarity.toUpperCase()}</span><span class="tc-cost">${cost}</span></span>
-<span class="tc-art"><span class="sigil">${G[id]}</span></span><span class="tc-bottom"><strong>${esc(c.name)}</strong><small>${esc(c.kind)} · ${S[c.suit]} ${c.suit}</small></span></button>`;
+const c=A.CARDS[id],ch=CH[id],active=state.card===id,cost=state.m?A.price(state.m,me(),id):c.cost,afford=state.m.players[me()].focus>=cost;
+return `<div class="tactcard-wrap">
+<button type="button" class="tactcard s-${c.suit}${active?' active':''}" data-act="card" data-id="${id}" ${!afford?'disabled':''}
+ aria-pressed="${active}" aria-label="Play ${esc(ch.name)}: ${esc(c.name)}. ${esc(c.text)}">
+  <span class="tc-top"><span>${S[c.suit]} ${c.rarity.toUpperCase()}</span><span class="tc-cost">${cost}</span></span>
+  <span class="tc-art"><img src="${portrait(id)}" alt="" loading="lazy"><span class="tc-art-shine"></span></span>
+  <span class="tc-bottom"><strong>${esc(ch.name)}</strong><small>${esc(c.name)}</small></span>
+</button><button type="button" class="tactcard-inspect" data-act="inspect" data-id="${id}" aria-label="Inspect ${esc(ch.name)}">ⓘ <span>DETAILS</span></button>
+</div>`;
 }
 function game(){
 const m=state.m,i=m.next===-1?0:m.next,j=1-i,p=m.players[i],o=m.players[j],idx=state.chosen;
@@ -71,8 +84,14 @@ ${ability?`<div style="font-size:11px;color:#e9d3a6">ACTIVE: ${esc(ability.name)
 }
 function builder(){
 const deck=state.decks[state.editor],count={};deck.forEach(id=>count[id]=(count[id]||0)+1);
-const catalog=A.REGISTRY.map(c=>`<button class="builder-row" data-act="add" data-id="${c.id}" ${deck.length>=12||(count[c.id]||0)>=2?'disabled':''}><span class="suit-icon">${S[c.suit]}</span><strong>${esc(c.name)}</strong><small>${c.cost} Focus · ${esc(c.rarity)}<br>${esc(c.text)}</small></button>`).join('');
-const future=(globalThis.ArenaExpansion||[]).map(c=>`<button class="builder-row preview" disabled><span class="suit-icon">${S[c.suit]}</span><strong>${esc(c.name)} · FUTURE</strong><small>${c.cost} Focus · ${esc(c.rarity)}<br>${esc(c.text)}</small></button>`).join('');
+const catalog=A.REGISTRY.map(c=>{
+const ch=CH[c.id];return `<div class="builder-item"><button class="builder-row" data-act="add" data-id="${c.id}" ${deck.length>=12||(count[c.id]||0)>=2?'disabled':''}>
+<img class="builder-portrait" src="${portrait(c.id)}" alt="" loading="lazy"><span class="builder-copy"><strong>${esc(ch.name)}</strong><small>${esc(ch.title)} · ${c.cost} Focus</small><small>${esc(c.name)} · ${esc(c.text)}</small></span></button>
+<button type="button" class="builder-inspect" data-act="inspect" data-id="${c.id}">VIEW CHARACTER ↗</button></div>`;}).join('');
+const future=(globalThis.ArenaExpansion||[]).map(c=>{
+const ch=CH[c.id];return `<div class="builder-item preview"><button class="builder-row preview" disabled>
+<img class="builder-portrait" src="${portrait(c.id)}" alt="" loading="lazy"><span class="builder-copy"><strong>${esc(ch.name)} · PREVIEW</strong><small>${esc(ch.title)} · ${c.cost} Focus</small><small>${esc(c.name)} · NOT PLAYABLE YET</small></span></button>
+<button type="button" class="builder-inspect" data-act="inspect" data-id="${c.id}">VIEW CONCEPT ↗</button></div>`;}).join('');
 const chosen=Object.entries(count).map(([id,n])=>`<div class="deck-row"><span>${S[A.CARDS[id].suit]} ${esc(A.CARDS[id].name)} ×${n}</span><button data-act="remove" data-id="${id}" aria-label="Remove ${esc(A.CARDS[id].name)}">−</button></div>`).join('');
 const invalid=A.validateDeck(deck);
 return `<div class="modal" role="dialog" aria-modal="true" aria-label="Tactical deck builder"><div class="builder-top"><div><div class="overline">THE COLLECTION VAULT · FAIR ACCESS</div><h2 style="margin-bottom:7px">THE DECK FORGE</h2></div><button class="button" data-act="close">CLOSE ✕</button></div>
@@ -81,8 +100,21 @@ return `<div class="modal" role="dialog" aria-modal="true" aria-label="Tactical 
 <div class="valid-message">${deck.length}/12 CARDS · ${esc(invalid||'VALID DECK · MAX 2 COPIES PER CARD')}</div>
 <button class="cta" data-act="save" ${invalid?'disabled':''}>SAVE DECK ✦</button></div>`;
 }
+function inspectModal(){
+ const id=state.inspect,ch=CH[id],c=A.CARDS[id]||globalThis.ArenaExpansion.find(x=>x.id===id);
+ if(!ch||!c)return '<div class="modal">Character unavailable.</div>';
+ const live=!!A.CARDS[id],suit=S[ch.suit];
+ return `<div class="modal inspect-modal s-${ch.suit}" role="dialog" aria-modal="true" aria-label="Character details">
+  <div class="inspect-layout"><div class="inspect-visual"><img src="${portrait(id)}" alt="${esc(ch.name)}, ${esc(ch.title)}"><span class="inspect-rarity">${suit} ${esc(c.rarity.toUpperCase())} · ${live?'ARENA READY':'EXPANSION PREVIEW'}</span></div>
+  <div class="inspect-copy"><div class="overline">${esc(FACTIONS[ch.suit].name)} · ${esc(FACTIONS[ch.suit].description)}</div>
+  <h2>${esc(ch.name)}</h2><h3>${esc(ch.title)}</h3><blockquote>“${esc(ch.lore)}”</blockquote>
+  <div class="inspect-ability"><div class="section-label">TACTICAL ABILITY</div><strong>${esc(c.name)} <span class="inspect-cost">✦ ${c.cost}</span></strong>
+  <p>${esc(c.text)}</p><small>${live?'PLAYABLE · 12-CARD DECK':'CONCEPT ONLY · CANNOT ENTER DECKS'}</small></div>
+  <button type="button" class="cta" data-act="close-inspect">RETURN TO ${state.returnOverlay==='builder'?'COLLECTION':'ARENA'}</button></div></div>
+ </div>`;
+}
 function modalView(){
-const m=state.m,k=state.overlay;if(!k)return '';if(k==='builder')return builder();
+const m=state.m,k=state.overlay;if(!k)return '';if(k==='inspect')return inspectModal();if(k==='builder')return builder();
 if(k==='pass')return `<div class="modal" role="dialog" aria-modal="true" style="max-width:540px;text-align:center"><div class="overline">DECISION LOCKED & SEALED</div><h2>PASS THE TABLE.</h2><p>Player 1 has committed a hidden decision. Hand the device to Player 2 without revealing the tactical hand.</p><button class="cta" data-act="ready">PLAYER 2 IS READY →</button></div>`;
 if(k==='sudden')return `<div class="modal" role="dialog" aria-modal="true" style="max-width:570px;text-align:center"><div class="overline">A DRAW AFTER REGULATION</div><h2>SUDDEN DEATH.</h2><p>Three new dealer draws. Equal fresh battlegrounds. No collectible abilities. If the game remains tied, a draw is declared.</p><button class="cta" data-act="sudden">BEGIN SUDDEN DEATH →</button></div>`;
 const ev=m.last;if(!ev)return '';
@@ -95,11 +127,18 @@ return `<div class="modal" role="dialog" aria-modal="true"><div class="overline"
 }
 return `<div class="modal" role="dialog" aria-modal="true"><div class="overline">SHARED DEALER · ${ev.round.toUpperCase()} DRAW ${ev.turn}</div><h2>THE CARD REVEALS.</h2><img class="dealer-large" alt="Dealer ${A.cardCode(ev.draw)}" src="${image(ev.draw)}"><div class="results-grid">${playerResults}</div><button class="cta" data-act="continue">CONTINUE →</button></div>`;
 }
-function render(){screen.innerHTML=state.scene==='lobby'?lobby():game();overlay.innerHTML=modalView();}
+function render(){
+ const sealed=['pass','reveal','finish','sudden'].includes(state.overlay);
+ screen.innerHTML=state.scene==='lobby'?lobby():sealed?
+ '<section class="sealed-table"><span>✥</span><h2>THE TABLE IS SEALED</h2><p>Decisions and tactical hands are hidden during handoffs and reveals.</p></section>':game();
+ overlay.innerHTML=modalView();
+}
 function start(){const invalid=state.decks.map(A.validateDeck).filter(Boolean);if(invalid.length){state.error=invalid[0];alert(state.error);return;}state.m=A.createMatch({decks:state.decks.map(x=>x.slice())});state.scene='game';state.overlay=null;reset();render();}
 document.addEventListener('click',event=>{
 const b=event.target.closest('[data-act]');if(!b)return;const x=b.dataset.act,id=b.dataset.id,i=Number(b.dataset.idx),m=state.m;
 if(x==='builder'){state.editor=Number(b.dataset.player);state.overlay='builder';}
+if(x==='inspect'){state.inspect=id;state.returnOverlay=state.overlay;state.overlay='inspect';}
+if(x==='close-inspect'){state.overlay=state.returnOverlay||null;state.inspect=null;state.returnOverlay=null;}
 if(x==='close')state.overlay=null;
 if(x==='add'){const d=state.decks[state.editor];if(d.length<12&&d.filter(k=>k===id).length<2)d.push(id);}
 if(x==='remove'){const d=state.decks[state.editor],idx=d.indexOf(id);if(idx>=0)d.splice(idx,1);}
