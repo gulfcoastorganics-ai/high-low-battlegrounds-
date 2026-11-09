@@ -28,16 +28,34 @@ try:
                         raise
                     time.sleep(0.3)
             page.get_by_text("READ THE ODDS.").wait_for()
+            assert page.locator(".hero-character img").count() == 4
+            assert page.evaluate("Object.keys(window.ArenaCharacters.byId).length") == 24
+            page.locator('.hero-character[data-id="precision"]').click()
+            page.get_by_text("The Glass-Eyed Marshal").wait_for()
+            assert page.locator(".inspect-visual img").count() == 1
+            assert page.locator(".inspect-visual img").evaluate("(img) => img.complete && img.naturalWidth > 0")
+            page.locator('[data-act="close-inspect"]').click()
             if width == 390:
                 page.locator('[data-act="builder"][data-player="0"]').click()
                 page.get_by_text("THE DECK FORGE").wait_for()
                 assert page.locator(".builder-collection .builder-row").count() == 24
+                assert page.locator(".builder-portrait").count() == 24
+                page.locator('.builder-inspect[data-id="heartward"]').click()
+                page.get_by_text("The Scarlet Bastion").wait_for()
+                page.locator('[data-act="close-inspect"]').click()
+                assert page.get_by_text("THE DECK FORGE").count() == 1
                 page.locator('[data-act="close"]').click()
             page.locator('[data-act="start"]').click()
+            assert page.locator(".tactcard .tc-art img").count() >= 3
+            page.locator(".tactcard-inspect").first.click()
+            assert page.locator(".inspect-modal").count() == 1
+            page.locator('[data-act="close-inspect"]').click()
             page.locator(".war-panel.player .play-tile.eligible").first.click()
             page.locator('[data-act="guess"][data-value="HIGHER"]').click()
             page.locator('[data-act="lock"]').click()
             page.get_by_text("PASS THE TABLE.").wait_for()
+            assert page.locator(".tactcard").count() == 0
+            assert page.get_by_text("THE TABLE IS SEALED").count() == 1
             assert page.evaluate("window.ArenaApp.getState().m.last === null")
             page.locator('[data-act="ready"]').click()
             page.locator(".war-panel.player .play-tile.eligible").first.click()
