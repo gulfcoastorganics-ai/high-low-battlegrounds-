@@ -1,0 +1,24 @@
+/* SOLO ARENA — premium CPU entry and mode-specific HUD, additive to V4 */
+.hero-cta-row{gap:10px;flex-wrap:wrap}
+.hero-cta-row .cpu-play{background:linear-gradient(135deg,#ffedc2,#d8aa5d 72%,#a8783f);color:#12281f;min-width:175px;letter-spacing:1.15px}
+.hero-cta-row .local-play{font-weight:900;letter-spacing:1px;font-size:11px;min-width:175px;min-height:49px;border-color:#d3b780}
+.hero-cta-row .hero-classic{min-width:120px;justify-content:center}
+.cpu-setup{max-width:870px;margin:16px auto 5px;display:grid;grid-template-columns:auto minmax(160px,215px) minmax(0,1fr);align-items:center;gap:12px;background:linear-gradient(100deg,#12392abf,#081e18a8);border:1px solid #d4ab6875;box-shadow:inset 0 1px #f7d39327,0 12px 24px #0004;border-radius:11px;padding:11px 18px}
+.cpu-setup .section-label{white-space:nowrap}
+.cpu-setup select.selector{margin:0;min-height:40px;padding:8px 11px;border-color:#d9b77f;background:#04150f;color:#f6deb4}
+.cpu-setup p{font-size:10px;line-height:1.7;margin:0;color:#b5d2c2}
+.cpu-setup p b{color:#e5c990}
+.roundlabel strong{overflow-wrap:anywhere}
+@media(max-width:760px){
+ .hero-cta-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+ .hero-cta-row .cpu-play,.hero-cta-row .local-play{min-width:0;min-height:48px;padding:10px 8px;font-size:11px}
+ .hero-cta-row .hero-classic{grid-column:1/-1;min-width:0;min-height:34px;padding:8px 12px}
+ .cpu-setup{grid-template-columns:minmax(0,1fr) minmax(130px,1fr);gap:8px;padding:12px}
+ .cpu-setup p{grid-column:1/-1;font-size:10px}
+ .roundlabel strong{font-size:12px}
+}
+@media(max-width:365px){
+ .hero-cta-row .cpu-play,.hero-cta-row .local-play{font-size:10px;letter-spacing:.3px}
+ .cpu-setup{grid-template-columns:1fr}
+ .cpu-setup p{grid-column:1}
+}
