@@ -18,7 +18,7 @@ A premium self-contained HTML5 higher/lower card battleground, with an Android a
 The included [Android GitHub Actions workflow](./.github/workflows/android-build.yml) copies the latest root index.html into Android assets and builds a test debug APK. The native Android shell remains a source project until a cloud build succeeds; **a verified installable APK is not yet confirmed**.
 
 1. Open **Actions → Build HIGH LOW Android APK → Run workflow**.
-2. When the run finishes successfully, download the `Battleground-V4-Android-APK` artifact; despite the artifact's older label, its bundled game comes from the current root index.html.
+2. When the run finishes successfully, download the `Battleground-V5-Android-APK` artifact; its bundled game comes from the current root index.html.
 3. Unzip and install `app-debug.apk` on an Android device to test.
 
 ## Multiplayer caveat
