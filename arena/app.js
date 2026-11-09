@@ -1,0 +1,135 @@
+(function arenaApp(){
+'use strict';
+const A=globalThis.ArenaEngine,S={S:'♠',H:'♥',D:'♦',C:'♣'},G={precision:'✥',survey:'◉',reckoning:'⌖',heartward:'♥',secondwind:'❧',steady:'✧',reserve:'◆',exchange:'⟡',investment:'✦',crosswind:'✣',irongrip:'⚒',rooted:'♣'};
+const screen=document.getElementById('screen'),overlay=document.getElementById('overlay');
+const state={scene:'lobby',overlay:null,m:null,decks:[A.STARTERS.balanced.slice(),A.STARTERS.balanced.slice()],editor:0,chosen:null,guess:null,card:null,target:null,error:''};
+try{const d=JSON.parse(localStorage.getItem('hl-arena-decks-v1')||'null');if(Array.isArray(d)&&d.length===2&&d.every(x=>!A.validateDeck(x)))state.decks=d;}catch(_){}
+const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const image=id=>'../assets/cards/'+A.cardCode(id)+'.svg',pct=(n,d)=>d?Math.round(n/d*100):0,me=()=>state.m?.next??0;
+const reset=()=>{state.chosen=null;state.guess=null;state.card=null;state.target=null;state.error='';};
+function starterName(deck){return Object.keys(A.STARTERS).find(n=>JSON.stringify(deck)===JSON.stringify(A.STARTERS[n]))||'custom';}
+function lobby(){
+const panel=i=>`<article class="panel panel-glow">
+ <div class="player-ident"><span class="portrait">${i+1}</span><div><div class="section-label">CONTENDER 0${i+1}</div><h3 class="panel-title" style="margin:4px 0">PLAYER ${i+1}</h3></div></div>
+ <label class="section-label">TACTICAL LOADOUT</label>
+ <select class="selector" data-change="preset" data-player="${i}">
+ ${['balanced','guardian','tactician','custom'].map(n=>`<option value="${n}" ${starterName(state.decks[i])===n?'selected':''}>${n==='balanced'?'Balanced · all four factions':n==='guardian'?'Guardian · protect territory':n==='tactician'?'Tactician · pressure & precision':'Custom loadout'}</option>`).join('')}
+ </select><div class="deck-preview">${Array.from({length:5},()=>'<span class="mini-back"></span>').join('')}</div>
+ <p class="fineprint">${state.decks[i].length}/12 cards · ${esc(A.validateDeck(state.decks[i])||'Arena-ready loadout')}</p>
+ <button class="button" style="width:100%;margin-top:12px" data-act="builder" data-player="${i}">DECK BUILDER / COLLECTION</button></article>`;
+return `<section class="page-title"><div class="overline">♠ &nbsp; ♥ &nbsp; THE COMPETITIVE TABLE &nbsp; ♦ &nbsp; ♣</div>
+ <h2>READ THE ODDS.<br><em>RULE THE ARENA.</em></h2>
+ <p>Two rivals. One shared dealer. Sixteen territories each. Predict higher or lower, deploy tactical cards, and survive eighteen draws.</p></section>
+ <section class="lobby-grid">${panel(0)}${panel(1)}</section>
+ <section class="rules-strip"><div class="rule"><b>01 &nbsp; THE COMMON DRAW</b><span>Each player faces the same dealer sequence, but your battlegrounds evolve independently.</span></div>
+ <div class="rule"><b>02 &nbsp; TERRITORY IS LIFE</b><span>Incorrect guesses and ties burn spaces. Use defense to survive.</span></div>
+ <div class="rule"><b>03 &nbsp; STRATEGIC FOCUS</b><span>Collect Focus each turn and spend it on powerful tactical abilities.</span></div></section>
+ <div class="lobby-actions"><button class="cta" data-act="start">ENTER LOCAL PVP ARENA ✦</button><a class="ghost-button" style="display:grid;place-items:center" href="../index.html">PLAY ORIGINAL CLASSIC V8 ↗</a></div>
+ <p class="fineprint">Local hotseat: pass the device between locked decisions. Online ranked PvP is not active.</p>`;
+}
+function tileGrid(m,index,ours){
+const p=m.players[index],isActive=ours&&m.phase==='commit',offer=A.offer(m,index,ours?state.card:null,ours?state.target:null);
+const enemyTarget=!ours&&state.card==='crosswind'&&m.phase==='commit';
+const tiles=p.board.map((c,i)=>{
+const available=ours&&isActive&&offer.includes(i),canClick=c.alive&&(ours?(isActive&&(available||state.card==='secondwind')):enemyTarget);
+const selected=ours?state.chosen===i:enemyTarget&&state.target===i;
+const cls=['play-tile',!c.alive?'burned':'',available?'eligible':'',selected?'selected':'',c.alive&&c.restUntil>=m.turn?'fatigued':'',c.alive&&p.blocked?.turn===m.turn&&p.blocked.idx===i?'targeted':''].filter(Boolean).join(' ');
+return `<button type="button" class="${cls}" ${canClick?`data-act="${ours?'own':'enemy'}" data-idx="${i}"`:'disabled'} aria-label="Position ${i+1}${c.alive?' '+A.cardCode(c.card):' burned'}">${c.alive?`<img src="${image(c.card)}" alt="" loading="lazy">`:''}</button>`;
+}).join('');
+return `<section class="war-panel ${ours?'player active':'enemy'}"><div class="war-label">${ours?'YOUR BATTLEGROUND':'OPPONENT TERRITORY'}<small>${ours?'SELECT YOUR TARGET':enemyTarget?'SELECT DISRUPTION TARGET':'EACH BOARD IS INDEPENDENT'}</small></div>
+<div class="card-grid">${tiles}</div><div class="war-metrics"><span>LIVE <b>${A.remaining(p)}/16</b></span><span>CORRECT <b>${p.hits}</b></span><span>FOCUS <b>${m.round==='sudden'?'—':p.focus}</b></span></div></section>`;
+}
+function tactical(id){
+const c=A.CARDS[id],active=state.card===id,cost=state.m?A.price(state.m,me(),id):c.cost,afford=state.m.players[me()].focus>=cost;
+return `<button class="tactcard s-${c.suit}${active?' active':''}" data-act="card" data-id="${id}" ${!afford?'disabled':''} aria-label="${esc(c.name)}: ${esc(c.text)}">
+<span class="tc-top"><span>${S[c.suit]} ${c.rarity.toUpperCase()}</span><span class="tc-cost">${cost}</span></span>
+<span class="tc-art"><span class="sigil">${G[id]}</span></span><span class="tc-bottom"><strong>${esc(c.name)}</strong><small>${esc(c.kind)} · ${S[c.suit]} ${c.suit}</small></span></button>`;
+}
+function game(){
+const m=state.m,i=m.next===-1?0:m.next,j=1-i,p=m.players[i],o=m.players[j],idx=state.chosen;
+const cell=idx!=null?p.board[idx]:null,od=cell?.alive?A.knownOdds(m,cell.card):null;
+const odds=(name,key,color)=>`<div class="prob-col"><b>${od?pct(od[key],od.total):'—'}%</b>${name}<div class="meter"><i style="width:${od?pct(od[key],od.total):0}%;background:${color}"></i></div></div>`;
+const a={idx,guess:state.guess,cardId:state.card,cardTarget:state.target};
+const valid=m.phase==='commit'&&idx!=null&&state.guess&&!A.inspectMove(m,i,a);
+const ability=state.card?A.CARDS[state.card]:null;
+const hint=state.error||(ability?(ability.target==='enemy'&&state.target==null?'Choose a living enemy target first.':ability.text):'Tactical cards are optional. Choose a gold-lit position and then HIGHER or LOWER.');
+return `<section class="matchhead"><div class="score-head enemy"><div><small>CONTENDER 0${j+1}</small><b>${esc(o.name)}</b></div><span class="score">${A.remaining(o)}</span></div>
+<div class="roundlabel"><strong>${m.round==='sudden'?'SUDDEN DEATH':'ARENA DUEL'}</strong><span>DRAW ${String(m.turn).padStart(2,'0')} / ${m.maxTurns}</span></div>
+<div class="score-head"><span class="score">${A.remaining(p)}</span><div><small>NOW DECIDING</small><b>${esc(p.name)}</b></div></div></section>
+<section class="arena-stage">${tileGrid(m,j,false)}
+<div class="dealer-panel"><div class="overline">THE SHARED DEALER</div><div class="dealer-title">THE NEXT CARD</div><div class="dealer-stage"><div class="shoe"></div></div>
+<p class="muted">Both decisions lock before the dealer card is revealed. Nothing previews the hidden draw.</p><span class="counter">DRAW ${m.turn} · 52 CARD DECK</span></div>
+${tileGrid(m,i,true)}</section>
+<section class="action-dock"><div class="decision"><div class="label">PROBABILITY INTELLIGENCE</div><div class="selected-summary">${cell?.alive?`TARGET ${idx+1} · ${A.cardCode(cell.card)} · RANK ${A.rank(cell.card)}`:'Choose a gold-highlighted position to calculate public odds.'}</div>
+<div class="prob-line">${odds('LOWER','lower','#e28f76')}${odds('HIGHER','higher','#8edcaa')}${odds('TIE / LOSS','tie','#ad9198')}</div></div>
+<div class="decision play-controls"><button class="guess-btn low${state.guess==='LOWER'?' active':''}" data-act="guess" data-value="LOWER">▼ LOWER</button>
+<button class="guess-btn high${state.guess==='HIGHER'?' active':''}" data-act="guess" data-value="HIGHER">▲ HIGHER</button>
+<button class="cta" data-act="lock" ${valid?'':'disabled'}>LOCK DECISION →</button><div class="action-hint">${esc(hint)}</div></div></section>
+<section class="hand-shell"><div class="hand-header"><div><div class="section-label">THE TACTICAL HAND</div><b>${esc(p.name)} · ${p.hand.length} IN HAND</b></div><div class="focus"><i>✦</i> FOCUS ${m.round==='sudden'?'—':p.focus}/5</div></div>
+<div class="hand-cards">${m.round==='sudden'?'Sudden death is standard-card only.':p.hand.length?p.hand.map(tactical).join(''):'Your tactical hand is empty. Continue predicting with standard cards.'}</div>
+${ability?`<div style="font-size:11px;color:#e9d3a6">ACTIVE: ${esc(ability.name)} · ${esc(ability.text)} <button class="button" style="padding:6px 10px;margin-left:8px" data-act="clear">CANCEL</button></div>`:''}</section>`;
+}
+function builder(){
+const deck=state.decks[state.editor],count={};deck.forEach(id=>count[id]=(count[id]||0)+1);
+const catalog=A.REGISTRY.map(c=>`<button class="builder-row" data-act="add" data-id="${c.id}" ${deck.length>=12||(count[c.id]||0)>=2?'disabled':''}><span class="suit-icon">${S[c.suit]}</span><strong>${esc(c.name)}</strong><small>${c.cost} Focus · ${esc(c.rarity)}<br>${esc(c.text)}</small></button>`).join('');
+const future=(globalThis.ArenaExpansion||[]).map(c=>`<button class="builder-row preview" disabled><span class="suit-icon">${S[c.suit]}</span><strong>${esc(c.name)} · FUTURE</strong><small>${c.cost} Focus · ${esc(c.rarity)}<br>${esc(c.text)}</small></button>`).join('');
+const chosen=Object.entries(count).map(([id,n])=>`<div class="deck-row"><span>${S[A.CARDS[id].suit]} ${esc(A.CARDS[id].name)} ×${n}</span><button data-act="remove" data-id="${id}" aria-label="Remove ${esc(A.CARDS[id].name)}">−</button></div>`).join('');
+const invalid=A.validateDeck(deck);
+return `<div class="modal" role="dialog" aria-modal="true" aria-label="Tactical deck builder"><div class="builder-top"><div><div class="overline">THE COLLECTION VAULT · FAIR ACCESS</div><h2 style="margin-bottom:7px">THE DECK FORGE</h2></div><button class="button" data-act="close">CLOSE ✕</button></div>
+<label class="section-label">STARTER RECIPE</label><select class="selector" data-change="starter"><option value="custom">Choose a starter…</option><option value="balanced">Balanced</option><option value="guardian">Guardian</option><option value="tactician">Tactician</option></select>
+<div class="builder-layout"><div><h3 class="section-label">12 PLAYABLE · 12 EXPANSION PREVIEWS</h3><div class="builder-collection">${catalog+future}</div></div><div><h3 class="section-label">PLAYER ${state.editor+1} · SELECTED DECK</h3><div class="builder-picked">${chosen||'<p>Choose cards from the collection.</p>'}</div></div></div>
+<div class="valid-message">${deck.length}/12 CARDS · ${esc(invalid||'VALID DECK · MAX 2 COPIES PER CARD')}</div>
+<button class="cta" data-act="save" ${invalid?'disabled':''}>SAVE DECK ✦</button></div>`;
+}
+function modalView(){
+const m=state.m,k=state.overlay;if(!k)return '';if(k==='builder')return builder();
+if(k==='pass')return `<div class="modal" role="dialog" aria-modal="true" style="max-width:540px;text-align:center"><div class="overline">DECISION LOCKED & SEALED</div><h2>PASS THE TABLE.</h2><p>Player 1 has committed a hidden decision. Hand the device to Player 2 without revealing the tactical hand.</p><button class="cta" data-act="ready">PLAYER 2 IS READY →</button></div>`;
+if(k==='sudden')return `<div class="modal" role="dialog" aria-modal="true" style="max-width:570px;text-align:center"><div class="overline">A DRAW AFTER REGULATION</div><h2>SUDDEN DEATH.</h2><p>Three new dealer draws. Equal fresh battlegrounds. No collectible abilities. If the game remains tied, a draw is declared.</p><button class="cta" data-act="sudden">BEGIN SUDDEN DEATH →</button></div>`;
+const ev=m.last;if(!ev)return '';
+const playerResults=ev.detail.map((d,i)=>`<div class="outcome ${d.ok?'win':d.shield?'':'lose'}"><strong>PLAYER ${i+1} · ${d.ok?'CORRECT':d.shield?'PROTECTED':'BURNED'}</strong><small>Target ${d.idx+1}: ${A.cardCode(d.reference)}<br>${d.guess} → ${A.cardCode(d.draw)}${d.tie?' · TIED RANK':''}</small><small>${d.cardId?esc(A.CARDS[d.cardId].name):'No tactical card'} · ${d.remaining} survivors</small></div>`).join('');
+if(k==='finish'){
+const r=m.result,title=r.winner===null?'MATCH DRAW':'PLAYER '+(r.winner+1)+' WINS';
+return `<div class="modal" role="dialog" aria-modal="true"><div class="overline">✦ THE FINAL VERDICT ✦</div><h2>${title}</h2><p>${r.winner===null?'Even sudden death could not separate the contenders.':'Territory preservation decides the victor.'}</p>
+<img class="dealer-large" alt="Final dealer card" src="${image(ev.draw)}"><div class="results-grid">${r.scores.map((p,i)=>`<div class="outcome ${r.winner===i?'win':''}"><strong>PLAYER ${i+1}</strong><small>${p.survivors} live · ${p.hits} correct · ${p.burns} burned</small></div>`).join('')}</div>
+<button class="cta" data-act="rematch">REMATCH / NEW SHUFFLE</button><button class="button" style="width:100%;margin-top:13px" data-act="lobby">RETURN TO DECK HALL</button></div>`;
+}
+return `<div class="modal" role="dialog" aria-modal="true"><div class="overline">SHARED DEALER · ${ev.round.toUpperCase()} DRAW ${ev.turn}</div><h2>THE CARD REVEALS.</h2><img class="dealer-large" alt="Dealer ${A.cardCode(ev.draw)}" src="${image(ev.draw)}"><div class="results-grid">${playerResults}</div><button class="cta" data-act="continue">CONTINUE →</button></div>`;
+}
+function render(){screen.innerHTML=state.scene==='lobby'?lobby():game();overlay.innerHTML=modalView();}
+function start(){const invalid=state.decks.map(A.validateDeck).filter(Boolean);if(invalid.length){state.error=invalid[0];alert(state.error);return;}state.m=A.createMatch({decks:state.decks.map(x=>x.slice())});state.scene='game';state.overlay=null;reset();render();}
+document.addEventListener('click',event=>{
+const b=event.target.closest('[data-act]');if(!b)return;const x=b.dataset.act,id=b.dataset.id,i=Number(b.dataset.idx),m=state.m;
+if(x==='builder'){state.editor=Number(b.dataset.player);state.overlay='builder';}
+if(x==='close')state.overlay=null;
+if(x==='add'){const d=state.decks[state.editor];if(d.length<12&&d.filter(k=>k===id).length<2)d.push(id);}
+if(x==='remove'){const d=state.decks[state.editor],idx=d.indexOf(id);if(idx>=0)d.splice(idx,1);}
+if(x==='save'&&!A.validateDeck(state.decks[state.editor])){try{localStorage.setItem('hl-arena-decks-v1',JSON.stringify(state.decks));}catch(_){}state.overlay=null;}
+if(x==='start'||x==='rematch'){start();return;}
+if(x==='lobby'){state.scene='lobby';state.overlay=null;state.m=null;reset();}
+if(x==='ready'){state.overlay=null;reset();}
+if(x==='sudden'){A.continueSuddenDeath(m);state.overlay=null;reset();}
+if(x==='continue'){state.overlay=m.phase==='intermission'?'sudden':null;reset();}
+if(x==='card'){state.card=state.card===id?null:id;state.chosen=null;state.target=null;state.error='';}
+if(x==='clear'){state.card=null;state.target=null;state.chosen=null;}
+if(x==='enemy'&&state.card==='crosswind'&&m.players[1-me()].board[i]?.alive)state.target=i;
+if(x==='own'){
+ if(state.card==='secondwind')state.target=i;
+ if(A.offer(m,me(),state.card,state.target).includes(i)){state.chosen=i;state.error='';if(['heartward','steady','rooted','secondwind'].includes(state.card))state.target=i;}
+ else state.error="That position is resting or outside the current offer.";
+}
+if(x==='guess')state.guess=b.dataset.value;
+if(x==='lock'){
+ const n=me(),move={idx:state.chosen,guess:state.guess,cardId:state.card,cardTarget:state.target},err=A.inspectMove(m,n,move);
+ if(err)state.error=err;else{A.commit(m,n,move);reset();state.overlay=m.next===1?'pass':m.phase==='finished'?'finish':'reveal';}
+}
+render();
+});
+document.addEventListener('change',event=>{
+const b=event.target.closest('[data-change]');if(!b)return;
+if(b.dataset.change==='preset'&&A.STARTERS[b.value])state.decks[Number(b.dataset.player)]=A.STARTERS[b.value].slice();
+if(b.dataset.change==='starter'&&A.STARTERS[b.value])state.decks[state.editor]=A.STARTERS[b.value].slice();
+render();
+});
+globalThis.ArenaApp={getState:()=>state,render};
+render();
+})();
