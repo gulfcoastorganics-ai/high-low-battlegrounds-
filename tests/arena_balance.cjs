@@ -34,10 +34,12 @@ for(let i=0;i<GAMES;i++){
  while(m.phase!=='finished'){
    if(++guard>24)throw Error('Game never finished (guard)');
    if(m.phase==='intermission'){A.continueSuddenDeath(m);continue;}
-   const a=bot(m,0),b=bot(m,1);
+   const a=bot(m,0);
+   A.commit(m,0,a);
+   const b=bot(m,1);
    if(a.cardId)totals.cards[a.cardId]=(totals.cards[a.cardId]||0)+1;
    if(b.cardId)totals.cards[b.cardId]=(totals.cards[b.cardId]||0)+1;
-   A.commit(m,0,a);A.commit(m,1,b);
+   A.commit(m,1,b);
  }
  totals.games++;totals.rounds+=m.history.length;
  for(let j=0;j<2;j++){totals.hits[j]+=m.players[j].hits;totals.burns[j]+=m.players[j].burns;}
