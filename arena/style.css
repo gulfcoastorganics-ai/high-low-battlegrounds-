@@ -102,3 +102,11 @@ h2,h3,h4,p{margin-top:0}.page-title{text-align:center;margin:40px auto 26px;max-
  .hand-cards{gap:7px}
 }
 @media(prefers-reduced-motion:reduce){.tactcard-wrap .tc-art-shine{display:none}}
+
+@media(max-width:420px){
+  .topbar{flex-wrap:wrap}
+  .toplinks{width:100%;justify-content:flex-end}
+  .footnote{flex-wrap:wrap;justify-content:center;text-align:center}
+  .showcase-heading{align-items:start}
+  .showcase-heading>span{max-width:98px;text-align:right}
+}
