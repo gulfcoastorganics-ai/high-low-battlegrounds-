@@ -1,4 +1,7 @@
-# HIGH / LOW: BATTLEGROUNDS — Arena Phase 1
+# HIGH / LOW: BATTLEGROUNDS — Arena Phase 1 + Original Character Overhaul
+
+**Character art update:** The character-overhaul branch adds 24 original SVG portraits, character identities and lore, enlarged illustrated tactical cards, an inspectable collection and improved privacy handoff. Twelve abilities remain playable and twelve additional cards are clearly labeled previews. The original standard card deck and Classic Mode remain unchanged. See [the full source audit](CHARACTER_AUDIT.md).
+
 
 This is a **playable local PvP vertical slice**, developed separately from the existing V8 AURUM ELITE game.
 

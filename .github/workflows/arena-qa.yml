@@ -1,9 +1,9 @@
 name: Arena Phase 1 QA
 on:
   push:
-    branches: [ccg-pvp-battlegrounds]
+    branches: [ccg-pvp-battlegrounds, arena-character-overhaul]
   pull_request:
-    branches: [v8-aurum-elite]
+    branches: [v8-aurum-elite, ccg-pvp-battlegrounds]
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,8 +19,9 @@ jobs:
         run: |
           node --check arena/engine.js
           node --check arena/app.js
+          node --check arena/characters.js
       - name: Verify original V8 and new Arena rules
-        run: node --test tests/core.test.cjs tests/v8-tactical.test.cjs tests/arena.test.cjs
+        run: node --test tests/core.test.cjs tests/v8-tactical.test.cjs tests/arena.test.cjs tests/characters.test.cjs
       - name: Simulate 100,000 complete Arena matches
         run: node tests/arena_balance.cjs --games 100000
   browser:
@@ -36,3 +37,5 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Arena mobile and desktop smoke checks
         run: python tests/arena_browser_check.py
+      - name: Original Classic browser regression checks
+        run: python tests/browser_checks.py

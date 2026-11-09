@@ -1,5 +1,16 @@
 # HIGH / LOW: BATTLEGROUND V8 — AURUM ELITE
 
+## ✦ NEW: ORIGINAL CARD CHARACTERS — ARENA OVERHAUL
+
+**[Play the updated character Arena](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-character-overhaul/arena/index.html)** · **[Read the full game audit](arena/CHARACTER_AUDIT.md)**
+
+The standalone `arena/` expansion now has 24 original illustrated SVG character portraits, named faction champions, lore, enlarged playable cards, card inspection, and a visually upgraded collection. **12 abilities are playable; 12 character concepts are still previews.** The original V8 game remains available and has a navigation link to Arena.
+
+The Android debug workflow now bundles standard playing-card assets as well as Arena assets. Local gameplay and browser checks are covered in automated tests. This is **not online-ranked production PvP**.
+
+---
+
+
 A polished, responsive HTML5 playing-card survival game with classic card art, cinematic dealer draws, and optional Tactical rules.
 
 ## Play in browser
