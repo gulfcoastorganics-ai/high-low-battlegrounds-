@@ -54,7 +54,7 @@ return `<section class="war-panel ${ours?'player active':'enemy'}"><div class="w
 function tactical(id){
 const c=A.CARDS[id],ch=CH[id],active=state.card===id,cost=state.m?A.price(state.m,me(),id):c.cost,afford=state.m.players[me()].focus>=cost;
 return `<div class="tactcard-wrap">
-<button type="button" class="tactcard s-${c.suit}${active?' active':''}" data-character="${id}" data-act="card" data-id="${id}" ${!afford?'disabled':''}
+<button type="button" class="tactcard s-${c.suit} rarity-${c.rarity}${active?' active':''}" data-character="${id}" data-act="card" data-id="${id}" ${!afford?'disabled':''}
  aria-pressed="${active}" aria-label="Play ${esc(ch.name)}: ${esc(c.name)}. ${esc(c.text)}">
   <span class="tc-top"><span>${S[c.suit]} ${c.rarity.toUpperCase()}</span><span class="tc-cost">${cost}</span></span>
   <span class="tc-art" data-character="${id}"><img src="${portrait(id)}" alt="" loading="lazy"><span class="tc-art-shine"></span></span>
