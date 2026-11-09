@@ -18,6 +18,7 @@ leaders.map(id=>{const ch=CH[id];return '<button type="button" class="hero-chara
 }
 function lobby(){
 const panel=i=>`<article class="panel panel-glow">
+ <img class="contender-portrait" src="${portrait(i===0?'precision':'heartward')}" alt="" aria-hidden="true" loading="lazy">
  <div class="player-ident"><span class="portrait">${i+1}</span><div><div class="section-label">CONTENDER 0${i+1}</div><h3 class="panel-title" style="margin:4px 0">PLAYER ${i+1}</h3></div></div>
  <label class="section-label">TACTICAL LOADOUT</label>
  <select class="selector" data-change="preset" data-player="${i}">
