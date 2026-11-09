@@ -46,7 +46,7 @@ with sync_playwright() as pw:
     p.locator('#h5-start').click()
     assert p.locator('.card3d.is-back').count()==9
     p.locator('[data-pos="0"]').click()
-    assert 'HIDDEN CARD' in p.locator('.odds').inner_text()
+    assert 'UNKNOWN RANK' in p.locator('.odds').first.inner_text()
     p.locator('[data-guess="LOWER"]:visible').first.click()
     assert p.locator('.compact-stats strong').first.inner_text().strip().startswith('1')
     assert not errors,errors
