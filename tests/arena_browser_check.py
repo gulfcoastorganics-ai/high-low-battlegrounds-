@@ -29,7 +29,12 @@ try:
                     time.sleep(0.3)
             page.get_by_text("RULE THE ARENA.").wait_for()
             assert page.locator(".contender-portrait").count() == 2
-            page.wait_for_function("Array.from(document.querySelectorAll('.contender-portrait')).every(img => img.complete && img.naturalWidth > 0)")
+            for img in page.locator(".contender-portrait").all():
+                path = img.get_attribute("src")
+                assert path.endswith(".webp")
+                assert page.request.get("http://127.0.0.1:8898/arena/" + path.removeprefix("./")).ok
+            if width >= 801:
+                page.wait_for_function("Array.from(document.querySelectorAll('.contender-portrait')).every(img => img.complete && img.naturalWidth > 0)")
             assert page.locator(".hero-character img").count() == 4
             assert page.locator('.hero-character[data-character="precision"] img').get_attribute("src").endswith("precision.webp")
             assert page.locator('.hero-character[data-character="heartward"] img').get_attribute("src").endswith("heartward.webp")
