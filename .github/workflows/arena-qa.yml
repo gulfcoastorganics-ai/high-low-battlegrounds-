@@ -1,9 +1,9 @@
 name: Arena Phase 1 QA
 on:
   push:
-    branches: [ccg-pvp-battlegrounds]
+    branches: [ccg-pvp-battlegrounds, arena-character-overhaul]
   pull_request:
-    branches: [v8-aurum-elite]
+    branches: [v8-aurum-elite, ccg-pvp-battlegrounds]
   workflow_dispatch:
 permissions:
   contents: read
