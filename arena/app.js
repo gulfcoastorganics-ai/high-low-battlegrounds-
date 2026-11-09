@@ -3,7 +3,8 @@
 const A=globalThis.ArenaEngine,S={S:'♠',H:'♥',D:'♦',C:'♣'},G={precision:'✥',survey:'◉',reckoning:'⌖',heartward:'♥',secondwind:'❧',steady:'✧',reserve:'◆',exchange:'⟡',investment:'✦',crosswind:'✣',irongrip:'⚒',rooted:'♣'};
 const screen=document.getElementById('screen'),overlay=document.getElementById('overlay');
 const CH=globalThis.ArenaCharacters.byId,FACTIONS=globalThis.ArenaCharacters.factions;
-const portrait=id=>CH[id]?.portrait||'./art/precision.svg';
+const PREMIUM_IDS=new Set(['precision','heartward','reserve','rooted']);
+const portrait=id=>PREMIUM_IDS.has(id)?'./art-premium/'+id+'.webp':CH[id]?.portrait||'./art/precision.svg';
 const state={scene:'lobby',overlay:null,m:null,decks:[A.STARTERS.balanced.slice(),A.STARTERS.balanced.slice()],editor:0,chosen:null,guess:null,card:null,target:null,error:''};
 try{const d=JSON.parse(localStorage.getItem('hl-arena-decks-v1')||'null');if(Array.isArray(d)&&d.length===2&&d.every(x=>!A.validateDeck(x)))state.decks=d;}catch(_){}
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
