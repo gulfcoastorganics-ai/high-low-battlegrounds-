@@ -1,7 +1,7 @@
 name: Arena Phase 1 QA
 on:
   push:
-    branches: [ccg-pvp-battlegrounds, arena-character-overhaul, arena-premium-character-v2]
+    branches: [ccg-pvp-battlegrounds, arena-character-overhaul, arena-premium-character-v2, arena-unified-art-v3]
   pull_request:
     branches: [v8-aurum-elite, ccg-pvp-battlegrounds]
   workflow_dispatch:
@@ -21,7 +21,7 @@ jobs:
           node --check arena/app.js
           node --check arena/characters.js
       - name: Verify original V8 and new Arena rules
-        run: node --test tests/core.test.cjs tests/v8-tactical.test.cjs tests/arena.test.cjs tests/characters.test.cjs
+        run: node --test tests/core.test.cjs tests/v8-tactical.test.cjs tests/arena.test.cjs tests/characters.test.cjs tests/premium_art_v3.test.cjs
       - name: Simulate 100,000 complete Arena matches
         run: node tests/arena_balance.cjs --games 100000
   browser:
