@@ -15,7 +15,7 @@ server = subprocess.Popen(
 try:
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        for width in (390, 1366):
+        for width in (320, 390, 768, 1366):
             page = browser.new_page(viewport={"width": width, "height": 850}, device_scale_factor=1)
             problems = []
             page.on("pageerror", lambda err: problems.append(str(err)))
@@ -68,7 +68,7 @@ try:
             assert page.locator(".war-panel.player .play-tile").count() == 16
             assert page.locator(".war-panel.enemy .play-tile").count() == 16
             assert not problems, problems
-            if width == 390:
+            if width in (320, 390):
                 horizontal = page.evaluate("document.documentElement.scrollWidth - window.innerWidth")
                 assert horizontal <= 2, "Mobile horizontal overflow: %s px" % horizontal
             print("PASS: Arena browser %spx" % width)
