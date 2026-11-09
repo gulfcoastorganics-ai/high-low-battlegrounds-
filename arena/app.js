@@ -36,8 +36,7 @@ return `<section class="page-title"><div class="overline">♠ &nbsp; ♥ &nbsp; 
  <section class="rules-strip"><div class="rule"><b>01 &nbsp; THE COMMON DRAW</b><span>Each player faces the same dealer sequence, but your battlegrounds evolve independently.</span></div>
  <div class="rule"><b>02 &nbsp; TERRITORY IS LIFE</b><span>Incorrect guesses and ties burn spaces. Use defense to survive.</span></div>
  <div class="rule"><b>03 &nbsp; STRATEGIC FOCUS</b><span>Collect Focus each turn and spend it on powerful tactical abilities.</span></div></section>
- <div class="lobby-actions"><button class="cta" data-act="start">ENTER LOCAL PVP ARENA ✦</button><a class="ghost-button" style="display:grid;place-items:center" href="../index.html">PLAY ORIGINAL CLASSIC V8 ↗</a></div>
- <p class="fineprint">Local hotseat: pass the device between locked decisions. Online ranked PvP is not active.</p>`;
+ <p class="fineprint" style="margin:17px auto 22px">Local hotseat: pass the device between locked decisions. Online ranked PvP is not active.</p>`;
 }
 function tileGrid(m,index,ours){
 const p=m.players[index],isActive=ours&&m.phase==='commit',offer=A.offer(m,index,ours?state.card:null,ours?state.target:null);
