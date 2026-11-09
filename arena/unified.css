@@ -1,0 +1,97 @@
+/* V3 — unified painted portraits + compact tactical arena.
+   Presentation only; does not alter the shared-dealer rules engine. */
+:root{--arena-v3-gold:#f1cd83;--arena-v3-ink:#061610;--arena-v3-ivory:#ffeed0}
+.arena-main-grid{max-width:1450px;margin:0 auto;min-width:0}
+.arena-main-grid .arena-stage{min-width:0}
+.play-tile:disabled{opacity:1;cursor:default}
+.play-tile.fatigued:not(.burned){opacity:.67}
+.play-tile.burned:disabled{opacity:.70}
+.war-panel.enemy .play-tile:not(.burned){filter:saturate(.87) brightness(.86)}
+.war-panel.enemy .play-tile:not(.burned):hover{filter:saturate(.98) brightness(.96)}
+.war-panel.player .play-tile:not(.burned):not(.eligible){filter:saturate(.83) brightness(.87)}
+.war-panel.player .play-tile.eligible{filter:none;z-index:1}
+.war-panel.player .play-tile.selected{filter:none;z-index:3}
+.war-panel .card-grid{padding:4px}
+.dealer-panel{position:relative;isolation:isolate;overflow:hidden;background:
+  radial-gradient(ellipse at 50% 38%,#2d5a3c9e,transparent 54%),
+  repeating-linear-gradient(45deg,#0b281f1d 0 8px,#172d221c 8px 14px),
+  linear-gradient(165deg,#092319,#04120e)}
+.dealer-panel::before{content:"";position:absolute;inset:8px;z-index:-1;border:1px solid #d9b77527;border-radius:10px;pointer-events:none}
+.dealer-panel .dealer-stage{height:205px;margin:2px 0 7px}
+.dealer-panel .dealer-stage::before{content:"";position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);width:176px;height:37px;border-radius:50%;
+  background:radial-gradient(ellipse,#f7d68a78,#ab7b3926 48%,transparent 75%);filter:blur(7px);pointer-events:none}
+.dealer-panel .dealer-stage::after{content:"";position:absolute;inset:13px 8px 13px;border:1px solid #dcc39024;border-radius:55%;transform:scaleX(.85);pointer-events:none}
+.dealer-panel .shoe{width:120px;height:167px;position:relative;transform:rotate(-5deg) translateY(-5px);z-index:2;
+ background:repeating-linear-gradient(43deg,#09392c 0 9px,#08281f 9px 17px);
+ border:5px double #f1cc87;box-shadow:0 0 0 3px #143222,0 19px 18px #000d,0 0 30px #dfbd7159}
+.dealer-panel .shoe::before{content:"";position:absolute;inset:12px;border:1px solid #f0d99d8a;border-radius:3px;
+ background:radial-gradient(circle at center,#a67a492b,transparent 70%);pointer-events:none}
+.dealer-panel .shoe::after{content:"♠";font:600 76px 'Cinzel',Georgia,serif;color:#f8d797;
+ text-shadow:0 1px #fff4d8,0 4px #594125,0 8px 11px #000b;
+ border:1px solid #f3d48d75;inset:25px 21px;display:grid;place-items:center}
+.dealer-panel .dealer-title{font-size:clamp(18px,2vw,25px);letter-spacing:.2px;margin:0;color:#ffe2a7}
+.dealer-panel .overline{line-height:1.6}
+.dealer-panel .muted{max-width:220px;margin:7px auto 13px;font-size:10px;color:#bacdbb}
+.dealer-panel .counter{color:#ffe1a6;border-color:#d7b06a6b;background:#071b13}
+.tactcard-wrap .tactcard .tc-art img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;filter:contrast(1.06) saturate(1.07)}
+.tactcard-wrap .tactcard .tc-art{background:#0b241c}
+.tactcard-wrap .tactcard .tc-art::after{background:linear-gradient(0deg,#020c0a98 0%,transparent 38%,#030f1224 68%,#03110faa 100%)}
+.tactcard-wrap .tactcard .tc-bottom{background:linear-gradient(175deg,#0c1d18 0%,#030d0a 100%);border-color:#f6d69e}
+.tactcard-wrap .tactcard .tc-bottom strong{font-size:13px}
+.tactcard-wrap .tactcard:disabled{opacity:.75;filter:grayscale(.1)}
+.tactcard-wrap .tactcard:not(:disabled):hover .tc-art img{transform:scale(1.035)}
+.tactcard-wrap .tactcard .tc-art img{transition:transform .24s ease}
+.tactcard-wrap .tactcard-inspect{font-size:10px;min-height:32px}
+.tactcard-wrap .tactcard .tc-top{font-size:9px;letter-spacing:.8px}
+.builder-item.preview .builder-portrait{filter:grayscale(1) brightness(.28) contrast(1.4)}
+.builder-item.preview .builder-row{background:linear-gradient(120deg,#0a211a,#050f0e)}
+.builder-item.preview .builder-portrait{box-shadow:inset 0 0 25px #000}
+.builder-item.preview .builder-inspect{color:#c6b68b}
+.hero-character img{object-position:center 20%}
+.hand-shell{background:radial-gradient(ellipse at 50% -12%,#27503a89,transparent 70%),linear-gradient(135deg,#061b14,#081e18);border-color:#e1bd7b80}
+.hand-header{padding-bottom:11px}
+@media(min-width:1220px){
+ .arena-main-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(278px,295px);align-items:stretch;gap:13px}
+ .arena-main-grid .arena-stage{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.78fr) minmax(0,1.09fr);gap:11px;margin:0;max-width:none}
+ .arena-main-grid .war-panel{padding:13px 10px;min-width:0}
+ .arena-main-grid .card-grid{max-width:none;gap:5px}
+ .arena-main-grid .war-label{font-size:9px;letter-spacing:1.3px;padding:6px 0 9px}
+ .arena-main-grid .war-label small{font-size:8px}
+ .arena-main-grid .dealer-panel{padding:16px 10px}
+ .arena-main-grid .dealer-panel .dealer-stage{height:182px}
+ .arena-main-grid .dealer-panel .shoe{width:104px;height:147px}
+ .arena-main-grid .dealer-panel .shoe::after{font-size:58px}
+ .arena-main-grid .action-dock{display:flex;flex-direction:column;gap:11px;max-width:none;margin:0;min-width:0}
+ .arena-main-grid .decision{padding:15px 12px}
+ .arena-main-grid .decision .label{letter-spacing:1.1px;font-size:9px}
+ .arena-main-grid .selected-summary{font-size:12px;margin-bottom:10px}
+ .arena-main-grid .prob-line{gap:5px}
+ .arena-main-grid .prob-col b{font-size:14px}
+ .arena-main-grid .play-controls{display:grid;grid-template-columns:1fr 1fr;gap:9px;align-content:start}
+ .arena-main-grid .guess-btn{min-height:64px;font-size:14px}
+ .arena-main-grid .play-controls .cta{grid-column:1/-1;min-height:49px;font-size:12px}
+ .arena-main-grid .action-hint{font-size:11px;line-height:1.5}
+ .hand-shell{margin-top:16px}
+}
+@media(max-width:1219px){
+ .arena-main-grid{display:block}
+ .arena-main-grid .action-dock{max-width:1450px;margin:15px auto}
+}
+@media(max-width:760px){
+ .dealer-panel .dealer-stage{height:110px!important}
+ .dealer-panel .shoe{width:75px!important;height:104px!important;border-width:3px}
+ .dealer-panel .shoe::after{font-size:39px!important;inset:18px 14px}
+ .dealer-panel .dealer-stage::after{display:none}
+ .dealer-panel .muted{margin:8px auto;font-size:10px}
+ .tactcard-wrap .tactcard .tc-art img{object-position:center 14%}
+}
+@media(max-width:420px){
+ .arena-main-grid .war-panel .card-grid{gap:5px}
+ .arena-main-grid .war-label{padding:4px 0 9px}
+ .arena-main-grid .action-dock .decision{padding:12px}
+ .arena-main-grid .action-hint{line-height:1.6}
+ .hand-cards{gap:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ .tactcard-wrap .tactcard .tc-art img{transition:none}
+}

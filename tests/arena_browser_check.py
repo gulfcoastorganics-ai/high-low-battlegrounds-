@@ -57,7 +57,23 @@ try:
                 page.locator('[data-act="close-inspect"]').click()
                 assert page.get_by_text("THE DECK FORGE").count() == 1
                 page.locator('[data-act="close"]').click()
+            # All twelve active tactical portraits must be self-hosted and reachable.
+            ids = page.evaluate("window.ArenaEngine.REGISTRY.map(c => c.id)")
+            assert len(ids) == 12
+            for cid in ids:
+                resp = page.request.get("http://127.0.0.1:8898/arena/art-premium/" + cid + ".webp")
+                assert resp.ok, cid + " missing premium portrait"
+                assert resp.body()[8:12] == b"WEBP", cid + " invalid WebP"
+
             page.locator('[data-act="start"]').first.click()
+            assert page.locator(".arena-main-grid").count() == 1
+            if width >= 1220:
+                stage_box = page.locator(".arena-stage").bounding_box()
+                dock_box = page.locator(".action-dock").bounding_box()
+                assert dock_box["x"] >= stage_box["x"] + stage_box["width"] - 5, "Desktop controls must sit beside battleground"
+            for art in page.locator(".tactcard .tc-art img").all():
+                assert art.get_attribute("src").endswith(".webp"), "Active card must use premium art"
+
             assert page.locator(".tactcard .tc-art img").count() >= 3
             page.locator(".tactcard-inspect").first.click()
             assert page.locator(".inspect-modal").count() == 1
