@@ -72,11 +72,12 @@ ${ability?`<div style="font-size:11px;color:#e9d3a6">ACTIVE: ${esc(ability.name)
 function builder(){
 const deck=state.decks[state.editor],count={};deck.forEach(id=>count[id]=(count[id]||0)+1);
 const catalog=A.REGISTRY.map(c=>`<button class="builder-row" data-act="add" data-id="${c.id}" ${deck.length>=12||(count[c.id]||0)>=2?'disabled':''}><span class="suit-icon">${S[c.suit]}</span><strong>${esc(c.name)}</strong><small>${c.cost} Focus · ${esc(c.rarity)}<br>${esc(c.text)}</small></button>`).join('');
+const future=(globalThis.ArenaExpansion||[]).map(c=>`<button class="builder-row preview" disabled><span class="suit-icon">${S[c.suit]}</span><strong>${esc(c.name)} · FUTURE</strong><small>${c.cost} Focus · ${esc(c.rarity)}<br>${esc(c.text)}</small></button>`).join('');
 const chosen=Object.entries(count).map(([id,n])=>`<div class="deck-row"><span>${S[A.CARDS[id].suit]} ${esc(A.CARDS[id].name)} ×${n}</span><button data-act="remove" data-id="${id}" aria-label="Remove ${esc(A.CARDS[id].name)}">−</button></div>`).join('');
 const invalid=A.validateDeck(deck);
 return `<div class="modal" role="dialog" aria-modal="true" aria-label="Tactical deck builder"><div class="builder-top"><div><div class="overline">THE COLLECTION VAULT · FAIR ACCESS</div><h2 style="margin-bottom:7px">THE DECK FORGE</h2></div><button class="button" data-act="close">CLOSE ✕</button></div>
 <label class="section-label">STARTER RECIPE</label><select class="selector" data-change="starter"><option value="custom">Choose a starter…</option><option value="balanced">Balanced</option><option value="guardian">Guardian</option><option value="tactician">Tactician</option></select>
-<div class="builder-layout"><div><h3 class="section-label">ALL 12 PLAYABLE TACTICAL CARDS</h3><div class="builder-collection">${catalog}</div></div><div><h3 class="section-label">PLAYER ${state.editor+1} · SELECTED DECK</h3><div class="builder-picked">${chosen||'<p>Choose cards from the collection.</p>'}</div></div></div>
+<div class="builder-layout"><div><h3 class="section-label">12 PLAYABLE · 12 EXPANSION PREVIEWS</h3><div class="builder-collection">${catalog+future}</div></div><div><h3 class="section-label">PLAYER ${state.editor+1} · SELECTED DECK</h3><div class="builder-picked">${chosen||'<p>Choose cards from the collection.</p>'}</div></div></div>
 <div class="valid-message">${deck.length}/12 CARDS · ${esc(invalid||'VALID DECK · MAX 2 COPIES PER CARD')}</div>
 <button class="cta" data-act="save" ${invalid?'disabled':''}>SAVE DECK ✦</button></div>`;
 }
