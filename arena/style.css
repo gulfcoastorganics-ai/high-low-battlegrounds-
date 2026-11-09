@@ -19,3 +19,86 @@ h2,h3,h4,p{margin-top:0}.page-title{text-align:center;margin:40px auto 26px;max-
 @media(max-width:1100px){.arena-stage{grid-template-columns:1fr 1fr}.dealer-panel{grid-column:1/-1;grid-row:1;padding:12px;display:grid;grid-template-columns:1fr 150px 1fr;gap:8px}.dealer-stage{height:120px}.shoe{width:70px;height:95px}.shoe:after{font-size:28px}.dealer-face{width:71px;height:100px}.dealer-panel .muted{margin:4px auto}.dealer-title{font-size:20px;margin:0}.action-dock{grid-template-columns:1fr}.war-panel.enemy .card-grid{max-width:400px}}@media(max-width:680px){.topbar{align-items:flex-start;padding:14px 0}.toplinks{justify-content:flex-end}.brandbox h1{font-size:15px}.monogram{width:42px;height:42px;font-size:17px}.brandbox .eyebrow{font-size:8px;letter-spacing:1px}.ghost-button{padding:7px;font-size:9px}.online-status{display:none}.lobby-grid,.rules-strip{grid-template-columns:1fr}.lobby-actions{grid-template-columns:1fr}.page-title{margin:26px auto}.page-title h2{font-size:33px}.matchhead{margin-top:14px;gap:5px}.score-head{padding:9px 7px;gap:5px}.score-head .score{font-size:23px}.score-head b{font-size:10px}.score-head small{font-size:7px}.roundlabel strong{font-size:14px}.roundlabel span{font-size:8px;letter-spacing:0}.arena-stage{grid-template-columns:1fr;gap:12px}.dealer-panel{grid-column:1;grid-row:auto;display:flex;min-height:145px;order:0}.dealer-stage{height:80px}.shoe{width:60px;height:80px}.dealer-face{width:60px;height:80px}.dealer-title{font-size:15px;margin:5px}.dealer-panel .muted{margin:7px auto 3px}.war-panel.enemy{order:2;padding:8px 12px}.war-panel.enemy .card-grid{max-width:245px;gap:3px}.war-panel.enemy .play-tile{max-height:62px}.war-panel.player{order:1}.war-panel.player .card-grid{max-width:440px;gap:7px}.war-panel.player .play-tile{max-height:111px}.war-label{font-size:9px}.war-metrics{margin-top:8px}.action-dock{gap:10px}.play-controls{grid-template-columns:1fr 1fr}.play-controls .cta{grid-column:1/-1;min-height:48px}.guess-btn{min-height:52px}.hand-shell{padding:12px}.hand-cards{min-height:175px}.tactcard{width:147px;min-width:147px;height:169px}.tactcard .tc-art{height:65px}.tactcard .tc-bottom{bottom:11px}.footnote{font-size:8px;letter-spacing:1px}.builder-layout{grid-template-columns:1fr}.builder-collection{max-height:280px}.modal{padding:18px}.results-grid{gap:8px}.outcome{padding:11px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 
 .builder-row.preview:disabled{opacity:.78;cursor:default;border-style:dashed;background:#091a16}.builder-row.preview strong{color:#b8c4ba}
+
+/* CHARACTER OVERHAUL — original portraits and character-forward tactical UI */
+.character-showcase{max-width:1060px;margin:22px auto 22px;padding:20px;border:1px solid #d8b77e66;border-radius:15px;background:radial-gradient(ellipse at top,#25453675,#0b221aaa);box-shadow:0 12px 29px #0006}
+.showcase-heading{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:15px}
+.showcase-heading h3{font:600 22px 'Cinzel',Georgia,serif;color:#f9dfb1;margin:6px 0 0}
+.showcase-heading>span{font-size:10px;font-weight:900;letter-spacing:1.1px;color:#b8ccbb}
+.showcase-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.hero-character{position:relative;display:block;border:1px solid #c6ac7566;border-radius:9px;background:#091b16;overflow:hidden;padding:0;min-height:190px;box-shadow:0 9px 18px #0008;transition:transform .2s,box-shadow .2s}
+.hero-character:hover{transform:translateY(-5px);box-shadow:0 13px 21px #0009,0 0 16px #b7a57c55}
+.hero-character img{width:100%;height:220px;max-height:25vw;min-height:160px;display:block;object-fit:cover;object-position:center 28%;filter:saturate(.9) contrast(1.05)}
+.hero-character span{position:absolute;bottom:0;left:0;right:0;padding:22px 9px 11px;background:linear-gradient(transparent,#06110eee 35%,#06110e);text-align:left}
+.hero-character b{font:700 13px 'Cinzel',serif;color:#fff0c8;display:block}
+.hero-character small{display:block;color:#c0cbbb;font-size:9px;margin-top:4px}
+.tactcard-wrap{width:189px;min-width:189px;position:relative;display:flex;flex-direction:column;align-items:stretch;padding:6px 3px 0}
+.hand-cards{min-height:326px;gap:14px;align-items:start;padding-bottom:14px}
+.tactcard-wrap .tactcard{width:100%;min-width:0;height:274px;border-radius:12px;overflow:hidden}
+.tactcard-wrap .tactcard::before{border-width:2px;inset:5px;z-index:4;border-radius:8px}
+.tactcard-wrap .tactcard .tc-art{position:absolute;inset:6px 6px 52px;height:auto;border:0;background:none;box-shadow:none;display:block;overflow:hidden;border-radius:9px}
+.tactcard-wrap .tactcard .tc-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 16%;filter:contrast(1.04) saturate(1.06)}
+.tactcard-wrap .tactcard .tc-art::after{inset:0;border:0;background:linear-gradient(to top,#08191390,transparent 34%,#07131b28 80%,#010906aa)}
+.tactcard-wrap .tc-art-shine{position:absolute;inset:-25% -60%;pointer-events:none;background:linear-gradient(110deg,transparent 38%,#fff6cf28 48%,transparent 60%);transform:translateX(-50%);transition:transform .45s ease}
+.tactcard-wrap .tactcard:hover .tc-art-shine{transform:translateX(36%)}
+.tactcard-wrap .tactcard .tc-top{z-index:5;top:12px;left:12px;right:12px;text-shadow:0 1px 7px #000}
+.tactcard-wrap .tactcard .tc-bottom{inset:auto 10px 8px;padding:8px 9px 5px;border:1px solid #dbc48a66;border-radius:4px;background:linear-gradient(#071910,#071a16);z-index:5;min-height:49px}
+.tactcard-wrap .tactcard .tc-bottom strong{font:700 14px 'Cinzel',serif;letter-spacing:.15px}
+.tactcard-wrap .tactcard .tc-bottom small{color:#ecdaa8;font-size:9px;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tactcard-wrap .tactcard:disabled{opacity:.55;filter:grayscale(.55)}
+.tactcard-wrap .tactcard-inspect{margin:6px 0 0;min-height:29px;width:100%;border:1px solid #bfa57b66;background:#0e291f;color:#d4c59d;border-radius:5px;letter-spacing:1.2px;font-size:10px;font-weight:800}
+.tactcard-wrap .tactcard-inspect:hover{background:#244434;border-color:#eed5a3}
+.tactcard-wrap .tactcard.active{border-color:#ffe8b2;box-shadow:0 0 0 3px #f5dc9e88,0 0 22px #ffdf88ab}
+.tactcard.s-S{--accent-suit:#99c3e9}.tactcard.s-H{--accent-suit:#fa9eb0}.tactcard.s-D{--accent-suit:#edcd86}.tactcard.s-C{--accent-suit:#b4dca0}
+.builder-collection{display:grid;grid-template-columns:minmax(0,1fr);max-height:450px;gap:11px}
+.builder-item{border:1px solid #bd9c6959;border-radius:9px;background:#0c241b;overflow:hidden}
+.builder-item .builder-row{display:flex;gap:10px;align-items:center;width:100%;min-height:109px;border:0;border-radius:0;padding:8px;background:transparent}
+.builder-portrait{width:72px;height:92px;flex:none;object-fit:cover;object-position:50% 24%;border-radius:6px;border:1px solid #eed6a886;box-shadow:0 3px 9px #0006}
+.builder-copy{min-width:0;flex:1}
+.builder-copy strong{font:600 13px 'Cinzel',Georgia,serif;color:#f6dfb3;line-height:1.3}
+.builder-copy small{font-size:10px;line-height:1.35;display:block;margin-top:5px;color:#b5c9bc}
+.builder-item .builder-row:not(:disabled):hover{background:#26473766}
+.builder-item .builder-inspect{display:block;width:100%;border:0;border-top:1px solid #d8bf8d30;background:#10291f;padding:7px;color:#dbca9c;text-transform:uppercase;font-size:9px;font-weight:900;letter-spacing:1.5px}
+.builder-item .builder-inspect:hover{background:#284f3c}
+.builder-item.preview .builder-row{opacity:.7;cursor:default}
+.builder-item.preview .builder-inspect{color:#b2bdb0}
+.inspect-modal{max-width:900px}
+.inspect-layout{display:grid;grid-template-columns:minmax(225px,.9fr) minmax(250px,1fr);gap:clamp(18px,3vw,37px);align-items:center}
+.inspect-visual{position:relative;padding:8px;border:1px solid #edce9188;border-radius:12px;background:linear-gradient(125deg,#8b77456e,#15291e);box-shadow:0 16px 28px #0008}
+.inspect-visual img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:6px;border:2px solid #ddc18e}
+.inspect-rarity{position:absolute;left:14px;right:14px;bottom:14px;background:#051b16e7;border:1px solid #f5d9a77a;color:#f1d7a9;text-align:center;padding:9px 6px;font-size:10px;font-weight:900;letter-spacing:1px;border-radius:4px}
+.inspect-copy h2{font:700 clamp(27px,4vw,44px) 'Cinzel',Georgia,serif;color:#ffe6b8;margin:10px 0 3px}
+.inspect-copy h3{font:500 18px 'Cinzel',Georgia,serif;color:#c9dbcc;margin-bottom:23px}
+.inspect-copy blockquote{margin:12px 0 24px;border-left:2px solid #e7c886;padding:0 0 0 17px;color:#d5c6a5;font:italic 16px Georgia,serif;line-height:1.6}
+.inspect-ability{border:1px solid #c1aa7461;border-radius:9px;background:#081c15;padding:16px;margin-bottom:17px}
+.inspect-ability strong{display:block;font:700 19px 'Cinzel',serif;color:#ffe0a5;margin:8px 0}
+.inspect-ability p{font-size:12px;margin:7px 0 13px;color:#d7e1d1}
+.inspect-ability small{font-weight:800;letter-spacing:1px;font-size:10px;color:#c0cca9}
+.inspect-cost{font:800 14px 'DM Sans',sans-serif;color:#eaca82;margin-left:5px}
+.sealed-table{min-height:68vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;color:#d9c28c;text-align:center}
+.sealed-table span{font:100px Georgia,serif;line-height:1}
+.sealed-table h2{font:600 29px 'Cinzel',Georgia,serif}
+.sealed-table p{color:#bbd0bb;max-width:440px;padding:0 20px}
+@media(max-width:720px){
+ .showcase-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .hero-character img{max-height:none;height:165px;min-height:0}
+ .showcase-heading h3{font-size:16px}.showcase-heading>span{font-size:8px}
+ .tactcard-wrap{width:160px;min-width:160px}
+ .tactcard-wrap .tactcard{height:232px}
+ .tactcard-wrap .tactcard .tc-art{bottom:49px}
+ .hand-cards{min-height:292px}
+ .inspect-layout{grid-template-columns:1fr;gap:18px}
+ .inspect-visual{max-width:275px;margin:auto}
+ .inspect-modal{overflow:auto;max-height:calc(100vh - 22px)}
+ .inspect-copy h2{font-size:30px}
+}
+@media(max-width:430px){
+ .character-showcase{padding:12px}
+ .showcase-grid{gap:8px}
+ .hero-character img{height:153px}
+ .hero-character b{font-size:12px}
+ .tactcard-wrap{width:151px;min-width:151px}
+ .tactcard-wrap .tactcard{height:224px}
+ .hand-cards{gap:7px}
+}
+@media(prefers-reduced-motion:reduce){.tactcard-wrap .tc-art-shine{display:none}}
