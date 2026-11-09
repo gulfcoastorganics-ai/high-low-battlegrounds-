@@ -3,7 +3,7 @@
 const A=globalThis.ArenaEngine,S={S:'♠',H:'♥',D:'♦',C:'♣'},G={precision:'✥',survey:'◉',reckoning:'⌖',heartward:'♥',secondwind:'❧',steady:'✧',reserve:'◆',exchange:'⟡',investment:'✦',crosswind:'✣',irongrip:'⚒',rooted:'♣'};
 const screen=document.getElementById('screen'),overlay=document.getElementById('overlay');
 const CH=globalThis.ArenaCharacters.byId,FACTIONS=globalThis.ArenaCharacters.factions;
-const PREMIUM_IDS=new Set(['precision','heartward','reserve','rooted']);
+const PREMIUM_IDS=new Set(A.REGISTRY.map(c=>c.id));
 const portrait=id=>PREMIUM_IDS.has(id)?'./art-premium/'+id+'.webp':CH[id]?.portrait||'./art/precision.svg';
 const state={scene:'lobby',overlay:null,m:null,decks:[A.STARTERS.balanced.slice(),A.STARTERS.balanced.slice()],editor:0,chosen:null,guess:null,card:null,target:null,error:''};
 try{const d=JSON.parse(localStorage.getItem('hl-arena-decks-v1')||'null');if(Array.isArray(d)&&d.length===2&&d.every(x=>!A.validateDeck(x)))state.decks=d;}catch(_){}
@@ -73,15 +73,15 @@ const hint=state.error||(ability?(ability.target==='enemy'&&state.target==null?'
 return `<section class="matchhead"><div class="score-head enemy"><div><small>CONTENDER 0${j+1}</small><b>${esc(o.name)}</b></div><span class="score">${A.remaining(o)}</span></div>
 <div class="roundlabel"><strong>${m.round==='sudden'?'SUDDEN DEATH':'ARENA DUEL'}</strong><span>DRAW ${String(m.turn).padStart(2,'0')} / ${m.maxTurns}</span></div>
 <div class="score-head"><span class="score">${A.remaining(p)}</span><div><small>NOW DECIDING</small><b>${esc(p.name)}</b></div></div></section>
-<section class="arena-stage">${tileGrid(m,j,false)}
-<div class="dealer-panel"><div class="overline">THE SHARED DEALER</div><div class="dealer-title">THE NEXT CARD</div><div class="dealer-stage"><div class="shoe"></div></div>
-<p class="muted">Both decisions lock before the dealer card is revealed. Nothing previews the hidden draw.</p><span class="counter">DRAW ${m.turn} · 52 CARD DECK</span></div>
+<div class="arena-main-grid"><section class="arena-stage">${tileGrid(m,j,false)}
+<div class="dealer-panel"><div class="overline">♠ &nbsp; THE SHARED DEALER &nbsp; ♠</div><div class="dealer-title">THE NEXT CARD</div><div class="dealer-stage"><div class="shoe"></div></div>
+<p class="muted">One hidden draw. Two locked predictions. No preview.</p><span class="counter">DRAW ${m.turn} OF ${m.maxTurns}</span></div>
 ${tileGrid(m,i,true)}</section>
 <section class="action-dock"><div class="decision"><div class="label">PROBABILITY INTELLIGENCE</div><div class="selected-summary">${cell?.alive?`TARGET ${idx+1} · ${A.cardCode(cell.card)} · RANK ${A.rank(cell.card)}`:'Choose a gold-highlighted position to calculate public odds.'}</div>
 <div class="prob-line">${odds('LOWER','lower','#e28f76')}${odds('HIGHER','higher','#8edcaa')}${odds('TIE / LOSS','tie','#ad9198')}</div></div>
 <div class="decision play-controls"><button class="guess-btn low${state.guess==='LOWER'?' active':''}" data-act="guess" data-value="LOWER">▼ LOWER</button>
 <button class="guess-btn high${state.guess==='HIGHER'?' active':''}" data-act="guess" data-value="HIGHER">▲ HIGHER</button>
-<button class="cta" data-act="lock" ${valid?'':'disabled'}>LOCK DECISION →</button><div class="action-hint">${esc(hint)}</div></div></section>
+<button class="cta" data-act="lock" ${valid?'':'disabled'}>LOCK DECISION →</button><div class="action-hint">${esc(hint)}</div></div></section></div>
 <section class="hand-shell"><div class="hand-header"><div><div class="section-label">THE TACTICAL HAND</div><b>${esc(p.name)} · ${p.hand.length} IN HAND</b></div><div class="focus"><i>✦</i> FOCUS ${m.round==='sudden'?'—':p.focus}/5</div></div>
 <div class="hand-cards">${m.round==='sudden'?'Sudden death is standard-card only.':p.hand.length?p.hand.map(tactical).join(''):'Your tactical hand is empty. Continue predicting with standard cards.'}</div>
 ${ability?`<div style="font-size:11px;color:#e9d3a6">ACTIVE: ${esc(ability.name)} · ${esc(ability.text)} <button class="button" style="padding:6px 10px;margin-left:8px" data-act="clear">CANCEL</button></div>`:''}</section>`;
