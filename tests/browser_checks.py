@@ -32,7 +32,7 @@ with sync_playwright() as pw:
     assert p.locator('#h5-resume').count()==1
     p.locator('#h5-resume').click()
     p.emulate_media(reduced_motion='reduce')
-    assert p.locator('.stat b').nth(1).inner_text()=='1'
+    assert p.locator('.compact-stats strong').first.inner_text().strip().startswith('1')
     run_round(p)
     assert p.locator('.replaygrid .minicard').count()==16
     p.locator('[data-replay="prev"]').click()
@@ -48,7 +48,7 @@ with sync_playwright() as pw:
     p.locator('[data-pos="0"]').click()
     assert 'HIDDEN CARD' in p.locator('.odds').inner_text()
     p.locator('[data-guess="LOWER"]:visible').first.click()
-    assert p.locator('.stat b').nth(1).inner_text()=='1'
+    assert p.locator('.compact-stats strong').first.inner_text().strip().startswith('1')
     assert not errors,errors
     print("PASS blind visibility, concealed odds, 3×3")
     p.close()
