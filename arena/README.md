@@ -1,3 +1,5 @@
+> **Visual preview V3:** [Play the unified premium-art Arena](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-unified-art-v3/arena/index.html). All 12 playable cards use self-hosted illustrated portraits; see [V3 technical notes](UNIFIED_ART_V3.md) for quality limits and testing. The original rule engine and Classic Mode are unchanged.
+
 # HIGH / LOW: BATTLEGROUNDS — Arena Phase 1 + Original Character Overhaul
 
 **Character art update:** The character-overhaul branch adds 24 original SVG portraits, character identities and lore, enlarged illustrated tactical cards, an inspectable collection and improved privacy handoff. Twelve abilities remain playable and twelve additional cards are clearly labeled previews. The original standard card deck and Classic Mode remain unchanged. See [the full source audit](CHARACTER_AUDIT.md).
