@@ -148,7 +148,13 @@ if(x==='lobby'){state.scene='lobby';state.overlay=null;state.m=null;reset();}
 if(x==='ready'){state.overlay=null;reset();}
 if(x==='sudden'){A.continueSuddenDeath(m);state.overlay=null;reset();}
 if(x==='continue'){state.overlay=m.phase==='intermission'?'sudden':null;reset();}
-if(x==='card'){state.card=state.card===id?null:id;state.chosen=null;state.target=null;state.error='';}
+if(x==='card'){
+ const idx=state.chosen;
+ state.card=state.card===id?null:id;
+ state.target=idx!=null&&['heartward','steady','rooted','secondwind'].includes(state.card)?idx:null;
+ if(idx!=null&&!A.offer(m,me(),state.card,state.target).includes(idx))state.chosen=null;
+ state.error='';
+}
 if(x==='clear'){state.card=null;state.target=null;state.chosen=null;}
 if(x==='enemy'&&state.card==='crosswind'&&m.players[1-me()].board[i]?.alive)state.target=i;
 if(x==='own'){
