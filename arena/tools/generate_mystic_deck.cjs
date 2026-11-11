@@ -1,177 +1,176 @@
-// Regenerate the 52 original Mystic Royale card-face SVGs and the dealer back.
-// Run from repository root: node arena/tools/generate_mystic_deck.cjs
-const fs=require('node:fs');
-const path=require('node:path');
-const files=(function buildMysticDeck(){
+// Mystic Royale Cinematic: original illustrated 52-card deck plus dealer back.
+// Regenerate: node arena/tools/generate_mystic_deck.cjs
+// Source portrait art: arena/art-premium/*.webp. Art is embedded in court card SVGs for reliable browser/offline rendering.
+const fs=require('node:fs');const path=require('node:path');
+const root=path.resolve(__dirname,'../..');
+const characters=["precision","reckoning","survey","secondwind","heartward","steady","exchange","investment","reserve","irongrip","crosswind","rooted"];
+const portraits={};for(const id of characters)portraits[id]=fs.readFileSync(path.join(root,'arena','art-premium',id+'.webp')).toString('base64');
+const files=(function buildCinematicDeck(portraits){
  const suits={
-  S:{name:"Spades",tone:"#79cfff",tone2:"#b0e9ff",base:"#101f69",shadow:"#06133c",glow:"#387cf8",title:"THE STARWARD",accent:"#b7efff"},
-  H:{name:"Hearts",tone:"#ff82d1",tone2:"#ffbfeb",base:"#3a125e",shadow:"#190b3e",glow:"#c44fff",title:"THE HEARTBOUND",accent:"#ffb2e4"},
-  D:{name:"Diamonds",tone:"#ffc878",tone2:"#fff1be",base:"#222169",shadow:"#0a1640",glow:"#ac7cfc",title:"THE GILDED",accent:"#ffe2a3"},
-  C:{name:"Clubs",tone:"#b5acff",tone2:"#e3daff",base:"#231269",shadow:"#101047",glow:"#8667ff",title:"THE VEILKEEPER",accent:"#d9c8ff"}
+ S:{name:"Spades",base:"#0b1d59",mid:"#1d3785",deep:"#070e35",glow:"#30a7fb",bright:"#e9f5ff",gem:"#77d6ff",outline:"#7cc6fd",subtitle:"THE ASTRAL COURT"},
+ H:{name:"Hearts",base:"#381050",mid:"#64134e",deep:"#170827",glow:"#f52375",bright:"#fff1fb",gem:"#ff476e",outline:"#ff98d1",subtitle:"THE CRIMSON COURT"},
+ D:{name:"Diamonds",base:"#30134f",mid:"#491a63",deep:"#130c31",glow:"#f34b47",bright:"#fff3e7",gem:"#ff6c3a",outline:"#ffbf7d",subtitle:"THE GILDED COURT"},
+ C:{name:"Clubs",base:"#151752",mid:"#342873",deep:"#0b0b35",glow:"#a78aff",bright:"#f8f6ff",gem:"#c2d3ff",outline:"#e1dbff",subtitle:"THE VEILED COURT"}
  };
- const pip={
-  S:"M0 -45 C-11 -26 -40 -7 -40 15 C-40 35 -23 42 -8 29 L-16 45 H16 L8 29 C23 42 40 35 40 15 C40 -7 11 -26 0 -45Z",
-  H:"M0 42 C-13 32 -42 8 -42 -15 C-42 -35 -19 -47 0 -25 C19 -47 42 -35 42 -15 C42 8 13 32 0 42Z",
-  D:"M0 -46 L39 0 L0 46 L-39 0Z",
-  C:"M0 -43 C-14 -43 -22 -33 -22 -23 C-22 -17 -19 -11 -15 -8 C-36 -21 -45 -7 -40 10 C-36 26 -16 31 -7 19 L-16 44 H16 L7 19 C16 31 36 26 40 10 C45 -7 36 -21 15 -8 C19 -11 22 -17 22 -23 C22 -33 14 -43 0 -43Z"
+ const suitPath={
+ S:"M0 -42 C-14 -21 -39 -8 -39 14 C-39 36 -17 38 -8 24 L-15 43 H15 L8 24 C17 38 39 36 39 14 C39 -8 14 -21 0 -42Z",
+ H:"M0 41 C-19 24 -42 5 -42 -16 C-42 -38 -16 -45 0 -23 C16 -45 42 -38 42 -16 C42 5 19 24 0 41Z",
+ D:"M0 -43 L36 0 L0 43 L-36 0Z",
+ C:"M-8 24 C-24 35 -44 25 -43 9 C-43 -8 -25 -18 -13 -7 C-31 -31 -7 -53 0 -37 C7 -53 31 -31 13 -7 C25 -18 43 -8 43 9 C44 25 24 35 8 24 L16 44 H-16Z"
  };
- const names={A:"ACE",J:"JACK",Q:"QUEEN",K:"KING"};
+ const portraitId={
+ "S-J":"precision","S-Q":"reckoning","S-K":"survey",
+ "H-J":"secondwind","H-Q":"heartward","H-K":"steady",
+ "D-J":"exchange","D-Q":"investment","D-K":"reserve",
+ "C-J":"irongrip","C-Q":"crosswind","C-K":"rooted"
+ };
  const ranks=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
- const escapes=s=>s.replace(/&/g,"&amp;").replace(/"/g,"&quot;");
+ const locations={
+ 2:[[120,122],[120,210]],
+ 3:[[120,100],[120,166],[120,232]],
+ 4:[[81,120],[159,120],[81,208],[159,208]],
+ 5:[[81,112],[159,112],[120,166],[81,220],[159,220]],
+ 6:[[85,104],[155,104],[85,166],[155,166],[85,228],[155,228]],
+ 7:[[85,102],[155,102],[120,137],[85,167],[155,167],[85,232],[155,232]],
+ 8:[[83,96],[157,96],[83,141],[157,141],[83,191],[157,191],[83,236],[157,236]],
+ 9:[[83,96],[157,96],[83,141],[157,141],[120,166],[83,191],[157,191],[83,236],[157,236]],
+ 10:[[86,92],[154,92],[86,127],[154,127],[86,162],[154,162],[86,197],[154,197],[86,232],[154,232]]
+ };
  function defs(c){
- return `<defs>
-  <linearGradient id="paper" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#151046"/><stop offset=".30" stop-color="${c.base}"/><stop offset=".63" stop-color="#26125a"/><stop offset="1" stop-color="${c.shadow}"/></linearGradient>
-  <radialGradient id="nebula" cx=".53" cy=".38" r=".8"><stop stop-color="${c.glow}" stop-opacity=".48"/><stop offset=".5" stop-color="${c.glow}" stop-opacity=".07"/><stop offset="1" stop-color="${c.glow}" stop-opacity="0"/></radialGradient>
-  <linearGradient id="gilt" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff3bb"/><stop offset=".22" stop-color="#ba7a3a"/><stop offset=".42" stop-color="#ffdc84"/><stop offset=".69" stop-color="#8b4d2b"/><stop offset=".85" stop-color="#f5d185"/><stop offset="1" stop-color="#fff0bc"/></linearGradient>
-  <linearGradient id="pipFill" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fef8ff"/><stop offset=".19" stop-color="${c.tone2}"/><stop offset=".58" stop-color="${c.tone}"/><stop offset="1" stop-color="${c.glow}"/></linearGradient>
-  <radialGradient id="orb"><stop stop-color="#f9ebff" stop-opacity=".7"/><stop offset=".33" stop-color="${c.glow}" stop-opacity=".33"/><stop offset="1" stop-color="${c.glow}" stop-opacity="0"/></radialGradient>
-  <linearGradient id="silk" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${c.tone2}"/><stop offset=".25" stop-color="${c.base}"/><stop offset=".6" stop-color="${c.shadow}"/><stop offset="1" stop-color="${c.glow}"/></linearGradient>
-  <linearGradient id="face" x1=".27" y1="0" x2=".8" y2="1"><stop stop-color="#ffe8bf"/><stop offset=".37" stop-color="#d49c87"/><stop offset="1" stop-color="#795069"/></linearGradient>
-  <filter id="halo" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.6"/></filter>
-  <pattern id="stars" width="51" height="59" patternUnits="userSpaceOnUse">
-    <circle cx="10" cy="17" r=".85" fill="#f9edff" opacity=".5"/>
-    <circle cx="42" cy="43" r="1.1" fill="${c.tone2}" opacity=".45"/>
-    <path d="M29 5v6m-3-3h6" stroke="#ddd6ff" stroke-width=".7" opacity=".45"/>
-  </pattern>
-  <path id="glyph" d="${pip[c.key]}"/>
+  return `<defs>
+ <linearGradient id="velvet" x1=".1" y1="0" x2=".9" y2="1"><stop stop-color="${c.deep}"/><stop offset=".25" stop-color="${c.base}"/><stop offset=".59" stop-color="${c.mid}"/><stop offset="1" stop-color="${c.deep}"/></linearGradient>
+ <radialGradient id="aura" cx=".54" cy=".45" r=".68"><stop stop-color="${c.glow}" stop-opacity=".37"/><stop offset=".33" stop-color="${c.glow}" stop-opacity=".19"/><stop offset=".8" stop-color="${c.deep}" stop-opacity=".06"/><stop offset="1" stop-color="${c.deep}" stop-opacity="0"/></radialGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fff8cb"/><stop offset=".17" stop-color="#d9a75a"/><stop offset=".32" stop-color="#80512b"/><stop offset=".51" stop-color="#ffdb8b"/><stop offset=".71" stop-color="#ad7339"/><stop offset=".89" stop-color="#ffe6ae"/><stop offset="1" stop-color="#85552f"/></linearGradient>
+ <linearGradient id="gem" x1=".21" y1="0" x2=".86" y2="1"><stop stop-color="#fff" stop-opacity=".99"/><stop offset=".16" stop-color="${c.bright}"/><stop offset=".44" stop-color="${c.gem}"/><stop offset=".72" stop-color="${c.glow}"/><stop offset="1" stop-color="${c.base}"/></linearGradient>
+ <radialGradient id="gemshine" cx=".25" cy=".14" r=".92"><stop stop-color="#ffffff" stop-opacity=".91"/><stop offset=".21" stop-color="${c.bright}" stop-opacity=".46"/><stop offset=".72" stop-color="${c.glow}" stop-opacity=".23"/><stop offset="1" stop-color="${c.glow}" stop-opacity="0"/></radialGradient>
+ <radialGradient id="halo" cx=".5" cy=".5" r=".5"><stop stop-color="${c.glow}" stop-opacity=".75"/><stop offset=".65" stop-color="${c.glow}" stop-opacity=".21"/><stop offset="1" stop-color="${c.glow}" stop-opacity="0"/></radialGradient>
+ <filter id="blur"><feGaussianBlur stdDeviation="5"/></filter>
+ <filter id="soft"><feGaussianBlur stdDeviation="2.2"/></filter>
+ <pattern id="stars" width="38" height="49" patternUnits="userSpaceOnUse"><circle cx="9" cy="14" r=".65" fill="#faf8ff" opacity=".52"/><circle cx="29" cy="39" r="1.1" fill="${c.outline}" opacity=".44"/><path d="M24 6v7m-3.5-3.5h7" stroke="#fff7e4" stroke-width=".8" opacity=".35"/></pattern>
+ <path id="suit" d="${suitPath[c.key]}"/>
+ <clipPath id="portraitClip"><path d="M53 107Q120 60 187 107V226Q120 267 53 226Z"/></clipPath>
  </defs>`;
  }
- function framework(c,code){
- return `<rect x="1" y="1" width="238" height="334" rx="15" fill="#06091d" stroke="#29134d" stroke-width="2"/>
- <rect x="5" y="5" width="230" height="326" rx="13" fill="url(#paper)"/>
- <rect x="8" y="8" width="224" height="320" rx="11" fill="url(#nebula)"/>
- <rect x="8" y="8" width="224" height="320" rx="11" fill="url(#stars)"/>
- <path d="M26 67Q68 49 120 64Q173 49 214 67V269Q171 286 120 272Q67 286 26 269Z" fill="none" stroke="${c.tone}" stroke-width=".6" opacity=".27"/>
- <circle cx="120" cy="166" r="96" fill="none" stroke="${c.tone2}" stroke-width=".9" opacity=".16"/>
- <circle cx="120" cy="166" r="82" fill="none" stroke="url(#gilt)" stroke-width=".85" opacity=".39" stroke-dasharray="2 5"/>
- <path d="M120 64v16m0 172v16m-95-102h16m158 0h16M55 95l13 13m104 116 13 13M185 95l-13 13M68 224l-13 13" stroke="${c.tone2}" opacity=".28" stroke-width="1"/>
- <rect x="8" y="8" width="224" height="320" rx="11" fill="none" stroke="url(#gilt)" stroke-width="3"/>
- <rect x="12" y="12" width="216" height="312" rx="9" fill="none" stroke="#e8c882" stroke-opacity=".6" stroke-width=".8"/>
- <path d="M13 56V25Q13 13 25 13H55M185 13h30q13 0 13 13v30M13 280v30q0 13 13 13h30M185 323h30q13 0 13-13v-30" stroke="#f7d596" stroke-width="1.8" fill="none" opacity=".72"/>
- <path d="M21 72l5-9 5 9-5 9Z M214 72l-5-9-5 9 5 9Z M21 264l5-9 5 9-5 9Z M214 264l-5-9-5 9 5 9Z" fill="${c.tone2}" opacity=".6"/>
- <path d="M120 18l6 9-6 9-6-9Z M120 300l6 9-6 9-6-9Z" fill="url(#gilt)" stroke="#fff1bc" stroke-width=".8"/>
- <g opacity=".6"><circle cx="120" cy="27" r="3.5" fill="url(#orb)"/><circle cx="120" cy="309" r="3.5" fill="url(#orb)"/></g>`;
+ function cornerFiligree(){
+  return `<g stroke="url(#gold)" stroke-width="1.7" fill="none" opacity=".9">
+  <path d="M15 67Q15 25 50 17Q28 29 29 46Q41 29 51 31Q36 44 36 68"/>
+  <path d="M225 67Q225 25 190 17Q212 29 211 46Q199 29 189 31Q204 44 204 68"/>
+  <path d="M15 269Q15 311 50 319Q28 307 29 290Q41 307 51 305Q36 292 36 268"/>
+  <path d="M225 269Q225 311 190 319Q212 307 211 290Q199 307 189 305Q204 292 204 268"/>
+  </g>
+  <g fill="#fff4c7" opacity=".83"><path d="M22 22l4 7-4 7-4-7Z M218 22l4 7-4 7-4-7Z M22 314l4-7-4-7-4 7Z M218 314l4-7-4-7-4 7Z"/></g>`;
  }
- function badge(r,c){
- const size=r==="10"?29:35;
- const rankY=r==="10"?43:47;
- const side=`<g><text x="18" y="${rankY}" font-family="Georgia,Times New Roman,serif" font-size="${size}" font-weight="700" fill="#fff4d5" stroke="#36205d" stroke-width=".35" paint-order="stroke" letter-spacing="-1.5">${r}</text>
- <use href="#glyph" transform="translate(${r==="10"?32:26} 61) scale(.17)" fill="url(#pipFill)" stroke="${c.tone2}" stroke-width="3"/></g>`;
- return side+`<g transform="translate(240 336) rotate(180)">${side}</g>`;
+ function frame(c){
+ return `<rect width="240" height="336" rx="13" fill="#04071a"/>
+ <rect x="3" y="3" width="234" height="330" rx="12" fill="url(#gold)" stroke="#fff1c4" stroke-width=".6"/>
+ <rect x="8" y="8" width="224" height="320" rx="9" fill="url(#velvet)" stroke="#180b36" stroke-width="1"/>
+ <rect x="8" y="8" width="224" height="320" rx="9" fill="url(#aura)"/>
+ <rect x="10" y="10" width="220" height="316" rx="7" fill="url(#stars)"/>
+ <rect x="13" y="13" width="214" height="310" rx="7" fill="none" stroke="url(#gold)" stroke-width="1.3"/>
+ <rect x="17" y="17" width="206" height="302" rx="5" fill="none" stroke="${c.outline}" stroke-opacity=".47" stroke-width=".7"/>
+ <path d="M120 36L199 165L120 300L41 165Z" fill="none" stroke="${c.outline}" stroke-opacity=".15" stroke-width=".8"/>
+ <path d="M120 67L175 166L120 265L65 166Z" fill="none" stroke="#f4d99e" stroke-opacity=".17" stroke-width="1"/>
+ ${cornerFiligree()}
+ <path d="M120 15l6 8-6 8-6-8Z M120 321l6-8-6-8-6 8Z" fill="${c.gem}" stroke="#fff4c9" stroke-width=".9"/>
+ <path d="M50 21h140M50 315h140" stroke="#e9c88b" stroke-width=".75" opacity=".48"/>`;
  }
- function pipAt(x,y,scale,c,rot=0){
- return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${scale})">
-   <use href="#glyph" fill="${c.tone}" opacity=".42" filter="url(#halo)"/>
-   <use href="#glyph" fill="url(#pipFill)" stroke="#fff4da" stroke-width="2.4"/>
-   <use href="#glyph" fill="none" stroke="#191149" stroke-width="1.2" transform="scale(.85)"/>
+ function suitShape(c,x,y,scale,rot=0){
+  return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${scale})" class="royal-pip">
+  <circle r="63" fill="url(#halo)" opacity=".6"/>
+  <use href="#suit" fill="${c.glow}" opacity=".62" filter="url(#soft)" stroke="${c.glow}" stroke-width="8"/>
+  <use href="#suit" fill="url(#gem)" stroke="${c.bright}" stroke-width="2.3" stroke-linejoin="round"/>
+  <use href="#suit" fill="url(#gemshine)" opacity=".56"/>
+  <path d="M-11 -10L-4 -21 L1 -15" fill="none" stroke="#fff" stroke-width="2.7" opacity=".83" stroke-linecap="round"/>
   </g>`;
  }
- function points(n){
-  const pt={2:[[120,112],[120,220]],3:[[120,106],[120,166],[120,226]],
-    4:[[90,117],[150,117],[90,213],[150,213]],
-    5:[[90,114],[150,114],[120,165],[90,216],[150,216]],
-    6:[[91,108],[149,108],[91,165],[149,165],[91,222],[149,222]],
-    7:[[91,108],[149,108],[120,137],[91,165],[149,165],[91,222],[149,222]],
-    8:[[91,102],[149,102],[91,144],[149,144],[91,186],[149,186],[91,228],[149,228]],
-    9:[[91,102],[149,102],[91,143],[149,143],[120,165],[91,187],[149,187],[91,228],[149,228]],
-    10:[[90,99],[150,99],[90,133],[150,133],[90,167],[150,167],[90,201],[150,201],[90,235],[150,235]]
-   };
-  return pt[n];
+ function indexes(c,rank){
+  const big=rank==="10"?37:43;
+  function one(){
+   return `<text x="20" y="56" font-family="Georgia,Times New Roman,serif" font-size="${big}" font-weight="bold" fill="#fff6d8" stroke="${c.deep}" stroke-width="1.1" paint-order="stroke">${rank}</text>
+   ${suitShape(c,rank==="10"?42:34,77,.23)}
+   `;
+  }
+  return `<g>${one()}</g><g transform="translate(240 336) rotate(180)">${one()}</g>`;
  }
- function pipLayout(n,c){
-   const pos=points(n),scale=n>=8?.265:n>=5?.29:.38;
-   const ring=`<circle cx="120" cy="166" r="59" fill="url(#orb)" opacity=".38"/>
-    <circle cx="120" cy="166" r="62" fill="none" stroke="${c.tone}" stroke-width=".8" opacity=".3"/>
-    <path d="M120 89l7 13-7 13-7-13Z M120 218l7 13-7 13-7-13Z" fill="${c.tone2}" opacity=".19"/>`;
-   return ring+pos.map(([x,y])=>pipAt(x,y,scale,c,y>170?180:0)).join("");
+ function numbered(c,n){
+  const scale=n===2?.88:n===3?.76:n===4?.72:n===5?.68:n===6?.62:n===7?.58:n===8?.53:n===9?.50:.46;
+  const mid=`<circle cx="120" cy="166" r="83" fill="url(#halo)" opacity=".15"/><circle cx="120" cy="166" r="89" fill="none" stroke="#e9b5fd" stroke-width=".7" opacity=".17" stroke-dasharray="3 6"/>`;
+  return mid+locations[n].map(([x,y])=>suitShape(c,x,y,scale,y>167?180:0)).join("");
+ }
+ function crown(c,rank){
+  if(rank==="J")return `<g transform="translate(0 -2)"><path d="M67 111Q120 87 173 111" fill="none" stroke="url(#gold)" stroke-width="4"/><path d="M77 105l4-10 8 7m68 3-4-10-8 7" fill="none" stroke="#ffe4aa" stroke-width="2"/></g>`;
+  return `<g>
+  <path d="M74 104L74 78L94 93L120 64L146 93L166 78L166 104L153 112H87Z" fill="url(#gold)" stroke="#fff4c5" stroke-width="2"/>
+  <path d="M81 98L98 101L120 76L141 101L160 98" fill="none" stroke="#e6c77c" stroke-width="1.2"/>
+  <path d="M120 75l7 10-7 10-7-10Z" fill="${c.glow}" stroke="#fff" stroke-width="1"/>
+  <circle cx="93" cy="98" r="3" fill="${c.gem}"/><circle cx="147" cy="98" r="3" fill="${c.gem}"/>
+  </g>`;
+ }
+ function court(c,rank,base64){
+  if(!base64)throw Error("Missing portrait for "+c.key+"-"+rank);
+  const title={K:"THE KING",Q:"THE QUEEN",J:"THE JACK"}[rank];
+  return `<g>
+  <ellipse cx="120" cy="166" rx="91" ry="110" fill="url(#halo)" opacity=".45"/>
+  <path d="M45 105Q120 47 195 105V231Q120 280 45 231Z" fill="url(#gold)" stroke="#fff4cd" stroke-width="1.5"/>
+  <path d="M50 107Q120 57 190 107V227Q120 268 50 227Z" fill="${c.deep}"/>
+  <image x="48" y="78" width="144" height="180" preserveAspectRatio="xMidYMid slice" clip-path="url(#portraitClip)" href="data:image/webp;base64,${base64}"/>
+  <path d="M52 192Q120 225 188 192V228Q120 265 52 228Z" fill="${c.deep}" opacity=".10"/>
+  <path d="M53 107Q120 60 187 107V226Q120 267 53 226Z" stroke="url(#gold)" stroke-width="2.5" fill="none"/>
+  <path d="M48 108Q120 57 192 108M48 228Q120 275 192 228" fill="none" stroke="#fff2c4" stroke-width="1" opacity=".7"/>
+  ${crown(c,rank)}
+  <path d="M55 241L78 253H162L185 241L176 272H64Z" fill="${c.deep}" stroke="url(#gold)" stroke-width="2.6"/>
+  ${suitShape(c,120,248,.24)}
+  <text x="120" y="282" font-family="Georgia,Times New Roman,serif" font-size="12.8" text-anchor="middle" fill="#fff2cb" font-weight="bold" letter-spacing="1.6">${title}</text>
+  <path d="M70 291h100" stroke="url(#gold)" stroke-width="1.1" opacity=".7"/>
+  </g>`;
  }
  function ace(c){
- return `<g>
-   <circle cx="120" cy="165" r="67" fill="url(#orb)" opacity=".86"/>
-   <circle cx="120" cy="165" r="69" fill="none" stroke="url(#gilt)" stroke-width="1.7"/>
-   <circle cx="120" cy="165" r="60" fill="none" stroke="${c.tone2}" stroke-width=".8" stroke-dasharray="2 4"/>
-   <path d="M120 77l12 37-12-10-12 10Z M120 253l12-37-12 10-12-10Z M34 166l37-12-10 12 10 12Z M206 166l-37-12 10 12-10 12Z" fill="${c.tone2}" opacity=".55"/>
-   ${pipAt(120,166,1.19,c)}
-   <path d="M82 93L88 79L102 91L120 72L138 91L151 79L158 93Z" fill="url(#gilt)" stroke="#fff0ba" stroke-width="1.2"/>
-   <circle cx="120" cy="86" r="4.2" fill="${c.tone}" stroke="#fff5e9" stroke-width=".7"/>
-   <text x="120" y="273" text-anchor="middle" fill="#f8dfad" font-size="7.6" font-family="Georgia,serif" letter-spacing="1.8">${c.title}</text>
-   </g>`;
- }
- function court(r,c){
-  const king=r==="K",queen=r==="Q",jack=r==="J";
-  const head=king?`<path d="M78 125L82 100L101 113L119 89L138 113L158 100L162 125Z" fill="url(#gilt)" stroke="#fff1bf" stroke-width="1.8"/>
-  <path d="M84 125h74v10H84z" fill="url(#gilt)" stroke="#fff1bf" stroke-width="1"/><path d="M117 103l7 8-7 8-7-8Z" fill="${c.glow}" stroke="#fff1d3" stroke-width="1.4"/>`:
-  queen?`<path d="M89 130Q99 100 119 97Q139 100 150 130" fill="none" stroke="url(#gilt)" stroke-width="8"/>
-  <path d="M91 112L103 121L120 91L136 121L147 112" fill="none" stroke="#ffe6ac" stroke-width="5"/><path d="M119 103l7 9-7 8-7-8Z" fill="${c.tone}" stroke="#fff6e8" stroke-width="2"/>`:
-  `<path d="M76 137Q75 104 120 101Q156 102 163 137L154 143Q120 123 83 144Z" fill="url(#silk)" stroke="url(#gilt)" stroke-width="2"/>
-   <path d="M126 110Q137 77 149 70Q149 105 136 130" fill="${c.tone}" stroke="#ffdda6" stroke-width="1.4"/>`;
-  const hair=queen?`<path d="M90 143Q89 98 121 102Q155 99 154 144L170 213L144 222L136 154Q125 135 109 151L103 214L80 219Z" fill="${c.shadow}" stroke="${c.tone2}" stroke-width="2"/>`:
-   `<path d="M90 146Q82 105 119 108Q155 103 155 147L143 157Q121 126 96 155Z" fill="${c.shadow}" stroke="url(#gilt)" stroke-width="2"/>`;
-  const beard=king?`<path d="M104 177Q120 195 135 177L133 200Q120 218 107 200Z" fill="${c.shadow}" stroke="#deb77b" stroke-width="2"/>
-  <path d="M111 186l7 6 8-6" fill="none" stroke="#cba47f" stroke-width="1.5"/>`:"";
-  const armor=`<path d="M62 230Q64 194 98 196L119 218L142 196Q177 195 181 230L177 241Q120 265 63 241Z" fill="url(#silk)" stroke="url(#gilt)" stroke-width="3"/>
-  <path d="M99 200L120 225L141 200" fill="none" stroke="#fff2c7" stroke-width="2.5"/>
-  <path d="M68 220Q85 212 96 231M172 220Q155 211 143 231" fill="none" stroke="${c.tone2}" stroke-width="2"/>`;
   return `<g>
-    <circle cx="120" cy="167" r="75" fill="url(#orb)" opacity=".71"/>
-    <path d="M120 77L171 99L189 166L164 233L120 259L76 233L51 166L69 99Z" fill="${c.shadow}" stroke="url(#gilt)" stroke-width="2.8"/>
-    <circle cx="120" cy="166" r="65" fill="url(#paper)" stroke="${c.tone2}" stroke-width="1" opacity=".85"/>
-    <path d="M120 83l11 13-11 13-11-13Z M120 239l11 13-11 13-11-13Z" fill="${c.tone2}" opacity=".46"/>
-    ${hair}
-    ${armor}
-    <path d="M101 135Q118 118 138 135L144 175Q136 195 121 197Q102 192 97 172Z" fill="url(#face)" stroke="#f3c99a" stroke-width="1"/>
-    ${head}
-    <path d="M102 154Q111 148 117 153M125 153Q132 149 139 154" stroke="#412c45" stroke-width="2.8" fill="none"/>
-    <path d="M106 158l9 0m12 0h9" stroke="${c.shadow}" stroke-width="1.4"/>
-    <circle cx="112" cy="156" r="2" fill="${c.tone}"/><circle cx="130" cy="156" r="2" fill="${c.tone}"/>
-    <path d="M120 160l-3 14 6 2" stroke="#986e65" stroke-width="1.2" fill="none"/>
-    <path d="M113 183Q120 186 128 182" stroke="#7e455e" stroke-width="1.3" fill="none"/>
-    ${beard}
-    <g transform="translate(120 230) scale(.19)"><use href="#glyph" fill="url(#pipFill)" stroke="#fff2c1" stroke-width="4"/></g>
-    <path d="M55 166l14-8-8 14M185 166l-14-8 8 14" stroke="url(#gilt)" stroke-width="2" fill="none"/>
-    <text x="120" y="279" font-family="Georgia,serif" font-size="10" text-anchor="middle" letter-spacing="2" fill="#ffecc3">${names[r]}</text>
-   </g>`;
+  <circle cx="120" cy="163" r="91" fill="url(#halo)" opacity=".9"/>
+  <circle cx="120" cy="163" r="84" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+  <circle cx="120" cy="163" r="73" fill="none" stroke="${c.outline}" stroke-width="1.6" stroke-dasharray="2 5" opacity=".75"/>
+  <path d="M120 58L131 89L120 82L109 89Z M120 266L131 235L120 242L109 235Z M20 163L52 152L45 163L52 174Z M220 163L188 152L195 163L188 174Z" fill="url(#gold)" stroke="#fff2c7" stroke-width=".6"/>
+  <circle cx="120" cy="163" r="60" fill="url(#halo)" opacity=".7"/>
+  ${suitShape(c,120,164,1.35)}
+  ${crown(c,"K")}
+  <text x="120" y="280" text-anchor="middle" font-family="Georgia,serif" font-size="9" font-weight="bold" letter-spacing="1.5" fill="#ffdfae">${c.subtitle}</text>
+  </g>`;
  }
- function createCard(suit,rank){
+ function face(suit,rank){
   const c={...suits[suit],key:suit};
-  const label=(names[rank]||rank)+" of "+c.name+" — Mystic Royale";
-  const numeric=Number(rank);
-  const art=rank==="A"?ace(c):["J","Q","K"].includes(rank)?court(rank,c):pipLayout(numeric,c);
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="${escapes(label)}" data-card="${suit}-${rank}" data-rank="${rank}" data-suit="${suit}" data-theme="mystic-royale">
- ${defs(c)}
- ${framework(c,`${suit}-${rank}`)}
- ${art}
- ${badge(rank,c)}
- </svg>`;
+  let art;
+  if(rank==="A")art=ace(c);
+  else if(["K","Q","J"].includes(rank))art=court(c,rank,portraits[portraitId[suit+"-"+rank]]);
+  else art=numbered(c,Number(rank));
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="${rank==="A"?"ACE":rank==="K"?"KING":rank==="Q"?"QUEEN":rank==="J"?"JACK":rank} of ${c.name} — Mystic Royale Cinematic" data-theme="mystic-royale-cinematic" data-rank="${rank}" data-suit="${suit}" data-card="${suit}-${rank}">
+  ${defs(c)}
+  ${frame(c)}
+  ${art}
+  ${indexes(c,rank)}
+  </svg>`;
  }
  function back(){
- const c={...suits.S,key:"S"};
- return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="Mystic Royale dealer card back" data-theme="mystic-royale">
+  const c={...suits.S,key:"S"};
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="Mystic Royale Cinematic dealer card back" data-theme="mystic-royale-cinematic">
  ${defs(c)}
- <rect x="2" y="2" width="236" height="332" rx="14" fill="#080d2b" stroke="#f1d48b" stroke-width="3"/>
- <rect x="7" y="7" width="226" height="322" rx="11" fill="url(#paper)" stroke="url(#gilt)" stroke-width="3"/>
- <rect x="13" y="13" width="214" height="310" rx="8" fill="url(#stars)" stroke="#deb980" stroke-width="1"/>
- <path d="M120 17L224 166L120 319L16 166Z" fill="none" stroke="${c.tone2}" stroke-width="1.2" opacity=".55"/>
- <path d="M120 36L203 166L120 300L37 166Z" fill="none" stroke="url(#gilt)" stroke-width="3.5"/>
- <circle cx="120" cy="166" r="81" fill="url(#nebula)" stroke="url(#gilt)" stroke-width="2.5"/>
- <circle cx="120" cy="166" r="69" fill="none" stroke="#ba92ff" stroke-width="2" stroke-dasharray="3 4"/>
- <circle cx="120" cy="166" r="60" fill="none" stroke="#eed59f" stroke-width="1.5"/>
- <path d="M120 75L130 146L201 166L130 186L120 257L110 186L39 166L110 146Z" fill="#653bb1" stroke="url(#gilt)" stroke-width="3"/>
- <path d="M120 110L135 166L120 224L105 166Z" fill="url(#pipFill)" stroke="#fff3c2" stroke-width="2"/>
- <path d="M72 125L87 104L101 122L120 96L139 122L153 104L168 125L161 146H79Z" fill="url(#gilt)" stroke="#fff2bc" stroke-width="2"/>
- <circle cx="120" cy="129" r="7" fill="#8b55df" stroke="#fff0c0" stroke-width="2"/>
- <g fill="none" stroke="#f0d39c" stroke-width="1.2">
-   <path d="M33 32h41l12 12m121-12h-41l-12 12M33 304h41l12-12m121 12h-41l-12-12"/>
-   <path d="M42 85l15-8-7-17m148 25-15-8 7-17M42 251l15 8-7 17m148-25-15 8 7 17"/>
- </g>
- <path d="M119 20l7 8-7 8-7-8ZM120 299l7 8-7 8-7-8Z" fill="${c.tone2}"/>
- <text x="120" y="284" text-anchor="middle" fill="#ffe1a1" font-family="Georgia,serif" font-size="10" font-weight="bold" letter-spacing="2">THE ARCANA</text>
+ ${frame(c)}
+ <circle cx="120" cy="166" r="99" fill="url(#halo)" opacity=".38"/>
+ <path d="M120 37l98 129-98 132-98-132Z" fill="none" stroke="url(#gold)" stroke-width="2.6"/>
+ <circle cx="120" cy="166" r="89" fill="none" stroke="${c.outline}" stroke-width=".9" stroke-dasharray="2 5"/>
+ <circle cx="120" cy="166" r="75" fill="none" stroke="url(#gold)" stroke-width="2"/>
+ <path d="M120 73L132 145L205 166L132 187L120 259L108 187L35 166L108 145Z" fill="#43237e" stroke="url(#gold)" stroke-width="3"/>
+ <path d="M120 93L139 166L120 239L101 166Z" fill="url(#gem)" stroke="#fff1cc" stroke-width="1.8"/>
+ <circle cx="120" cy="166" r="29" fill="${c.deep}" stroke="url(#gold)" stroke-width="2.5"/>
+ <path d="M120 137l13 28-13 31-13-31Z" fill="url(#gem)" stroke="#fff" stroke-width="1.7"/>
+ ${crown(c,"K")}
+ <g fill="${c.gem}" stroke="#fff4d3" stroke-width=".8"><path d="M120 59l7 12-7 12-7-12Z M120 249l7 12-7 12-7-12Z M32 166l10-7 10 7-10 7Z M188 166l10-7 10 7-10 7Z"/></g>
+ <text x="120" y="285" text-anchor="middle" font-family="Georgia,serif" font-size="11" font-weight="bold" fill="#fff1c3" letter-spacing="2.1">MYSTIC ROYALE</text>
  </svg>`;
  }
  const files=[];
- for(const suit of ["S","H","D","C"])for(const rank of ranks)files.push({path:`arena/cards-mystic/${suit}-${rank}.svg`,content:createCard(suit,rank)});
+ for(const suit of ["S","H","D","C"])for(const rank of ranks)files.push({path:`arena/cards-mystic/${suit}-${rank}.svg`,content:face(suit,rank)});
  files.push({path:"arena/cards-mystic/back.svg",content:back()});
  return files;
-})();
-for(const entry of files){const target=path.resolve(entry.path);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,entry.content,'utf8');}
-console.log('Generated '+files.length+' Mystic Royale card assets');
+})(portraits);
+for(const file of files){const target=path.join(root,file.path);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,file.content,'utf8');}
+console.log('Regenerated '+files.length+' cinematic Mystic Royale SVG assets');
