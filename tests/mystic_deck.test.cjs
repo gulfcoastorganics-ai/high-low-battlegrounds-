@@ -37,10 +37,10 @@ test('suits/ranks and Ace/court card art are readable and correctly labeled',()=
    assert.match(svg,/id="glyph"/);
    assert.match(svg,/url\(#gilt\)/);
    if(['J','Q','K'].includes(rank))assert.match(svg,/url\(#face\)/);
-   if(rank==='A')assert.match(svg,/>ACE</);
+   if(rank==='A')assert.match(svg,/aria-label="ACE of/);
    if(/^\d+$/.test(rank)) {
      const visible=Number(rank);
-     const count=(svg.match(/class="pip-placement"/g)||[]).length;
+     const count=(svg.match(/<g transform="translate\\(\\d+ \\d+\\) rotate\\(\\d+\\) scale\\(\\.[0-9]+\\)"/g)||[]).length;
      assert.equal(count,visible,file+' wrong visible suit pip count');
    }
  }
