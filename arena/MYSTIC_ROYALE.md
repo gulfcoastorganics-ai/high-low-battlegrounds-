@@ -1,3 +1,24 @@
+## V2 cinematic playing-card art
+
+The first Mystic Royale pass looked too abstract compared with the original visual concept: the numerical suits were too small and the King/Queen/Jack faces had simplistic vector portraits. This V2 revision changes those 52 **actual Arena playing card SVGs**:
+
+- Enlarges and enhances every suit pip with metallic jewel-like fills, glowing edges and highlights. Hearts now read crimson/pink and diamonds ruby-orange against royal blue and dark violet surfaces.
+- Replaces all **12 court-card vector faces** with detailed illustrated character artwork from the project's existing 12 premium portraits, embedded directly in the SVGs. These are portrait-based card compositions rather than new 3D or separately commissioned paintings.
+- Adds ornate medieval crowns and gold-framed illustration windows to the King/Queen/Jack cards, with bolder rank labels at the corners.
+- Makes each Ace a large luminous suit seal with a royal crown and stellar-ring ornament.
+- Redesigns the shared-dealer card back with a larger jeweled compass, crown and brighter purple-gold decoration.
+- Keeps the 52 ranks/suits and original game logic unchanged; both Arena boards and the dealer reveal use exactly the same card files.
+
+### What matches the mockup—and what doesn't
+
+The visual concept showed *full-screen fantasy lighting and original character illustrations* across the interface. The current playable V2 implements a more practical game-asset interpretation: high-contrast jeweled pips, illustrative court cards and gold trim. It does **not** replace the existing UI or guarantee an exact pixel-for-pixel match with the generated concept.
+
+**[View the 52 actual playing cards](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-mystic-deck-v2-cinematic/arena/deck-gallery.html)** · **[Play Arena with V2](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-mystic-deck-v2-cinematic/arena/index.html)**
+
+The generated `arena/tools/generate_mystic_deck.cjs` reads the 12 local `arena/art-premium/*.webp` files and embeds them into the court-card SVGs. No external image fetches are needed when those cards render.
+
+---
+
 # MYSTIC ROYALE — Arena's standard playing cards
 
 **View all 52 card faces:** [Mystic Royale Gallery](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-mystic-royal-deck/arena/deck-gallery.html)
