@@ -1,3 +1,11 @@
+## NEW: ARENA COMBAT WORKSTATION V5
+
+The Arena match interface now integrates the **4×4 battlefield**, **prediction controls**, and **compact tactical-character rail** on one desktop screen. Selected abilities display their portrait, Focus cost, target, and turn guidance. On mobile, use **BOARD / PREDICT / HAND** quick navigation. CPU and hotseat gameplay are preserved.
+
+**[Play Combat V5](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-combat-workstation-v5/arena/index.html)** · [Read the V5 UI/UX audit](COMBAT_WORKSTATION_V5.md)
+
+---
+
 ## ⚔ NEW: PLAY VS CPU — SOLO ARENA
 
 The Arena now has **Play vs CPU** (Casual / Standard / Expert) and retains **Local 2-Player** hotseat. Pick your rival's deck, then lock a HIGHER or LOWER prediction; the CPU takes its legal turn immediately and the shared dealer reveals both results. No login or network is required.
