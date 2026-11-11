@@ -1,0 +1,265 @@
+/* HIGH / LOW: BATTLEGROUNDS — COMBAT WORKSTATION V5
+   Visual/interaction redesign only. Engine, shared dealer and CPU policy unchanged.
+   Keep arena gameplay on one desktop viewport and offer fast navigation on phones. */
+:root{
+  --work-gold:#f1d398;
+  --work-line:#c9a3658a;
+  --work-green:#88d5ab;
+}
+.arena-match-shell{width:100%;max-width:1750px;min-width:0;margin:0 auto}
+.arena-match-shell .match-quick-nav{display:none}
+.arena-match-shell .arena-combat,
+.arena-match-shell .arena-main-grid,
+.arena-match-shell .arena-stage,
+.arena-match-shell .action-dock{min-width:0}
+.arena-match-shell .war-panel{overflow:visible}
+.arena-match-shell .war-panel.player{
+  border-color:#f5da9b;
+  box-shadow:inset 0 0 0 4px #07180f,0 0 0 1px #8d713c,0 0 24px #f4c97732,0 13px 26px #0009;
+}
+.arena-match-shell .war-panel.enemy{border-color:#ae915c}
+.arena-match-shell .play-tile.eligible{outline:2px solid #f9dda1;outline-offset:1px;box-shadow:0 0 0 2px #9b7639,0 0 10px #e4b96190}
+.arena-match-shell .play-tile.selected{
+  outline:3px solid #fff8cc;outline-offset:2px;
+  box-shadow:0 0 19px #f8db7abb,0 0 0 3px #997140,0 9px 15px #000b;
+}
+.arena-match-shell .war-panel.player .war-label small{color:#e0d3ac}
+.arena-match-shell .war-panel .war-metrics{flex-wrap:wrap;gap:7px}
+.arena-match-shell .war-panel .war-metrics b{font-variant-numeric:tabular-nums;color:#fce0a2}
+.arena-match-shell .action-dock .decision{border:1px solid #bfa36d80;background:linear-gradient(155deg,#0c281ddf,#051910ee);box-shadow:inset 0 1px #f4d49b14,0 7px 22px #0006}
+.arena-match-shell .action-dock .label{font-size:9px;letter-spacing:1.65px;color:#f1cf8e}
+.arena-match-shell .turn-tactic{
+  display:flex;flex-direction:column;gap:8px;overflow:hidden;
+  border-top:2px solid #cda966;
+}
+.turn-tactic .turn-tactic-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.turn-tactic .tactic-focus{font-size:10px;letter-spacing:.6px;color:#ffe4ae;font-weight:900;white-space:nowrap}
+.turn-tactic .tactic-identity{display:flex;gap:8px;align-items:center;min-width:0}
+.turn-tactic .tactic-thumb{
+  display:flex;align-items:center;justify-content:center;flex:none;
+  width:47px;height:58px;border:1px solid #d9b574;
+  border-radius:5px;background:#17382b;
+  box-shadow:inset 0 0 0 2px #061910,0 3px 9px #0007;overflow:hidden;
+}
+.turn-tactic .tactic-thumb img{width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.turn-tactic .tactic-empty-mark{font:24px 'Cinzel',Georgia,serif;color:#f6dca0}
+.turn-tactic .tactic-name{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.turn-tactic .tactic-name strong{font:700 13px 'Cinzel',Georgia,serif;color:#fff1ca;white-space:normal;line-height:1.2}
+.turn-tactic .tactic-name span{color:#c8d9c5;font-size:10px;line-height:1.4}
+.turn-tactic .tactic-clear{border:1px solid #d5b77a;background:#19352b;color:#f6deb1;width:30px;height:32px;flex:none;border-radius:6px;font-size:13px}
+.turn-tactic .tactic-clear:hover{background:#44583f}
+.turn-tactic .tactic-description{font-size:10px;color:#cbddca;line-height:1.5;margin:0}
+.turn-tactic .tactic-target{
+  color:#f4d59d;font-size:9px;letter-spacing:.5px;font-weight:900;
+  padding:6px 8px;background:#09241a;border:1px solid #b28f5b58;border-radius:5px;
+  font-variant-numeric:tabular-nums;
+}
+.turn-tactic .turn-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.turn-tactic .turn-step{display:flex;align-items:center;justify-content:center;gap:4px;padding:6px 2px;border-radius:5px;border:1px solid #a99c7860;background:#0c291e;color:#a4bcb1;font-size:8px;font-weight:900;letter-spacing:.2px}
+.turn-tactic .turn-step b{display:grid;place-items:center;width:17px;height:17px;border-radius:50%;border:1px solid #8c9577;font-size:9px;color:#c6d5c3}
+.turn-tactic .turn-step.is-current{border-color:#ecd092;background:#344633;color:#ffefc5}
+.turn-tactic .turn-step.is-current b{background:#f2d296;border-color:#f8e4b9;color:#193226}
+.turn-tactic .turn-step.is-complete{color:#94dfb3;border-color:#75aa8a}
+.turn-tactic .turn-step.is-complete b{background:#285b43;color:#d4fadd;border-color:#8bd4a4}
+.turn-tactic .tactic-next{margin:0;font-size:10px;line-height:1.5;color:#f5d89f}
+.arena-match-shell .odds-decision .selected-summary{font-size:11px;margin:8px 0 10px;color:#d4e4d4;line-height:1.35}
+.arena-match-shell .prob-col{font-size:9px}
+.arena-match-shell .prob-col b{font-size:17px}
+.arena-match-shell .guess-btn{letter-spacing:.7px}
+.arena-match-shell .play-controls .cta:disabled{opacity:.48;filter:grayscale(.25)}
+.arena-match-shell .play-controls .cta:not(:disabled){
+  box-shadow:inset 0 1px #fff9db,0 2px 0 #80643c,0 0 18px #e6be7670;
+}
+.arena-match-shell .action-hint{font-size:10px;line-height:1.5;color:#c4d8c8}
+.arena-match-shell .hand-shell{
+  border:1px solid #c5a46e96;
+  background:linear-gradient(160deg,#122d22,#051b14 75%);
+  box-shadow:inset 0 0 0 3px #061910,0 16px 32px #000a;
+  border-radius:12px;
+}
+.arena-match-shell .hand-header .section-label{color:#f3ce86}
+.arena-match-shell .hand-header b{color:#f7e8c7}
+.arena-match-shell .focus{color:#ffd893}
+.arena-match-shell .tactcard:disabled{opacity:.64}
+.arena-match-shell .tactcard.active{outline:2px solid #f9e6b4;outline-offset:1px;box-shadow:0 0 0 2px #f1d39d5c,0 0 18px #e4c37a85}
+.arena-match-shell .tactcard-inspect:focus-visible,.turn-tactic button:focus-visible,.match-quick-nav button:focus-visible{outline:3px solid #ffe4a7;outline-offset:2px}
+@media(min-width:1120px){
+  .arena-match-shell{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(222px,242px);
+    gap:11px;align-items:start;
+  }
+  .arena-match-shell .arena-combat{min-width:0}
+  .arena-match-shell .matchhead{
+    margin:6px 0 9px;min-height:57px;gap:8px;
+  }
+  .arena-match-shell .score-head{padding:7px 10px;min-height:55px;gap:7px}
+  .arena-match-shell .score-head .score{font-size:28px;line-height:1}
+  .arena-match-shell .score-head small{font-size:8px;letter-spacing:.8px}
+  .arena-match-shell .score-head b{font-size:10px}
+  .arena-match-shell .roundlabel strong{font-size:clamp(12px,1.3vw,16px)}
+  .arena-match-shell .roundlabel span{font-size:9px;letter-spacing:.65px}
+  .arena-match-shell .arena-main-grid{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(205px,220px);
+    gap:9px;max-width:none;margin:0;align-items:stretch;
+  }
+  .arena-match-shell .arena-stage{
+    display:grid;grid-template-columns:minmax(0,1.08fr) minmax(112px,.61fr) minmax(0,1.08fr);
+    gap:7px;align-items:stretch;min-width:0;max-width:none;margin:0;
+  }
+  .arena-match-shell .war-panel{padding:8px 6px 9px;border-width:2px;border-radius:14px;min-width:0}
+  .arena-match-shell .war-panel:before{inset:4px;border-radius:10px}
+  .arena-match-shell .war-label{font-size:9px;letter-spacing:.6px;padding:4px 0 7px;white-space:nowrap}
+  .arena-match-shell .war-label small{font-size:8px;letter-spacing:.35px;margin-top:3px}
+  .arena-match-shell .war-panel .card-grid{gap:3px;padding:1px;max-width:410px}
+  .arena-match-shell .war-panel .play-tile{border-radius:5px}
+  .arena-match-shell .war-panel .play-tile img{border-radius:5px;border-width:1px}
+  .arena-match-shell .war-metrics{font-size:9px;margin-top:9px}
+  .arena-match-shell .dealer-panel{
+    padding:9px 6px;border-radius:13px;min-width:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .arena-match-shell .dealer-panel .overline{font-size:8px;letter-spacing:.4px;margin-bottom:7px}
+  .arena-match-shell .dealer-panel .dealer-title{font-size:clamp(13px,1.4vw,18px);line-height:1.2;margin-bottom:4px}
+  .arena-match-shell .dealer-panel .dealer-stage{height:153px;margin:4px 0}
+  .arena-match-shell .dealer-panel .shoe{width:95px;height:137px}
+  .arena-match-shell .dealer-panel .shoe:after{font-size:45px}
+  .arena-match-shell .dealer-panel .muted{font-size:9px;line-height:1.4;margin:5px auto 10px}
+  .arena-match-shell .dealer-panel .counter{padding:6px 7px;font-size:9px;letter-spacing:.4px}
+  .arena-match-shell .action-dock{
+    display:flex;flex-direction:column;gap:7px;margin:0;max-width:none;
+    align-items:stretch;justify-content:flex-start;
+  }
+  .arena-match-shell .action-dock .decision{padding:9px 8px;border-radius:9px}
+  .arena-match-shell .turn-tactic{gap:6px}
+  .arena-match-shell .turn-tactic .tactic-thumb{width:39px;height:49px}
+  .arena-match-shell .turn-tactic .tactic-name strong{font-size:11px}
+  .arena-match-shell .turn-tactic .tactic-description{font-size:9px;line-height:1.3}
+  .arena-match-shell .turn-tactic .tactic-target{font-size:8px;padding:4px 6px}
+  .arena-match-shell .turn-tactic .turn-step{padding:4px 1px;font-size:7px;gap:2px}
+  .arena-match-shell .turn-tactic .turn-step b{height:15px;width:15px;font-size:8px}
+  .arena-match-shell .turn-tactic .tactic-next{font-size:9px;line-height:1.25}
+  .arena-match-shell .odds-decision .selected-summary{margin:5px 0 8px;font-size:10px}
+  .arena-match-shell .prob-line{gap:4px}
+  .arena-match-shell .prob-col b{font-size:15px}
+  .arena-match-shell .play-controls{
+    display:grid;grid-template-columns:1fr 1fr;gap:6px;
+  }
+  .arena-match-shell .guess-btn{min-height:48px;font-size:12px;padding:8px 2px}
+  .arena-match-shell .play-controls .cta{
+    grid-column:1/-1;min-height:39px;padding:8px;font-size:10px;
+  }
+  .arena-match-shell .play-controls .action-hint{
+    grid-column:1/-1;font-size:9px;text-align:center;line-height:1.35;
+  }
+  .arena-match-shell .hand-shell{
+    position:sticky;top:7px;margin:6px 0 0;padding:10px 7px;
+    min-width:0;max-height:calc(100dvh - 16px);
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .arena-match-shell .hand-header{
+    display:flex;gap:5px;flex-wrap:wrap;padding:0 1px 7px;margin:0 0 8px;
+    align-items:flex-start;
+  }
+  .arena-match-shell .hand-header b{font-size:11px}
+  .arena-match-shell .focus{font-size:10px}
+  .arena-match-shell .focus i{font-size:14px}
+  .arena-match-shell .hand-cards{
+    display:grid;grid-template-columns:minmax(0,1fr);
+    gap:5px;align-content:start;
+    overflow-y:auto;overflow-x:hidden;
+    max-height:calc(100dvh - 107px);min-height:0;
+    padding:2px 3px 8px;scrollbar-width:thin;
+  }
+  .arena-match-shell .tactcard-wrap{
+    width:100%;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) 28px;
+    padding:0;gap:5px;align-items:center;
+  }
+  .arena-match-shell .tactcard-wrap .tactcard{
+    position:relative;width:100%;min-width:0;height:67px;min-height:67px;
+    border-width:1px;border-radius:6px;transform:none;
+  }
+  .arena-match-shell .tactcard-wrap .tactcard:before{inset:2px;border-radius:3px;box-shadow:none}
+  .arena-match-shell .tactcard-wrap .tactcard:hover:not(:disabled){transform:translateX(2px)}
+  .arena-match-shell .tactcard-wrap .tactcard .tc-art{
+    inset:3px auto 3px 3px!important;
+    width:52px;height:auto;border:0;border-radius:4px;overflow:hidden;
+  }
+  .arena-match-shell .tactcard-wrap .tactcard .tc-art img{object-fit:cover;object-position:center 25%}
+  .arena-match-shell .tactcard-wrap .tactcard .tc-top{
+    left:62px;right:5px;top:4px;justify-content:flex-end;z-index:8;
+  }
+  .arena-match-shell .tactcard-wrap .tactcard .tc-top>span:first-child{display:none}
+  .arena-match-shell .tactcard-wrap .tc-cost{width:20px;height:20px;font-size:10px}
+  .arena-match-shell .tactcard-wrap .tactcard .tc-bottom{
+    left:60px;right:4px;bottom:4px;top:auto;min-height:0;
+    border:0;padding:2px 1px;background:transparent;box-shadow:none;
+  }
+  .arena-match-shell .tactcard-wrap .tactcard .tc-bottom strong{
+    font:700 10px 'Cinzel',Georgia,serif;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;
+  }
+  .arena-match-shell .tactcard-wrap .tactcard .tc-bottom small{
+    font-size:8px;margin:3px 0 0;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .arena-match-shell .tactcard-inspect{
+    width:28px;height:67px;min-height:0;margin:0;padding:0;
+    font-size:16px;display:grid;place-items:center;border-radius:6px;
+  }
+  .arena-match-shell .tactcard-inspect span{display:none}
+}
+@media(min-width:1600px){
+  .arena-match-shell{grid-template-columns:minmax(0,1fr) 275px;gap:13px}
+  .arena-match-shell .arena-main-grid{grid-template-columns:minmax(0,1fr) 255px;gap:12px}
+  .arena-match-shell .arena-stage{gap:10px}
+  .arena-match-shell .tactcard-wrap .tactcard,
+  .arena-match-shell .tactcard-inspect{height:76px;min-height:76px}
+  .arena-match-shell .tactcard-wrap .tactcard .tc-art{width:60px}
+  .arena-match-shell .tactcard-wrap .tactcard .tc-top{left:70px}
+  .arena-match-shell .tactcard-wrap .tactcard .tc-bottom{left:70px}
+  .arena-match-shell .tactcard-wrap .tactcard .tc-bottom strong{font-size:11px}
+}
+@media(max-width:1119px){
+  .arena-match-shell{display:block}
+  .arena-match-shell .hand-shell{margin:11px auto 18px}
+  .arena-match-shell .hand-cards{scroll-snap-type:x proximity}
+  .arena-match-shell .tactcard-wrap{scroll-snap-align:start}
+  .arena-match-shell .match-quick-nav{
+    display:flex;gap:4px;align-items:center;justify-content:center;
+    position:sticky;top:0;z-index:20;min-height:40px;
+    margin:5px 0 8px;padding:4px;background:#061d15f2;
+    border:1px solid #c5a5728c;border-radius:9px;
+    box-shadow:0 7px 16px #000b;backdrop-filter:blur(10px);
+  }
+  .arena-match-shell .match-quick-nav button{
+    flex:1;min-width:0;min-height:33px;border-radius:6px;
+    border:1px solid #bb9a6059;background:#103a29;
+    color:#f2d99d;font-size:10px;letter-spacing:1px;font-weight:900;
+  }
+  .arena-match-shell .match-quick-nav button:hover{border-color:#f0d49b;background:#2c543c}
+  .arena-match-shell .war-panel.player,.arena-match-shell .action-dock,.arena-match-shell .hand-shell{scroll-margin-top:60px}
+}
+@media(max-width:760px){
+  .arena-match-shell .action-dock{
+    margin:11px 0;display:grid;grid-template-columns:1fr;gap:8px;
+  }
+  .arena-match-shell .turn-tactic .tactic-identity{gap:12px}
+  .arena-match-shell .turn-tactic .tactic-thumb{width:56px;height:68px}
+  .arena-match-shell .turn-tactic .tactic-name strong{font-size:15px}
+  .arena-match-shell .turn-tactic .tactic-description{font-size:11px}
+  .arena-match-shell .turn-tactic .tactic-next{font-size:11px}
+  .arena-match-shell .play-controls{grid-template-columns:1fr 1fr}
+  .arena-match-shell .play-controls .cta{grid-column:1/-1;min-height:48px}
+  .arena-match-shell .play-controls .action-hint{grid-column:1/-1}
+  .arena-match-shell .hand-cards{display:flex;gap:10px;min-height:0;overflow-x:auto;overflow-y:hidden}
+  .arena-match-shell .tactcard-wrap{width:148px;min-width:148px}
+  .arena-match-shell .tactcard-wrap .tactcard{height:220px}
+  .arena-match-shell .tactcard-inspect{min-height:38px}
+}
+@media(max-width:390px){
+  .arena-match-shell .match-quick-nav button{font-size:9px;letter-spacing:.3px}
+  .arena-match-shell .war-metrics{gap:5px;font-size:9px}
+  .arena-match-shell .turn-tactic{padding:12px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+  .arena-match-shell .tactcard,.arena-match-shell .turn-steps,.arena-match-shell .play-tile{transition:none!important}
+}

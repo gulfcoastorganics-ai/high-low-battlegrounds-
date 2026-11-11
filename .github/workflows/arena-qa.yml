@@ -1,7 +1,7 @@
 name: Arena Phase 1 QA
 on:
   push:
-    branches: [ccg-pvp-battlegrounds, arena-character-overhaul, arena-premium-character-v2, arena-unified-art-v3, arena-character-v4, arena-play-vs-cpu]
+    branches: [ccg-pvp-battlegrounds, arena-character-overhaul, arena-premium-character-v2, arena-unified-art-v3, arena-character-v4, arena-play-vs-cpu, arena-combat-workstation-v5]
   pull_request:
     branches: [v8-aurum-elite, ccg-pvp-battlegrounds]
   workflow_dispatch:
@@ -40,5 +40,7 @@ jobs:
         run: python tests/arena_browser_check.py
       - name: Solo CPU browser regression checks
         run: python tests/arena_cpu_browser.py
+      - name: Combat workstation layout and flow checks
+        run: python tests/arena_combat_ui_browser.py
       - name: Original Classic browser regression checks
         run: python tests/browser_checks.py

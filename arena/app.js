@@ -65,6 +65,42 @@ return `<div class="tactcard-wrap">
 </button><button type="button" class="tactcard-inspect" data-act="inspect" data-id="${id}" aria-label="Inspect ${esc(ch.name)}">ⓘ <span>DETAILS</span></button>
 </div>`;
 }
+function tacticSummary(m,i){
+  const id=state.card,card=id?A.CARDS[id]:null,ch=id?CH[id]:null;
+  const cost=card?A.price(m,i,id):0;
+  const selected=state.chosen!=null&&m.players[i].board[state.chosen]?.alive;
+  const enemyRequired=card?.target==='enemy'&&state.target==null;
+  const ready=selected&&state.guess&&!A.inspectMove(m,i,{idx:state.chosen,guess:state.guess,cardId:id,cardTarget:state.target});
+  let next;
+  if(state.error)next=state.error;
+  else if(enemyRequired)next='Choose a living enemy position for your disruption.';
+  else if(!selected)next='Select one of your gold-highlighted territory cards.';
+  else if(!state.guess)next='Choose HIGHER or LOWER using the public odds.';
+  else if(ready)next='Ready to lock. Both predictions will use the same dealer card.';
+  else next='Check your card target and available Focus before locking.';
+  const targetText=selected?'TERRITORY '+String(state.chosen+1).padStart(2,'0')+' · '+A.cardCode(m.players[i].board[state.chosen].card):'NO TERRITORY SELECTED';
+  const portraitElement=card?`<img src="${portrait(id)}" alt="" loading="lazy">`:'<span class="tactic-empty-mark">✦</span>';
+  const identity=card?`<strong>${esc(ch.name)}</strong><span>${esc(card.name)}</span>`:'<strong>STANDARD PREDICTION</strong><span>No ability armed · tactical cards are optional</span>';
+  const costBadge=card?`<span class="tactic-focus">✦ ${cost} FOCUS</span>`:'<span class="tactic-focus">FREE</span>';
+  const effect=card?`<p class="tactic-description">${esc(card.text)}</p>`:'<p class="tactic-description">Choose a character from your tactical hand to activate an ability, or predict without one.</p>';
+  const steps=[
+    ['1','TARGET',selected&&!enemyRequired],
+    ['2','PREDICT',!!state.guess],
+    ['3','LOCK',!!ready]
+  ];
+  const current=enemyRequired||!selected?0:!state.guess?1:2;
+  return `<div class="turn-tactic decision" data-selected-tactic="${id||'none'}">
+    <div class="turn-tactic-top"><span class="label">YOUR TACTIC</span>${costBadge}</div>
+    <div class="tactic-identity"><span class="tactic-thumb">${portraitElement}</span>
+      <span class="tactic-name">${identity}</span>
+      ${card?'<button class="tactic-clear" type="button" data-act="clear" aria-label="Cancel tactical ability">✕</button>':''}
+    </div>
+    ${effect}
+    <div class="tactic-target" aria-label="Selected position">${esc(targetText)}${card?.target==='enemy'&&state.target!=null?' · ENEMY '+(state.target+1):''}</div>
+    <div class="turn-steps" aria-label="Steps to complete your turn">${steps.map(([num,label,done],index)=>`<span class="turn-step ${done?'is-complete':''} ${index===current?'is-current':''}"><b>${done?'✓':num}</b><span>${label}</span></span>`).join('')}</div>
+    <p class="tactic-next" role="status">${esc(next)}</p>
+  </div>`;
+}
 function game(){
 const m=state.m,i=m.next===-1?0:m.next,j=1-i,p=m.players[i],o=m.players[j],idx=state.chosen;
 const cell=idx!=null?p.board[idx]:null,od=cell?.alive?A.knownOdds(m,cell.card):null;
@@ -73,21 +109,21 @@ const a={idx,guess:state.guess,cardId:state.card,cardTarget:state.target};
 const valid=m.phase==='commit'&&idx!=null&&state.guess&&!A.inspectMove(m,i,a);
 const ability=state.card?A.CARDS[state.card]:null;
 const hint=state.error||(ability?(ability.target==='enemy'&&state.target==null?'Choose a living enemy target first.':ability.text):'Tactical cards are optional. Choose a gold-lit position and then HIGHER or LOWER.');
-return `<div class="arena-match-shell"><div class="arena-combat"><section class="matchhead"><div class="score-head enemy"><div><small>CONTENDER 0${j+1}</small><b>${esc(o.name)}</b></div><span class="score">${A.remaining(o)}</span></div>
+return `<div class="arena-match-shell"><nav class="match-quick-nav" aria-label="Jump between Arena controls"><button type="button" data-act="jump-board">♠ BOARD</button><button type="button" data-act="jump-controls">▲ PREDICT</button><button type="button" data-act="jump-hand">✦ HAND</button></nav><div class="arena-combat"><section class="matchhead"><div class="score-head enemy"><div><small>CONTENDER 0${j+1}</small><b>${esc(o.name)}</b></div><span class="score">${A.remaining(o)}</span></div>
 <div class="roundlabel"><strong>${m.round==='sudden'?'SUDDEN DEATH':state.mode==='cpu'?'VS CPU · '+CPU.DIFFICULTIES[state.cpuDifficulty].label.toUpperCase():'ARENA DUEL'}</strong><span>DRAW ${String(m.turn).padStart(2,'0')} / ${m.maxTurns}</span></div>
 <div class="score-head"><span class="score">${A.remaining(p)}</span><div><small>NOW DECIDING</small><b>${esc(p.name)}</b></div></div></section>
 <div class="arena-main-grid"><section class="arena-stage">${tileGrid(m,j,false)}
 <div class="dealer-panel"><div class="overline">♠ &nbsp; THE SHARED DEALER &nbsp; ♠</div><div class="dealer-title">THE NEXT CARD</div><div class="dealer-stage"><div class="shoe"></div></div>
 <p class="muted">One hidden draw. Two locked predictions. No preview.</p><span class="counter">DRAW ${m.turn} OF ${m.maxTurns}</span></div>
 ${tileGrid(m,i,true)}</section>
-<section class="action-dock"><div class="decision"><div class="label">PROBABILITY INTELLIGENCE</div><div class="selected-summary">${cell?.alive?`TARGET ${idx+1} · ${A.cardCode(cell.card)} · RANK ${A.rank(cell.card)}`:'Choose a gold-highlighted position to calculate public odds.'}</div>
+<section class="action-dock">${tacticSummary(m,i)}<div class="decision odds-decision"><div class="label">PUBLIC ODDS</div><div class="selected-summary">${cell?.alive?`CARD ${A.cardCode(cell.card)} · RANK ${A.rank(cell.card)}`:'Select your territory to calculate the odds.'}</div>
 <div class="prob-line">${odds('LOWER','lower','#e28f76')}${odds('HIGHER','higher','#8edcaa')}${odds('TIE / LOSS','tie','#ad9198')}</div></div>
-<div class="decision play-controls"><button class="guess-btn low${state.guess==='LOWER'?' active':''}" data-act="guess" data-value="LOWER">▼ LOWER</button>
+<div class="decision play-controls" aria-label="Prediction controls"><button class="guess-btn low${state.guess==='LOWER'?' active':''}" data-act="guess" data-value="LOWER">▼ LOWER</button>
 <button class="guess-btn high${state.guess==='HIGHER'?' active':''}" data-act="guess" data-value="HIGHER">▲ HIGHER</button>
-<button class="cta" data-act="lock" ${valid?'':'disabled'}>LOCK DECISION →</button><div class="action-hint">${esc(hint)}</div></div></section></div></div>
-<section class="hand-shell"><div class="hand-header"><div><div class="section-label">THE TACTICAL HAND</div><b>${esc(p.name)} · ${p.hand.length} IN HAND</b></div><div class="focus"><i>✦</i> FOCUS ${m.round==='sudden'?'—':p.focus}/5</div></div>
+<button class="cta" data-act="lock" ${valid?'':'disabled'}>LOCK DECISION →</button><div class="action-hint">${esc(state.error||(!cell?.alive?"Select your territory first.":!state.guess?"Choose a direction.":valid?"Decision ready to lock.":hint))}</div></div></section></div></div>
+<section class="hand-shell"><div class="hand-header"><div><div class="section-label">SELECT A CHARACTER</div><b>TACTICAL HAND · ${p.hand.length} CARDS</b></div><div class="focus"><i>✦</i> FOCUS ${m.round==='sudden'?'—':p.focus}/5</div></div>
 <div class="hand-cards">${m.round==='sudden'?'Sudden death is standard-card only.':p.hand.length?p.hand.map(tactical).join(''):'Your tactical hand is empty. Continue predicting with standard cards.'}</div>
-${ability?`<div style="font-size:11px;color:#e9d3a6">ACTIVE: ${esc(ability.name)} · ${esc(ability.text)} <button class="button" style="padding:6px 10px;margin-left:8px" data-act="clear">CANCEL</button></div>`:''}</section></div>`;
+</section></div>`;
 }
 function builder(){
 const deck=state.decks[state.editor],count={};deck.forEach(id=>count[id]=(count[id]||0)+1);
@@ -150,6 +186,11 @@ function start(){
 }
 document.addEventListener('click',event=>{
 const b=event.target.closest('[data-act]');if(!b)return;const x=b.dataset.act,id=b.dataset.id,i=Number(b.dataset.idx),m=state.m;
+if(x==='jump-board'||x==='jump-controls'||x==='jump-hand'){
+ const selector=x==='jump-board'?'.war-panel.player':x==='jump-controls'?'.action-dock':'.hand-shell';
+ document.querySelector(selector)?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+ return;
+}
 if(x==='builder'){state.editor=Number(b.dataset.player);state.overlay='builder';}
 if(x==='inspect'){state.inspect=id;state.returnOverlay=state.overlay;state.overlay='inspect';}
 if(x==='close-inspect'){state.overlay=state.returnOverlay||null;state.inspect=null;state.returnOverlay=null;}
