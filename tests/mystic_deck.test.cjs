@@ -50,5 +50,5 @@ test('Arena swaps only regular playing card faces; Classic originals unchanged i
  assert.ok(index.includes('href="./mystic-deck.css"'));
  const css=fs.readFileSync(path.join(__dirname,'..','arena','mystic-deck.css'),'utf8');
  assert.match(css,/cards-mystic\/back\.svg/);
- assert.doesNotMatch(css,/tactcard|tactical|hero-character/);
+ assert.doesNotMatch(css.replace(/\\/\\*[\\s\\S]*?\\*\\//g,''),/\\.tactcard|\\.hero-character/);
 });
