@@ -1,0 +1,31 @@
+/* Mystic Royale — standard playing card art only.
+   All character/tactical cards, UI panels, Classic Mode and game rules remain unchanged. */
+.arena-app .dealer-panel .shoe{
+ background:#0e1151 url("./cards-mystic/back.svg") center / 100% 100% no-repeat !important;
+ border:0 !important;
+ border-radius:9px;
+ box-shadow:0 0 0 2px #e0bc79,0 0 15px #915ae38a,0 14px 23px #000c !important;
+ overflow:hidden;
+}
+.arena-app .dealer-panel .shoe::before,
+.arena-app .dealer-panel .shoe::after{content:none!important;display:none!important}
+.arena-app .play-tile:not(.burned) img{
+ background:#10133d;
+ border:1px solid #cba36e;
+ box-shadow:inset 0 0 0 1px #efd39a;
+}
+.arena-app .play-tile.eligible img{
+ border-color:#ffe2a5;
+ filter:drop-shadow(0 0 2px #7e61fb5e);
+}
+.arena-app .play-tile.selected img{
+ border-color:#fff6c7;
+}
+.arena-app .dealer-large{
+ background:#0e1546;
+ border:1px solid #f0ce91;
+ box-shadow:0 8px 28px #070821a8,0 0 15px #8757e67a;
+}
+@media(prefers-reduced-motion:reduce){
+ .arena-app .play-tile.eligible img{filter:none}
+}

@@ -9,7 +9,7 @@ const portrait=id=>PREMIUM_IDS.has(id)?'./art-premium/'+id+'.webp':CH[id]?.portr
 const state={scene:'lobby',overlay:null,m:null,mode:'hotseat',cpuDifficulty:'standard',cpuInitial:null,decks:[A.STARTERS.balanced.slice(),A.STARTERS.balanced.slice()],editor:0,chosen:null,guess:null,card:null,target:null,error:''};
 try{const d=JSON.parse(localStorage.getItem('hl-arena-decks-v1')||'null');if(Array.isArray(d)&&d.length===2&&d.every(x=>!A.validateDeck(x)))state.decks=d;}catch(_){}
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const image=id=>'../assets/cards/'+A.cardCode(id)+'.svg',pct=(n,d)=>d?Math.round(n/d*100):0,me=()=>state.m?.next??0;
+const image=id=>'./cards-mystic/'+A.cardCode(id)+'.svg',pct=(n,d)=>d?Math.round(n/d*100):0,me=()=>state.m?.next??0;
 const reset=()=>{state.chosen=null;state.guess=null;state.card=null;state.target=null;state.error='';};
 function starterName(deck){return Object.keys(A.STARTERS).find(n=>JSON.stringify(deck)===JSON.stringify(A.STARTERS[n]))||'custom';}
 function showcase(){

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="Mystic Royale dealer card back" data-theme="mystic-royale">
+ <defs>
+  <linearGradient id="paper" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#151046"/><stop offset=".30" stop-color="#101f69"/><stop offset=".63" stop-color="#26125a"/><stop offset="1" stop-color="#06133c"/></linearGradient>
+  <radialGradient id="nebula" cx=".53" cy=".38" r=".8"><stop stop-color="#387cf8" stop-opacity=".48"/><stop offset=".5" stop-color="#387cf8" stop-opacity=".07"/><stop offset="1" stop-color="#387cf8" stop-opacity="0"/></radialGradient>
+  <linearGradient id="gilt" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff3bb"/><stop offset=".22" stop-color="#ba7a3a"/><stop offset=".42" stop-color="#ffdc84"/><stop offset=".69" stop-color="#8b4d2b"/><stop offset=".85" stop-color="#f5d185"/><stop offset="1" stop-color="#fff0bc"/></linearGradient>
+  <linearGradient id="pipFill" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fef8ff"/><stop offset=".19" stop-color="#b0e9ff"/><stop offset=".58" stop-color="#79cfff"/><stop offset="1" stop-color="#387cf8"/></linearGradient>
+  <radialGradient id="orb"><stop stop-color="#f9ebff" stop-opacity=".7"/><stop offset=".33" stop-color="#387cf8" stop-opacity=".33"/><stop offset="1" stop-color="#387cf8" stop-opacity="0"/></radialGradient>
+  <linearGradient id="silk" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b0e9ff"/><stop offset=".25" stop-color="#101f69"/><stop offset=".6" stop-color="#06133c"/><stop offset="1" stop-color="#387cf8"/></linearGradient>
+  <linearGradient id="face" x1=".27" y1="0" x2=".8" y2="1"><stop stop-color="#ffe8bf"/><stop offset=".37" stop-color="#d49c87"/><stop offset="1" stop-color="#795069"/></linearGradient>
+  <filter id="halo" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.6"/></filter>
+  <pattern id="stars" width="51" height="59" patternUnits="userSpaceOnUse">
+    <circle cx="10" cy="17" r=".85" fill="#f9edff" opacity=".5"/>
+    <circle cx="42" cy="43" r="1.1" fill="#b0e9ff" opacity=".45"/>
+    <path d="M29 5v6m-3-3h6" stroke="#ddd6ff" stroke-width=".7" opacity=".45"/>
+  </pattern>
+  <path id="glyph" d="M0 -45 C-11 -26 -40 -7 -40 15 C-40 35 -23 42 -8 29 L-16 45 H16 L8 29 C23 42 40 35 40 15 C40 -7 11 -26 0 -45Z"/>
+ </defs>
+ <rect x="2" y="2" width="236" height="332" rx="14" fill="#080d2b" stroke="#f1d48b" stroke-width="3"/>
+ <rect x="7" y="7" width="226" height="322" rx="11" fill="url(#paper)" stroke="url(#gilt)" stroke-width="3"/>
+ <rect x="13" y="13" width="214" height="310" rx="8" fill="url(#stars)" stroke="#deb980" stroke-width="1"/>
+ <path d="M120 17L224 166L120 319L16 166Z" fill="none" stroke="#b0e9ff" stroke-width="1.2" opacity=".55"/>
+ <path d="M120 36L203 166L120 300L37 166Z" fill="none" stroke="url(#gilt)" stroke-width="3.5"/>
+ <circle cx="120" cy="166" r="81" fill="url(#nebula)" stroke="url(#gilt)" stroke-width="2.5"/>
+ <circle cx="120" cy="166" r="69" fill="none" stroke="#ba92ff" stroke-width="2" stroke-dasharray="3 4"/>
+ <circle cx="120" cy="166" r="60" fill="none" stroke="#eed59f" stroke-width="1.5"/>
+ <path d="M120 75L130 146L201 166L130 186L120 257L110 186L39 166L110 146Z" fill="#653bb1" stroke="url(#gilt)" stroke-width="3"/>
+ <path d="M120 110L135 166L120 224L105 166Z" fill="url(#pipFill)" stroke="#fff3c2" stroke-width="2"/>
+ <path d="M72 125L87 104L101 122L120 96L139 122L153 104L168 125L161 146H79Z" fill="url(#gilt)" stroke="#fff2bc" stroke-width="2"/>
+ <circle cx="120" cy="129" r="7" fill="#8b55df" stroke="#fff0c0" stroke-width="2"/>
+ <g fill="none" stroke="#f0d39c" stroke-width="1.2">
+   <path d="M33 32h41l12 12m121-12h-41l-12 12M33 304h41l12-12m121 12h-41l-12-12"/>
+   <path d="M42 85l15-8-7-17m148 25-15-8 7-17M42 251l15 8-7 17m148-25-15 8 7 17"/>
+ </g>
+ <path d="M119 20l7 8-7 8-7-8ZM120 299l7 8-7 8-7-8Z" fill="#b0e9ff"/>
+ <text x="120" y="284" text-anchor="middle" fill="#ffe1a1" font-family="Georgia,serif" font-size="10" font-weight="bold" letter-spacing="2">THE ARCANA</text>
+ </svg>

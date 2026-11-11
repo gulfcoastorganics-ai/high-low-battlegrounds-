@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="6 of Spades — Mystic Royale" data-card="S-6" data-rank="6" data-suit="S" data-theme="mystic-royale">
+ <defs>
+  <linearGradient id="paper" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#151046"/><stop offset=".30" stop-color="#101f69"/><stop offset=".63" stop-color="#26125a"/><stop offset="1" stop-color="#06133c"/></linearGradient>
+  <radialGradient id="nebula" cx=".53" cy=".38" r=".8"><stop stop-color="#387cf8" stop-opacity=".48"/><stop offset=".5" stop-color="#387cf8" stop-opacity=".07"/><stop offset="1" stop-color="#387cf8" stop-opacity="0"/></radialGradient>
+  <linearGradient id="gilt" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff3bb"/><stop offset=".22" stop-color="#ba7a3a"/><stop offset=".42" stop-color="#ffdc84"/><stop offset=".69" stop-color="#8b4d2b"/><stop offset=".85" stop-color="#f5d185"/><stop offset="1" stop-color="#fff0bc"/></linearGradient>
+  <linearGradient id="pipFill" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fef8ff"/><stop offset=".19" stop-color="#b0e9ff"/><stop offset=".58" stop-color="#79cfff"/><stop offset="1" stop-color="#387cf8"/></linearGradient>
+  <radialGradient id="orb"><stop stop-color="#f9ebff" stop-opacity=".7"/><stop offset=".33" stop-color="#387cf8" stop-opacity=".33"/><stop offset="1" stop-color="#387cf8" stop-opacity="0"/></radialGradient>
+  <linearGradient id="silk" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b0e9ff"/><stop offset=".25" stop-color="#101f69"/><stop offset=".6" stop-color="#06133c"/><stop offset="1" stop-color="#387cf8"/></linearGradient>
+  <linearGradient id="face" x1=".27" y1="0" x2=".8" y2="1"><stop stop-color="#ffe8bf"/><stop offset=".37" stop-color="#d49c87"/><stop offset="1" stop-color="#795069"/></linearGradient>
+  <filter id="halo" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="2.6"/></filter>
+  <pattern id="stars" width="51" height="59" patternUnits="userSpaceOnUse">
+    <circle cx="10" cy="17" r=".85" fill="#f9edff" opacity=".5"/>
+    <circle cx="42" cy="43" r="1.1" fill="#b0e9ff" opacity=".45"/>
+    <path d="M29 5v6m-3-3h6" stroke="#ddd6ff" stroke-width=".7" opacity=".45"/>
+  </pattern>
+  <path id="glyph" d="M0 -45 C-11 -26 -40 -7 -40 15 C-40 35 -23 42 -8 29 L-16 45 H16 L8 29 C23 42 40 35 40 15 C40 -7 11 -26 0 -45Z"/>
+ </defs>
+ <rect x="1" y="1" width="238" height="334" rx="15" fill="#06091d" stroke="#29134d" stroke-width="2"/>
+ <rect x="5" y="5" width="230" height="326" rx="13" fill="url(#paper)"/>
+ <rect x="8" y="8" width="224" height="320" rx="11" fill="url(#nebula)"/>
+ <rect x="8" y="8" width="224" height="320" rx="11" fill="url(#stars)"/>
+ <path d="M26 67Q68 49 120 64Q173 49 214 67V269Q171 286 120 272Q67 286 26 269Z" fill="none" stroke="#79cfff" stroke-width=".6" opacity=".27"/>
+ <circle cx="120" cy="166" r="96" fill="none" stroke="#b0e9ff" stroke-width=".9" opacity=".16"/>
+ <circle cx="120" cy="166" r="82" fill="none" stroke="url(#gilt)" stroke-width=".85" opacity=".39" stroke-dasharray="2 5"/>
+ <path d="M120 64v16m0 172v16m-95-102h16m158 0h16M55 95l13 13m104 116 13 13M185 95l-13 13M68 224l-13 13" stroke="#b0e9ff" opacity=".28" stroke-width="1"/>
+ <rect x="8" y="8" width="224" height="320" rx="11" fill="none" stroke="url(#gilt)" stroke-width="3"/>
+ <rect x="12" y="12" width="216" height="312" rx="9" fill="none" stroke="#e8c882" stroke-opacity=".6" stroke-width=".8"/>
+ <path d="M13 56V25Q13 13 25 13H55M185 13h30q13 0 13 13v30M13 280v30q0 13 13 13h30M185 323h30q13 0 13-13v-30" stroke="#f7d596" stroke-width="1.8" fill="none" opacity=".72"/>
+ <path d="M21 72l5-9 5 9-5 9Z M214 72l-5-9-5 9 5 9Z M21 264l5-9 5 9-5 9Z M214 264l-5-9-5 9 5 9Z" fill="#b0e9ff" opacity=".6"/>
+ <path d="M120 18l6 9-6 9-6-9Z M120 300l6 9-6 9-6-9Z" fill="url(#gilt)" stroke="#fff1bc" stroke-width=".8"/>
+ <g opacity=".6"><circle cx="120" cy="27" r="3.5" fill="url(#orb)"/><circle cx="120" cy="309" r="3.5" fill="url(#orb)"/></g>
+ <circle cx="120" cy="166" r="59" fill="url(#orb)" opacity=".38"/>
+    <circle cx="120" cy="166" r="62" fill="none" stroke="#79cfff" stroke-width=".8" opacity=".3"/>
+    <path d="M120 89l7 13-7 13-7-13Z M120 218l7 13-7 13-7-13Z" fill="#b0e9ff" opacity=".19"/><g transform="translate(91 108) rotate(0) scale(0.29)">
+   <use href="#glyph" fill="#79cfff" opacity=".42" filter="url(#halo)"/>
+   <use href="#glyph" fill="url(#pipFill)" stroke="#fff4da" stroke-width="2.4"/>
+   <use href="#glyph" fill="none" stroke="#191149" stroke-width="1.2" transform="scale(.85)"/>
+  </g><g transform="translate(149 108) rotate(0) scale(0.29)">
+   <use href="#glyph" fill="#79cfff" opacity=".42" filter="url(#halo)"/>
+   <use href="#glyph" fill="url(#pipFill)" stroke="#fff4da" stroke-width="2.4"/>
+   <use href="#glyph" fill="none" stroke="#191149" stroke-width="1.2" transform="scale(.85)"/>
+  </g><g transform="translate(91 165) rotate(0) scale(0.29)">
+   <use href="#glyph" fill="#79cfff" opacity=".42" filter="url(#halo)"/>
+   <use href="#glyph" fill="url(#pipFill)" stroke="#fff4da" stroke-width="2.4"/>
+   <use href="#glyph" fill="none" stroke="#191149" stroke-width="1.2" transform="scale(.85)"/>
+  </g><g transform="translate(149 165) rotate(0) scale(0.29)">
+   <use href="#glyph" fill="#79cfff" opacity=".42" filter="url(#halo)"/>
+   <use href="#glyph" fill="url(#pipFill)" stroke="#fff4da" stroke-width="2.4"/>
+   <use href="#glyph" fill="none" stroke="#191149" stroke-width="1.2" transform="scale(.85)"/>
+  </g><g transform="translate(91 222) rotate(180) scale(0.29)">
+   <use href="#glyph" fill="#79cfff" opacity=".42" filter="url(#halo)"/>
+   <use href="#glyph" fill="url(#pipFill)" stroke="#fff4da" stroke-width="2.4"/>
+   <use href="#glyph" fill="none" stroke="#191149" stroke-width="1.2" transform="scale(.85)"/>
+  </g><g transform="translate(149 222) rotate(180) scale(0.29)">
+   <use href="#glyph" fill="#79cfff" opacity=".42" filter="url(#halo)"/>
+   <use href="#glyph" fill="url(#pipFill)" stroke="#fff4da" stroke-width="2.4"/>
+   <use href="#glyph" fill="none" stroke="#191149" stroke-width="1.2" transform="scale(.85)"/>
+  </g>
+ <g><text x="18" y="47" font-family="Georgia,Times New Roman,serif" font-size="35" font-weight="700" fill="#fff4d5" stroke="#36205d" stroke-width=".35" paint-order="stroke" letter-spacing="-1.5">6</text>
+ <use href="#glyph" transform="translate(26 61) scale(.17)" fill="url(#pipFill)" stroke="#b0e9ff" stroke-width="3"/></g><g transform="translate(240 336) rotate(180)"><g><text x="18" y="47" font-family="Georgia,Times New Roman,serif" font-size="35" font-weight="700" fill="#fff4d5" stroke="#36205d" stroke-width=".35" paint-order="stroke" letter-spacing="-1.5">6</text>
+ <use href="#glyph" transform="translate(26 61) scale(.17)" fill="url(#pipFill)" stroke="#b0e9ff" stroke-width="3"/></g></g>
+ </svg>

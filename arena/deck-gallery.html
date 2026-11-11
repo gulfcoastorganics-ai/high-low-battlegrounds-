@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10113b">
+<title>Mystic Royale — 52-Card Playing Deck</title>
+<style>
+:root{color-scheme:dark;--gilt:#eed3a0}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#32217b 0%,#161449 35%,#080b27 78%);color:#fff3dc;font:14px system-ui,sans-serif}
+main{max-width:1200px;margin:auto;padding:22px 17px 50px}header{display:flex;gap:20px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid #ba9c6780}
+h1{font:700 clamp(25px,4vw,48px) Georgia,serif;margin:3px 0;color:#f7dea2}h2{font:600 20px Georgia,serif;margin:30px 0 14px;color:#ffe7af}.eyebrow{font-size:10px;letter-spacing:3px;color:#c7b1ee;font-weight:800}
+p{color:#d2c9e1;line-height:1.5;margin:0}.back{display:inline-block;padding:11px 16px;color:#f2d69d;border:1px solid #cbb07a;border-radius:9px;text-decoration:none;white-space:nowrap}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:21px 0}.filter{color:#e7d7ff;border:1px solid #bb9b7180;background:#1b1b56;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer}
+.filter[aria-pressed=true]{background:linear-gradient(130deg,#6e3db3,#253a8a);color:#fff2bb;border-color:#f3d5a1}
+.deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(102px,1fr));gap:13px}
+.deck-grid img{display:block;width:100%;height:auto;aspect-ratio:5/7;object-fit:fill;filter:drop-shadow(0 10px 7px #0008);transition:transform .18s,filter .18s}
+.deck-grid img:hover,.deck-grid img:focus{transform:translateY(-7px);filter:drop-shadow(0 13px 10px #000a) drop-shadow(0 0 6px #ae7aff)}
+.deck-grid figure{margin:0}.deck-grid figcaption{text-align:center;color:#e3d8ee;padding:8px 0 4px;font-size:11px}
+.back-card{max-width:170px;margin:22px 0}.back-card img{width:100%;border-radius:10px;box-shadow:0 16px 28px #0007}
+footer{margin-top:27px;color:#b7b0c8;font-size:11px}
+@media(max-width:450px){main{padding:15px 11px}.deck-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.deck-grid figcaption{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.deck-grid img{transition:none}}
+</style>
+</head>
+<body><main>
+<header><div><div class="eyebrow">HIGH / LOW · BATTLEGROUNDS</div><h1>MYSTIC ROYALE</h1><p>All 52 original royal-blue and purple playing cards, plus the matching celestial dealer back.</p></div><a class="back" href="./index.html">← RETURN TO ARENA</a></header>
+<nav aria-label="Filter playing cards">
+<button type="button" class="filter" data-suit="all" aria-pressed="true">All 52</button>
+<button type="button" class="filter" data-suit="S" aria-pressed="false">♠ Spades</button>
+<button type="button" class="filter" data-suit="H" aria-pressed="false">♥ Hearts</button>
+<button type="button" class="filter" data-suit="D" aria-pressed="false">♦ Diamonds</button>
+<button type="button" class="filter" data-suit="C" aria-pressed="false">♣ Clubs</button>
+</nav><div id="deck" class="deck-grid" aria-label="Playing card gallery"></div>
+<h2>The Shared Dealer</h2><div class="back-card"><img alt="Mystic Royale celestial deck back" src="./cards-mystic/back.svg"></div>
+<footer>These are playing-card illustrations only. Rank comparisons, Focus, fatigue, CPU strategy, and Classic Mode are unchanged.</footer>
+</main>
+<script>
+const suits={S:"Spades",H:"Hearts",D:"Diamonds",C:"Clubs"};
+const ranks=["A","K","Q","J","10","9","8","7","6","5","4","3","2"];
+const deck=document.getElementById("deck");
+function drawCards(suit="all"){
+ const cards=Object.entries(suits).filter(([code])=>suit==="all"||code===suit)
+ .flatMap(([code,name])=>ranks.map(rank=>({code,name,rank})));
+ deck.innerHTML=cards.map(({code,name,rank})=>{
+ const path="./cards-mystic/"+code+"-"+rank+".svg";
+ const alt=(rank==="A"?"Ace":rank==="K"?"King":rank==="Q"?"Queen":rank==="J"?"Jack":rank)+" of "+name;
+ return '<figure><img src="'+path+'" alt="'+alt+'" loading="lazy"><figcaption>'+alt+'</figcaption></figure>';
+ }).join("");
+}
+document.querySelectorAll(".filter").forEach(button=>button.addEventListener("click",()=>{
+ document.querySelectorAll(".filter").forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
+ drawCards(button.dataset.suit);
+}));
+drawCards();
+</script>
+</body></html>

@@ -1,7 +1,7 @@
 name: Arena Phase 1 QA
 on:
   push:
-    branches: [ccg-pvp-battlegrounds, arena-character-overhaul, arena-premium-character-v2, arena-unified-art-v3, arena-character-v4, arena-play-vs-cpu, arena-combat-workstation-v5]
+    branches: [ccg-pvp-battlegrounds, arena-character-overhaul, arena-premium-character-v2, arena-unified-art-v3, arena-character-v4, arena-play-vs-cpu, arena-combat-workstation-v5, arena-mystic-royal-deck]
   pull_request:
     branches: [v8-aurum-elite, ccg-pvp-battlegrounds]
   workflow_dispatch:
@@ -22,7 +22,11 @@ jobs:
           node --check arena/characters.js
           node --check arena/cpu.js
       - name: Verify original V8 and new Arena rules
-        run: node --test tests/core.test.cjs tests/v8-tactical.test.cjs tests/arena.test.cjs tests/characters.test.cjs tests/premium_art_v3.test.cjs tests/arena_cpu.test.cjs
+        run: node --test tests/core.test.cjs tests/v8-tactical.test.cjs tests/arena.test.cjs tests/characters.test.cjs tests/premium_art_v3.test.cjs tests/arena_cpu.test.cjs tests/mystic_deck.test.cjs
+      - name: Confirm 53 Mystic Royale images regenerate deterministically
+        run: |
+          node arena/tools/generate_mystic_deck.cjs
+          git diff --exit-code -- arena/cards-mystic/
       - name: Simulate 100,000 complete Arena matches
         run: node tests/arena_balance.cjs --games 100000
   browser:
@@ -42,5 +46,7 @@ jobs:
         run: python tests/arena_cpu_browser.py
       - name: Combat workstation layout and flow checks
         run: python tests/arena_combat_ui_browser.py
+      - name: Check all Mystic Royale cards and shared dealer reveal
+        run: python tests/mystic_deck_browser.py
       - name: Original Classic browser regression checks
         run: python tests/browser_checks.py
