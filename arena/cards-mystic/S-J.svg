@@ -110,7 +110,7 @@
 <use href="#suit" fill="url(#gemshine)" opacity=".41"/>
 <path d="M-11 -10L-5 -20L0 -15" fill="none" stroke="#ffffff" stroke-width="2.3" opacity=".68" stroke-linecap="round"/>
 </g></g>
- <g class="corner-index" transform="translate(240 336) rotate(180)"><rect x="12" y="12" width="50" height="82" rx="9" fill="url(#indexBg)" stroke="url(#gold)" stroke-width="1.8"/>
+ <g class="corner-index" transform="translate(240 336) rotate(180) scale(.62)"><rect x="12" y="12" width="50" height="82" rx="9" fill="url(#indexBg)" stroke="url(#gold)" stroke-width="1.8"/>
  <path d="M16 16h42M16 89h42" stroke="#fff2bd" stroke-width=".75" opacity=".65"/>
  <text x="36" y="61" text-anchor="middle" font-family="Georgia,Times New Roman,serif" font-weight="bold" font-size="54" fill="#fff9e7" stroke="#081329" stroke-width="2" paint-order="stroke">J</text>
  <g class="royal-pip" transform="translate(37 77) rotate(0) scale(0.215)">

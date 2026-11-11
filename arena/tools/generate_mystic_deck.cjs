@@ -10,7 +10,7 @@ const files=(function buildCinematicDeck(portraits){
  S:{name:"Spades",base:"#0b1d59",mid:"#1d3785",deep:"#070e35",glow:"#30a7fb",bright:"#e9f5ff",gem:"#77d6ff",outline:"#7cc6fd",subtitle:"THE ASTRAL COURT"},
  H:{name:"Hearts",base:"#381050",mid:"#64134e",deep:"#170827",glow:"#f52375",bright:"#fff1fb",gem:"#ff476e",outline:"#ff98d1",subtitle:"THE CRIMSON COURT"},
  D:{name:"Diamonds",base:"#30134f",mid:"#491a63",deep:"#130c31",glow:"#f34b47",bright:"#fff3e7",gem:"#ff6c3a",outline:"#ffbf7d",subtitle:"THE GILDED COURT"},
- C:{name:"Clubs",base:"#151752",mid:"#342873",deep:"#0b0b35",glow:"#a78aff",bright:"#f8f6ff",gem:"#c2d3ff",outline:"#e1dbff",subtitle:"THE VEILED COURT"}
+ C:{name:"Clubs",base:"#151752",mid:"#342873",deep:"#0b0b35",glow:"#8865f5",bright:"#e9e3ff",gem:"#a68cff",outline:"#d6c4ff",subtitle:"THE VEILED COURT"}
  };
  const suitPath={
  S:"M0 -42 C-14 -21 -39 -8 -39 14 C-39 36 -17 38 -8 24 L-15 43 H15 L8 24 C17 38 39 36 39 14 C39 -8 14 -21 0 -42Z",
@@ -131,7 +131,7 @@ return `<g class="royal-pip" transform="translate(${x} ${y}) rotate(${rot}) scal
  <text x="${x}" y="61" text-anchor="middle" font-family="Georgia,Times New Roman,serif" font-weight="bold" font-size="${size}" fill="#fff9e7" stroke="#081329" stroke-width="2" paint-order="stroke">${rank}</text>
  ${suitShape(c,37,77,.215)}`;
  return `<g class="corner-index">${index}</g>
- <g class="corner-index" transform="translate(240 336) rotate(180)">${index}</g>`;
+ <g class="corner-index" transform="translate(240 336) rotate(180) scale(.62)">${index}</g>`;
 }
  function numbered(c,n){
  const layouts={
