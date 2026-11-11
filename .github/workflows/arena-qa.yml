@@ -1,7 +1,7 @@
 name: Arena Phase 1 QA
 on:
   push:
-    branches: [ccg-pvp-battlegrounds, arena-character-overhaul, arena-premium-character-v2, arena-unified-art-v3, arena-character-v4, arena-play-vs-cpu, arena-combat-workstation-v5, arena-mystic-royal-deck, arena-mystic-deck-v2-cinematic]
+    branches: [ccg-pvp-battlegrounds, arena-character-overhaul, arena-premium-character-v2, arena-unified-art-v3, arena-character-v4, arena-play-vs-cpu, arena-combat-workstation-v5, arena-mystic-royal-deck, arena-mystic-deck-v2-cinematic, arena-mystic-royale-v3-visual-audit]
   pull_request:
     branches: [v8-aurum-elite, ccg-pvp-battlegrounds]
   workflow_dispatch:
@@ -54,6 +54,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mystic-royale-cinematic-preview
-          path: /tmp/mystic-royale-cinematic-preview.png
+          path: |
+            /tmp/mystic-royale-cinematic-preview.png
+            /tmp/mystic-royale-battlefield-68px.png
       - name: Original Classic browser regression checks
         run: python tests/browser_checks.py
