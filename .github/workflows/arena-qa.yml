@@ -48,5 +48,12 @@ jobs:
         run: python tests/arena_combat_ui_browser.py
       - name: Check all Mystic Royale cards and shared dealer reveal
         run: python tests/mystic_deck_browser.py
+      - name: Render cinematic card preview from real SVG assets
+        run: python tests/mystic_visual_preview.py
+      - name: Upload card preview for visual review
+        uses: actions/upload-artifact@v4
+        with:
+          name: mystic-royale-cinematic-preview
+          path: /tmp/mystic-royale-cinematic-preview.png
       - name: Original Classic browser regression checks
         run: python tests/browser_checks.py
