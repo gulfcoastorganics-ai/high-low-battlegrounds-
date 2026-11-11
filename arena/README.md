@@ -1,3 +1,11 @@
+## NEW: Mystic Royale V3 — the 52 actual playing cards
+
+We've audited and redesigned **all standard playing-card faces** for 68px battlefield readability: larger contrast-backed ranks, clearer 2–10 jeweled pips, fully framed fantasy court portraits, stronger Aces and more distinct suit colors. The underlying game rules, CPU strategy, tactical characters and Classic Mode are preserved.
+
+[**Play Arena with Mystic Royale V3**](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-mystic-royale-v3-visual-audit/arena/index.html) · [**Review the 52 cards at gallery or actual battlefield size**](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-mystic-royale-v3-visual-audit/arena/deck-gallery.html) · [**Read the full visual audit**](DECK_VISUAL_AUDIT_V3.md)
+
+---
+
 ## NEW: ARENA COMBAT WORKSTATION V5
 
 The Arena match interface now integrates the **4×4 battlefield**, **prediction controls**, and **compact tactical-character rail** on one desktop screen. Selected abilities display their portrait, Focus cost, target, and turn guidance. On mobile, use **BOARD / PREDICT / HAND** quick navigation. CPU and hotseat gameplay are preserved.

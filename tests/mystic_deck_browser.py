@@ -38,6 +38,11 @@ try:
             assert page.locator("#deck img").first.get_attribute("src")=="./cards-mystic/H-A.svg"
             page.locator('[data-suit="all"]').click()
             assert page.locator("#deck img").count()==52
+            page.locator('[data-size="battle"]').click()
+            assert page.locator('#deck').evaluate("(el)=>el.classList.contains('battle-scale')")
+            assert page.locator("#deck img").first.evaluate("(el)=>Math.round(el.getBoundingClientRect().width)===68")
+            page.locator('[data-size="gallery"]').click()
+            assert not page.locator('#deck').evaluate("(el)=>el.classList.contains('battle-scale')")
             page.goto("http://127.0.0.1:8895/arena/index.html",wait_until="domcontentloaded")
             page.locator('[data-act="start-cpu"]').click()
             cards=page.locator(".war-panel .play-tile img")

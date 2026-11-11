@@ -16,6 +16,13 @@ nav{display:flex;gap:8px;flex-wrap:wrap;margin:21px 0}.filter{color:#e7d7ff;bord
 .deck-grid img{display:block;width:100%;height:auto;aspect-ratio:5/7;object-fit:fill;filter:drop-shadow(0 10px 7px #0008);transition:transform .18s,filter .18s}
 .deck-grid img:hover,.deck-grid img:focus{transform:translateY(-7px);filter:drop-shadow(0 13px 10px #000a) drop-shadow(0 0 6px #ae7aff)}
 .deck-grid figure{margin:0}.deck-grid figcaption{text-align:center;color:#e3d8ee;padding:8px 0 4px;font-size:11px}
+.scale-picker{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 17px;font-size:11px;color:#dccded}
+.scale-choice{border:1px solid #b99a6f;background:#171849;color:#e6d6fc;border-radius:7px;padding:8px 10px;cursor:pointer;font-weight:700}
+.scale-choice[aria-pressed="true"]{background:#533584;border-color:#ffe2a3;color:#fff1cb}
+.deck-grid.battle-scale{grid-template-columns:repeat(auto-fill,68px);gap:10px}
+.deck-grid.battle-scale figure{width:68px}
+.deck-grid.battle-scale img{width:68px;height:95px;aspect-ratio:5/7}
+.deck-grid.battle-scale figcaption{font-size:9px;line-height:1.2}
 .back-card{max-width:170px;margin:22px 0}.back-card img{width:100%;border-radius:10px;box-shadow:0 16px 28px #0007}
 footer{margin-top:27px;color:#b7b0c8;font-size:11px}
 @media(max-width:450px){main{padding:15px 11px}.deck-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.deck-grid figcaption{font-size:9px}}
@@ -30,7 +37,13 @@ footer{margin-top:27px;color:#b7b0c8;font-size:11px}
 <button type="button" class="filter" data-suit="H" aria-pressed="false">♥ Hearts</button>
 <button type="button" class="filter" data-suit="D" aria-pressed="false">♦ Diamonds</button>
 <button type="button" class="filter" data-suit="C" aria-pressed="false">♣ Clubs</button>
-</nav><div id="deck" class="deck-grid" aria-label="Playing card gallery"></div>
+</nav>
+<div class="scale-picker" role="group" aria-label="Card display scale">
+<span>Check how the cards read in a real 4×4 battlefield:</span>
+<button type="button" class="scale-choice" data-size="battle" aria-pressed="false">Battlefield size (~68px)</button>
+<button type="button" class="scale-choice" data-size="gallery" aria-pressed="true">Gallery size</button>
+</div>
+<div id="deck" class="deck-grid" aria-label="Playing card gallery"></div>
 <h2>The Shared Dealer</h2><div class="back-card"><img alt="Mystic Royale celestial deck back" src="./cards-mystic/back.svg"></div>
 <footer>These are playing-card illustrations only. Rank comparisons, Focus, fatigue, CPU strategy, and Classic Mode are unchanged.</footer>
 </main>
@@ -52,5 +65,9 @@ document.querySelectorAll(".filter").forEach(button=>button.addEventListener("cl
  drawCards(button.dataset.suit);
 }));
 drawCards();
+document.querySelectorAll('.scale-choice').forEach(button=>button.addEventListener('click',()=>{
+ document.querySelectorAll('.scale-choice').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+ deck.classList.toggle('battle-scale',button.dataset.size==='battle');
+}));
 </script>
 </body></html>

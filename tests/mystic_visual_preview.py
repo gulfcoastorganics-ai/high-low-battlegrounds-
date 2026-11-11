@@ -7,6 +7,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=Path('/tmp/mystic-royale-cinematic-preview.png')
+BOARD_OUT=Path('/tmp/mystic-royale-battlefield-68px.png')
 server=subprocess.Popen([sys.executable,'-m','http.server','8894','--bind','127.0.0.1'],
                         cwd=ROOT,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 cards=['S-K','H-Q','D-K','C-Q','S-A','H-4','D-9','C-10']
@@ -34,6 +35,21 @@ try:
         assert count==8, f'Some preview assets failed to load: {count}/8'
         page.screenshot(path=str(OUT),full_page=True,animations='disabled')
         print('Captured 8/8 real game asset samples at '+str(OUT))
+        # Small-scale visual QA: the same real cards at the measured Arena tile width.
+        page.evaluate("""cards => {
+            const style=document.createElement('style');
+            style.textContent='body{background:radial-gradient(ellipse at top,#182356,#080f23 75%)} #board-preview{width:770px;margin:10px auto;color:#fff4d0;font-family:Georgia,serif}#board-preview h1{font-size:25px;margin:10px 0 5px}#board-preview p{color:#ddd2ed;font:12px Arial,sans-serif}#board-preview .battlefield{display:grid;grid-template-columns:repeat(4,68px);gap:6px;background:#071f1a;border:2px solid #ddbd83;padding:16px;border-radius:12px;width:max-content;margin-top:14px}#board-preview img{width:68px;height:95px;display:block}';
+            document.head.appendChild(style);
+            const chosen=[...cards,...cards];
+            document.body.innerHTML='<div id="board-preview"><h1>MYSTIC ROYALE V3 · ACTUAL BATTLEFIELD SCALE</h1><p>68px wide × 95px tall — screenshot QA of the 52-card set, at real gameplay scale.</p><div class="battlefield">'+chosen.map(x=>'<img src="./cards-mystic/'+x+'.svg" alt="'+x+'">').join('')+'</div></div>';
+        }""",cards)
+        assert page.locator('#board-preview img').count()==16
+        assert page.evaluate("""async () => {
+            const images=[...document.querySelectorAll('#board-preview img')];
+            return (await Promise.all(images.map(i=>i.decode().then(()=>true).catch(()=>false)))).every(Boolean);
+        }""")
+        page.screenshot(path=str(BOARD_OUT),full_page=False,animations='disabled')
+        print('Captured 16/16 cards at real 68px battlefield scale: '+str(BOARD_OUT))
         browser.close()
 finally:
     server.terminate()
