@@ -109,7 +109,7 @@ const a={idx,guess:state.guess,cardId:state.card,cardTarget:state.target};
 const valid=m.phase==='commit'&&idx!=null&&state.guess&&!A.inspectMove(m,i,a);
 const ability=state.card?A.CARDS[state.card]:null;
 const hint=state.error||(ability?(ability.target==='enemy'&&state.target==null?'Choose a living enemy target first.':ability.text):'Tactical cards are optional. Choose a gold-lit position and then HIGHER or LOWER.');
-return `<div class="arena-match-shell"><div class="arena-combat"><section class="matchhead"><div class="score-head enemy"><div><small>CONTENDER 0${j+1}</small><b>${esc(o.name)}</b></div><span class="score">${A.remaining(o)}</span></div>
+return `<div class="arena-match-shell"><nav class="match-quick-nav" aria-label="Jump between Arena controls"><button type="button" data-act="jump-board">♠ BOARD</button><button type="button" data-act="jump-controls">▲ PREDICT</button><button type="button" data-act="jump-hand">✦ HAND</button></nav><div class="arena-combat"><section class="matchhead"><div class="score-head enemy"><div><small>CONTENDER 0${j+1}</small><b>${esc(o.name)}</b></div><span class="score">${A.remaining(o)}</span></div>
 <div class="roundlabel"><strong>${m.round==='sudden'?'SUDDEN DEATH':state.mode==='cpu'?'VS CPU · '+CPU.DIFFICULTIES[state.cpuDifficulty].label.toUpperCase():'ARENA DUEL'}</strong><span>DRAW ${String(m.turn).padStart(2,'0')} / ${m.maxTurns}</span></div>
 <div class="score-head"><span class="score">${A.remaining(p)}</span><div><small>NOW DECIDING</small><b>${esc(p.name)}</b></div></div></section>
 <div class="arena-main-grid"><section class="arena-stage">${tileGrid(m,j,false)}
@@ -186,6 +186,11 @@ function start(){
 }
 document.addEventListener('click',event=>{
 const b=event.target.closest('[data-act]');if(!b)return;const x=b.dataset.act,id=b.dataset.id,i=Number(b.dataset.idx),m=state.m;
+if(x==='jump-board'||x==='jump-controls'||x==='jump-hand'){
+ const selector=x==='jump-board'?'.war-panel.player':x==='jump-controls'?'.action-dock':'.hand-shell';
+ document.querySelector(selector)?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+ return;
+}
 if(x==='builder'){state.editor=Number(b.dataset.player);state.overlay='builder';}
 if(x==='inspect'){state.inspect=id;state.returnOverlay=state.overlay;state.overlay='inspect';}
 if(x==='close-inspect'){state.overlay=state.returnOverlay||null;state.inspect=null;state.returnOverlay=null;}
