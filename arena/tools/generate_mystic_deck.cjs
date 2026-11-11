@@ -19,10 +19,10 @@ const files=(function buildCinematicDeck(portraits){
  C:"M-8 24 C-24 35 -44 25 -43 9 C-43 -8 -25 -18 -13 -7 C-31 -31 -7 -53 0 -37 C7 -53 31 -31 13 -7 C25 -18 43 -8 43 9 C44 25 24 35 8 24 L16 44 H-16Z"
  };
  const portraitId={
- "S-J":"precision","S-Q":"reckoning","S-K":"survey",
+ "S-J":"crosswind","S-Q":"reckoning","S-K":"survey",
  "H-J":"secondwind","H-Q":"heartward","H-K":"steady",
  "D-J":"exchange","D-Q":"investment","D-K":"reserve",
- "C-J":"irongrip","C-Q":"crosswind","C-K":"rooted"
+ "C-J":"irongrip","C-Q":"precision","C-K":"rooted"
  };
  const ranks=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
  const locations={
@@ -113,11 +113,11 @@ const files=(function buildCinematicDeck(portraits){
   <ellipse cx="120" cy="166" rx="91" ry="110" fill="url(#halo)" opacity=".45"/>
   <path d="M45 105Q120 47 195 105V231Q120 280 45 231Z" fill="url(#gold)" stroke="#fff4cd" stroke-width="1.5"/>
   <path d="M50 107Q120 57 190 107V227Q120 268 50 227Z" fill="${c.deep}"/>
-  <image x="48" y="78" width="144" height="180" preserveAspectRatio="xMidYMid slice" clip-path="url(#portraitClip)" href="data:image/webp;base64,${base64}"/>
+  <image x="48" y="78" width="144" height="180" preserveAspectRatio="xMidYMin slice" clip-path="url(#portraitClip)" href="data:image/webp;base64,${base64}"/>
   <path d="M52 192Q120 225 188 192V228Q120 265 52 228Z" fill="${c.deep}" opacity=".10"/>
   <path d="M53 107Q120 60 187 107V226Q120 267 53 226Z" stroke="url(#gold)" stroke-width="2.5" fill="none"/>
   <path d="M48 108Q120 57 192 108M48 228Q120 275 192 228" fill="none" stroke="#fff2c4" stroke-width="1" opacity=".7"/>
-  ${crown(c,rank)}
+  <g transform="translate(0 -12)">${crown(c,rank)}</g>
   <path d="M55 241L78 253H162L185 241L176 272H64Z" fill="${c.deep}" stroke="url(#gold)" stroke-width="2.6"/>
   ${suitShape(c,120,248,.24)}
   <text x="120" y="282" font-family="Georgia,Times New Roman,serif" font-size="12.8" text-anchor="middle" fill="#fff2cb" font-weight="bold" letter-spacing="1.6">${title}</text>
