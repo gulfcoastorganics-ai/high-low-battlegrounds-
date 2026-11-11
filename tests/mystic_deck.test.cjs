@@ -19,7 +19,7 @@ test('complete mystic deck has exactly 52 unique playing faces and one dealer ba
     const svg=fs.readFileSync(path.join(base,file),'utf8');
     assert.match(svg,/<svg[^>]+viewBox="0 0 240 336"/);
     assert.match(svg,/<\/svg>\s*$/);
-    assert.match(svg,/data-theme="mystic-royale"/);
+    assert.match(svg,/data-theme="mystic-royale-cinematic"/);
     assert.doesNotMatch(svg,/<script\b|<foreignObject\b|\sonload=|\sonerror=|https?:\/\/(?!www\.w3\.org\/2000\/svg)/i);
     assert.ok(svg.length>2500,file+' image unexpectedly small');
     let hash=crypto.createHash('sha256').update(svg).digest('hex');
@@ -34,13 +34,13 @@ test('suits/ranks and Ace/court card art are readable and correctly labeled',()=
    assert.ok(svg.includes('data-rank="'+rank+'"'));
    assert.ok(svg.includes('data-suit="'+suit+'"'));
    assert.ok(svg.includes('of '+suitName[suit]),file);
-   assert.match(svg,/id="glyph"/);
-   assert.match(svg,/url\(#gilt\)/);
-   if(['J','Q','K'].includes(rank))assert.match(svg,/url\(#face\)/);
+   assert.match(svg,/id="suit"/);
+   assert.match(svg,/url\(#gold\)/);
+   if(['J','Q','K'].includes(rank)){ assert.match(svg,/<image\b[^>]*href="data:image\/webp;base64,/); assert.match(svg,/clip-path="url\(#portraitClip\)"/); }
    if(rank==='A')assert.match(svg,/aria-label="ACE of/);
    if(/^\d+$/.test(rank)) {
      const visible=Number(rank);
-     const count=svg.split('filter="url(#halo)"').length-1;
+     const count=(svg.match(/class="royal-pip"/g)||[]).length-2;
      assert.equal(count,visible,file+' wrong visible suit pip count');
    }
  }
@@ -51,4 +51,18 @@ test('Arena swaps only regular playing card faces; Classic originals unchanged i
  const css=fs.readFileSync(path.join(__dirname,'..','arena','mystic-deck.css'),'utf8');
  assert.match(css,/cards-mystic\/back\.svg/);
  assert.ok(!css.includes('.tactcard') && !css.includes('.hero-character'));
+});
+
+test('court portraits embed distinct premium illustrations, with no runtime fetches',()=>{
+ const images=new Set();
+ for(const suit of suits)for(const rank of ['J','Q','K']){
+  const svg=fs.readFileSync(path.join(base,suit+'-'+rank+'.svg'),'utf8');
+  const found=svg.match(/href="data:image\/webp;base64,([A-Za-z0-9+/=]+)"/);
+  assert.ok(found,suit+'-'+rank+' needs an embedded portrait');
+  const bytes=Buffer.from(found[1],'base64');
+  assert.ok(bytes.length>10000,'Portrait too small');
+  assert.equal(bytes.subarray(0,4).toString('ascii'),'RIFF');
+  images.add(crypto.createHash('sha256').update(bytes).digest('hex'));
+ }
+ assert.equal(images.size,12,'Each illustrated royal portrait must be unique');
 });
