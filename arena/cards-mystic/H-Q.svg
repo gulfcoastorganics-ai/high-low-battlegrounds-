@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="QUEEN of Hearts — Mystic Royale V3" data-theme="mystic-royale-v3" data-rank="Q" data-suit="H" data-card="H-Q">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="QUEEN of Hearts — Mystic Royale V4" data-theme="mystic-royale-v4" data-rank="Q" data-suit="H" data-card="H-Q">
   <defs>
 <linearGradient id="velvet" x1="0%" y1="0%" x2="96%" y2="100%">
  <stop offset="0%" stop-color="#170827"/><stop offset="28%" stop-color="#381050"/><stop offset="56%" stop-color="#64134e"/><stop offset="100%" stop-color="#170827"/>
@@ -79,44 +79,38 @@
  <rect x="41" y="76" width="158" height="190" rx="10" fill="none" stroke="#ff98d1" stroke-width="1.1" stroke-opacity=".72"/>
  <path d="M42 102Q120 53 198 102" fill="none" stroke="url(#gold)" stroke-width="3.2"/>
  <path d="M46 106Q120 62 194 106" fill="none" stroke="#fff4bf" stroke-width=".9" opacity=".70"/>
- <g><path d="M81 92l15-17 11 12 13-25 13 25 11-12 15 17" fill="none" stroke="url(#gold)" stroke-width="5.5" stroke-linejoin="round"/>
- <path d="M120 68l6 9-6 9-6-9Z" fill="#ff476e" stroke="#fff" stroke-width="1.2"/></g>
+ <g transform="translate(45 -5) scale(.63)"><g><path d="M81 92l15-17 11 12 13-25 13 25 11-12 15 17" fill="none" stroke="url(#gold)" stroke-width="5.5" stroke-linejoin="round"/>
+ <path d="M120 68l6 9-6 9-6-9Z" fill="#ff476e" stroke="#fff" stroke-width="1.2"/></g></g>
  <path d="M45 241Q120 260 195 241V280H45Z" fill="#170827" opacity=".90"/>
  <path d="M49 255H191" stroke="url(#gold)" stroke-width="1.2"/>
  <text x="120" y="286" font-family="Georgia,Times New Roman,serif" font-size="22" font-weight="bold" text-anchor="middle" letter-spacing="2.2" fill="#fff1cf">QUEEN</text>
  <text x="120" y="300" font-family="Georgia,serif" font-size="7.8" text-anchor="middle" letter-spacing="1.6" fill="#ff98d1">ORACLE</text>
  <g class="royal-pip" transform="translate(47 288) rotate(0) scale(0.18)">
-<circle r="47" fill="url(#halo)" opacity=".40"/>
-<use href="#suit" fill="#f52375" stroke="#f52375" stroke-width="6" filter="url(#soft)" opacity=".35"/>
-<use href="#suit" fill="url(#gem)" stroke="#fff1fb" stroke-width="2.6" stroke-linejoin="round"/>
-<use href="#suit" fill="url(#gemshine)" opacity=".41"/>
-<path d="M-11 -10L-5 -20L0 -15" fill="none" stroke="#ffffff" stroke-width="2.3" opacity=".68" stroke-linecap="round"/>
-</g><g class="royal-pip" transform="translate(193 288) rotate(0) scale(0.18)">
-<circle r="47" fill="url(#halo)" opacity=".40"/>
-<use href="#suit" fill="#f52375" stroke="#f52375" stroke-width="6" filter="url(#soft)" opacity=".35"/>
-<use href="#suit" fill="url(#gem)" stroke="#fff1fb" stroke-width="2.6" stroke-linejoin="round"/>
-<use href="#suit" fill="url(#gemshine)" opacity=".41"/>
-<path d="M-11 -10L-5 -20L0 -15" fill="none" stroke="#ffffff" stroke-width="2.3" opacity=".68" stroke-linecap="round"/>
-</g>
+ <circle r="42" fill="url(#halo)" opacity=".22"/>
+ <use href="#suit" fill="#f52375" stroke="#f52375" stroke-width="3.1" filter="url(#soft)" opacity=".18"/>
+ <use href="#suit" fill="url(#gem)" stroke="#fff1fb" stroke-width="2.6" stroke-linejoin="round"/>
+ <use href="#suit" fill="url(#gemshine)" opacity=".30"/>
+ <path d="M-11 -10L-5 -20L0 -15" fill="none" stroke="#ffffff" stroke-width="2.4" opacity=".64" stroke-linecap="round"/>
+ </g><g class="royal-pip" transform="translate(193 288) rotate(0) scale(0.18)">
+ <circle r="42" fill="url(#halo)" opacity=".22"/>
+ <use href="#suit" fill="#f52375" stroke="#f52375" stroke-width="3.1" filter="url(#soft)" opacity=".18"/>
+ <use href="#suit" fill="url(#gem)" stroke="#fff1fb" stroke-width="2.6" stroke-linejoin="round"/>
+ <use href="#suit" fill="url(#gemshine)" opacity=".30"/>
+ <path d="M-11 -10L-5 -20L0 -15" fill="none" stroke="#ffffff" stroke-width="2.4" opacity=".64" stroke-linecap="round"/>
+ </g>
  </g>
   <g class="corner-index"><rect x="12" y="12" width="50" height="82" rx="9" fill="url(#indexBg)" stroke="url(#gold)" stroke-width="1.8"/>
  <path d="M16 16h42M16 89h42" stroke="#fff2bd" stroke-width=".75" opacity=".65"/>
  <text x="36" y="61" text-anchor="middle" font-family="Georgia,Times New Roman,serif" font-weight="bold" font-size="54" fill="#fff9e7" stroke="#081329" stroke-width="2" paint-order="stroke">Q</text>
  <g class="royal-pip" transform="translate(37 77) rotate(0) scale(0.215)">
-<circle r="47" fill="url(#halo)" opacity=".40"/>
-<use href="#suit" fill="#f52375" stroke="#f52375" stroke-width="6" filter="url(#soft)" opacity=".35"/>
-<use href="#suit" fill="url(#gem)" stroke="#fff1fb" stroke-width="2.6" stroke-linejoin="round"/>
-<use href="#suit" fill="url(#gemshine)" opacity=".41"/>
-<path d="M-11 -10L-5 -20L0 -15" fill="none" stroke="#ffffff" stroke-width="2.3" opacity=".68" stroke-linecap="round"/>
-</g></g>
- <g class="corner-index" transform="translate(240 336) rotate(180) scale(.62)"><rect x="12" y="12" width="50" height="82" rx="9" fill="url(#indexBg)" stroke="url(#gold)" stroke-width="1.8"/>
- <path d="M16 16h42M16 89h42" stroke="#fff2bd" stroke-width=".75" opacity=".65"/>
- <text x="36" y="61" text-anchor="middle" font-family="Georgia,Times New Roman,serif" font-weight="bold" font-size="54" fill="#fff9e7" stroke="#081329" stroke-width="2" paint-order="stroke">Q</text>
- <g class="royal-pip" transform="translate(37 77) rotate(0) scale(0.215)">
-<circle r="47" fill="url(#halo)" opacity=".40"/>
-<use href="#suit" fill="#f52375" stroke="#f52375" stroke-width="6" filter="url(#soft)" opacity=".35"/>
-<use href="#suit" fill="url(#gem)" stroke="#fff1fb" stroke-width="2.6" stroke-linejoin="round"/>
-<use href="#suit" fill="url(#gemshine)" opacity=".41"/>
-<path d="M-11 -10L-5 -20L0 -15" fill="none" stroke="#ffffff" stroke-width="2.3" opacity=".68" stroke-linecap="round"/>
-</g></g>
+ <circle r="42" fill="url(#halo)" opacity=".22"/>
+ <use href="#suit" fill="#f52375" stroke="#f52375" stroke-width="3.1" filter="url(#soft)" opacity=".18"/>
+ <use href="#suit" fill="url(#gem)" stroke="#fff1fb" stroke-width="2.6" stroke-linejoin="round"/>
+ <use href="#suit" fill="url(#gemshine)" opacity=".30"/>
+ <path d="M-11 -10L-5 -20L0 -15" fill="none" stroke="#ffffff" stroke-width="2.4" opacity=".64" stroke-linecap="round"/>
+ </g></g><g class="corner-sigil" transform="translate(211 308)">
+ <circle r="13.5" fill="#170827" stroke="url(#gold)" stroke-width="2"/>
+ <circle r="10.8" fill="none" stroke="#ff98d1" stroke-width=".8" opacity=".75"/>
+ <use href="#suit" fill="#ff476e" stroke="#fff1fb" stroke-width="2" transform="scale(.20)"/>
+ </g>
   </svg>

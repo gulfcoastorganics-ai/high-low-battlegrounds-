@@ -1,4 +1,4 @@
-// Mystic Royale V3: clarity-first visual overhaul of all 52 playing cards and dealer back.
+// Mystic Royale V4: visual hierarchy, art framing, and card legibility of all 52 playing cards and dealer back.
 // Regenerate: node arena/tools/generate_mystic_deck.cjs
 // Source portrait art: arena/art-premium/*.webp. Art is embedded in court card SVGs for reliable browser/offline rendering.
 const fs=require('node:fs');const path=require('node:path');
@@ -10,13 +10,13 @@ const files=(function buildCinematicDeck(portraits){
  S:{name:"Spades",base:"#0b1d59",mid:"#1d3785",deep:"#070e35",glow:"#30a7fb",bright:"#e9f5ff",gem:"#77d6ff",outline:"#7cc6fd",subtitle:"THE ASTRAL COURT"},
  H:{name:"Hearts",base:"#381050",mid:"#64134e",deep:"#170827",glow:"#f52375",bright:"#fff1fb",gem:"#ff476e",outline:"#ff98d1",subtitle:"THE CRIMSON COURT"},
  D:{name:"Diamonds",base:"#30134f",mid:"#491a63",deep:"#130c31",glow:"#f34b47",bright:"#fff3e7",gem:"#ff6c3a",outline:"#ffbf7d",subtitle:"THE GILDED COURT"},
- C:{name:"Clubs",base:"#151752",mid:"#342873",deep:"#0b0b35",glow:"#8865f5",bright:"#e9e3ff",gem:"#a68cff",outline:"#d6c4ff",subtitle:"THE VEILED COURT"}
+ C:{name:"Clubs",base:"#171453",mid:"#39206c",deep:"#09092d",glow:"#7647e9",bright:"#ded0ff",gem:"#9870f4",outline:"#cdaeff",subtitle:"THE VEILED COURT"}
  };
  const suitPath={
  S:"M0 -42 C-14 -21 -39 -8 -39 14 C-39 36 -17 38 -8 24 L-15 43 H15 L8 24 C17 38 39 36 39 14 C39 -8 14 -21 0 -42Z",
  H:"M0 41 C-19 24 -42 5 -42 -16 C-42 -38 -16 -45 0 -23 C16 -45 42 -38 42 -16 C42 5 19 24 0 41Z",
  D:"M0 -43 L36 0 L0 43 L-36 0Z",
- C:"M-8 24 C-24 35 -44 25 -43 9 C-43 -8 -25 -18 -13 -7 C-31 -31 -7 -53 0 -37 C7 -53 31 -31 13 -7 C25 -18 43 -8 43 9 C44 25 24 35 8 24 L16 44 H-16Z"
+ C:"M0 -37 C-10 -46 -27 -40 -31 -27 C-35 -16 -26 -6 -19 -3 C-32 -12 -45 -4 -43 12 C-41 29 -22 34 -8 22 L-15 43 H15 L8 22 C22 34 41 29 43 12 C45 -4 32 -12 19 -3 C26 -6 35 -16 31 -27 C27 -40 10 -46 0 -37 Z"
  };
  const portraitId={
  "S-J":"crosswind","S-Q":"reckoning","S-K":"survey",
@@ -115,13 +115,13 @@ ${cornerFiligree()}
 <path d="M64 21h112M64 315h112" stroke="#dfb97e" stroke-width=".8" opacity=".35"/>`;
 }
  function suitShape(c,x,y,scale,rot=0){
-return `<g class="royal-pip" transform="translate(${x} ${y}) rotate(${rot}) scale(${scale})">
-<circle r="47" fill="url(#halo)" opacity=".40"/>
-<use href="#suit" fill="${c.glow}" stroke="${c.glow}" stroke-width="6" filter="url(#soft)" opacity=".35"/>
-<use href="#suit" fill="url(#gem)" stroke="${c.bright}" stroke-width="2.6" stroke-linejoin="round"/>
-<use href="#suit" fill="url(#gemshine)" opacity=".41"/>
-<path d="M-11 -10L-5 -20L0 -15" fill="none" stroke="#ffffff" stroke-width="2.3" opacity=".68" stroke-linecap="round"/>
-</g>`;
+ return `<g class="royal-pip" transform="translate(${x} ${y}) rotate(${rot}) scale(${scale})">
+ <circle r="42" fill="url(#halo)" opacity=".22"/>
+ <use href="#suit" fill="${c.glow}" stroke="${c.glow}" stroke-width="3.1" filter="url(#soft)" opacity=".18"/>
+ <use href="#suit" fill="url(#gem)" stroke="${c.bright}" stroke-width="2.6" stroke-linejoin="round"/>
+ <use href="#suit" fill="url(#gemshine)" opacity=".30"/>
+ <path d="M-11 -10L-5 -20L0 -15" fill="none" stroke="#ffffff" stroke-width="2.4" opacity=".64" stroke-linecap="round"/>
+ </g>`;
 }
  function indexes(c,rank){
  const size=rank==="10"?43:54;
@@ -130,8 +130,12 @@ return `<g class="royal-pip" transform="translate(${x} ${y}) rotate(${rot}) scal
  <path d="M16 16h42M16 89h42" stroke="#fff2bd" stroke-width=".75" opacity=".65"/>
  <text x="${x}" y="61" text-anchor="middle" font-family="Georgia,Times New Roman,serif" font-weight="bold" font-size="${size}" fill="#fff9e7" stroke="#081329" stroke-width="2" paint-order="stroke">${rank}</text>
  ${suitShape(c,37,77,.215)}`;
- return `<g class="corner-index">${index}</g>
- <g class="corner-index" transform="translate(240 336) rotate(180) scale(.62)">${index}</g>`;
+ const sigil=`<g class="corner-sigil" transform="translate(211 308)">
+ <circle r="13.5" fill="${c.deep}" stroke="url(#gold)" stroke-width="2"/>
+ <circle r="10.8" fill="none" stroke="${c.outline}" stroke-width=".8" opacity=".75"/>
+ <use href="#suit" fill="${c.gem}" stroke="${c.bright}" stroke-width="2" transform="scale(.20)"/>
+ </g>`;
+ return `<g class="corner-index">${index}</g>${sigil}`;
 }
  function numbered(c,n){
  const layouts={
@@ -175,7 +179,7 @@ return `<g class="royal-pip" transform="translate(${x} ${y}) rotate(${rot}) scal
  <rect x="41" y="76" width="158" height="190" rx="10" fill="none" stroke="${c.outline}" stroke-width="1.1" stroke-opacity=".72"/>
  <path d="M42 102Q120 53 198 102" fill="none" stroke="url(#gold)" stroke-width="3.2"/>
  <path d="M46 106Q120 62 194 106" fill="none" stroke="#fff4bf" stroke-width=".9" opacity=".70"/>
- ${crown(c,rank)}
+ <g transform="translate(45 -5) scale(.63)">${crown(c,rank)}</g>
  <path d="M45 241Q120 260 195 241V280H45Z" fill="${c.deep}" opacity=".90"/>
  <path d="M49 255H191" stroke="url(#gold)" stroke-width="1.2"/>
  <text x="120" y="286" font-family="Georgia,Times New Roman,serif" font-size="22" font-weight="bold" text-anchor="middle" letter-spacing="2.2" fill="#fff1cf">${title}</text>
@@ -190,7 +194,7 @@ return `<g class="royal-pip" transform="translate(${x} ${y}) rotate(${rot}) scal
  <circle cx="120" cy="165" r="72" fill="none" stroke="${c.outline}" stroke-opacity=".76" stroke-width="1.8" stroke-dasharray="3 5"/>
  <path d="M120 65l11 21-11-9-11 9Z M120 265l11-21-11 9-11-9Z M24 165l22-11-9 11 9 11Z M216 165l-22-11 9 11-9 11Z" fill="url(#gold)" stroke="#fff2bd" stroke-width=".7"/>
  ${suitShape(c,120,166,1.45)}
- <g transform="translate(0 -3)">${crown(c,"K")}</g>
+ <g transform="translate(45 -5) scale(.63)">${crown(c,"K")}</g>
  <path d="M70 267H170" stroke="url(#gold)" stroke-width="1.2"/>
  <text x="120" y="285" text-anchor="middle" font-family="Georgia,serif" font-size="9" letter-spacing="1.2" font-weight="bold" fill="#fff0be">${c.subtitle}</text>
  </g>`;
@@ -201,7 +205,7 @@ return `<g class="royal-pip" transform="translate(${x} ${y}) rotate(${rot}) scal
   if(rank==="A")art=ace(c);
   else if(["K","Q","J"].includes(rank))art=court(c,rank,portraits[portraitId[suit+"-"+rank]]);
   else art=numbered(c,Number(rank));
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="${rank==="A"?"ACE":rank==="K"?"KING":rank==="Q"?"QUEEN":rank==="J"?"JACK":rank} of ${c.name} — Mystic Royale V3" data-theme="mystic-royale-v3" data-rank="${rank}" data-suit="${suit}" data-card="${suit}-${rank}">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="${rank==="A"?"ACE":rank==="K"?"KING":rank==="Q"?"QUEEN":rank==="J"?"JACK":rank} of ${c.name} — Mystic Royale V4" data-theme="mystic-royale-v4" data-rank="${rank}" data-suit="${suit}" data-card="${suit}-${rank}">
   ${defs(c)}
   ${frame(c)}
   ${art}
@@ -210,7 +214,7 @@ return `<g class="royal-pip" transform="translate(${x} ${y}) rotate(${rot}) scal
  }
  function back(){
   const c={...suits.S,key:"S"};
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="Mystic Royale V3 dealer card back" data-theme="mystic-royale-v3">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="Mystic Royale V4 dealer card back" data-theme="mystic-royale-v4">
  ${defs(c)}
  ${frame(c)}
  <circle cx="120" cy="166" r="99" fill="url(#halo)" opacity=".38"/>

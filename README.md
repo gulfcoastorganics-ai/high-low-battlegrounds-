@@ -1,3 +1,11 @@
+## MYSTIC ROYALE V4 — PLAYING-CARD CLARITY UPDATE
+
+The actual 52 regular playing cards have a cleaner gold-corner sigil, clearer violet Clubs, less pip blur, and unobstructed royal portraits. Click a friendly territory, then the **magnifying-glass icon** next to the selected position to inspect the full card without losing your turn.
+
+**[Play Arena V4](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-mystic-royale-v4-clarity/arena/index.html)** · **[Inspect all 52 card faces](https://raw.githack.com/gulfcoastorganics-ai/high-low-battlegrounds-/arena-mystic-royale-v4-clarity/arena/deck-gallery.html)** · **[Full audit](arena/DECK_VISUAL_AUDIT_V4.md)**
+
+---
+
 ## NEW: Mystic Royale V3 — the 52 actual playing cards
 
 We've audited and redesigned **all standard playing-card faces** for 68px battlefield readability: larger contrast-backed ranks, clearer 2–10 jeweled pips, fully framed fantasy court portraits, stronger Aces and more distinct suit colors. The underlying game rules, CPU strategy, tactical characters and Classic Mode are preserved.

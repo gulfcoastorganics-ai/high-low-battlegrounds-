@@ -29,3 +29,21 @@
 @media(prefers-reduced-motion:reduce){
  .arena-app .play-tile.eligible img{filter:none}
 }
+/* V4 card inspector — no changes to tactical card faces or arena engine */
+.arena-app .tactic-target{display:flex;align-items:center;justify-content:space-between;gap:5px}
+.arena-app .tactic-target>span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.arena-app .inspect-playing-btn{
+ flex:none;display:grid;place-items:center;width:23px;height:23px;
+ color:#fff2c9;border:1px solid #e5c78b;border-radius:5px;
+ background:linear-gradient(145deg,#253c41,#151a42);font-size:18px;line-height:1;cursor:pointer;
+}
+.arena-app .inspect-playing-btn:hover{background:#44376b}
+.arena-app .inspect-playing-btn:focus-visible{outline:3px solid #ffdc91;outline-offset:2px}
+.arena-app .modal.playing-card-inspector{max-width:370px;text-align:center}
+.arena-app .playing-card-inspector h2{font-size:clamp(20px,4vw,28px);margin:9px 0 13px}
+.arena-app .playing-card-inspector img{
+ display:block;width:min(58vw,210px);height:auto;max-height:47dvh;object-fit:contain;
+ margin:0 auto 12px;border-radius:10px;box-shadow:0 16px 30px #0009,0 0 16px #8961db6b;
+}
+.arena-app .playing-card-inspector p{color:#d6dfd6;font-size:11px;margin:0 0 13px;line-height:1.5}
+.arena-app .playing-card-inspector .cta{width:100%;min-height:43px}
