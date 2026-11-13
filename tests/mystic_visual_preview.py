@@ -26,7 +26,7 @@ try:
             const style=document.createElement('style');
             style.textContent='body{margin:0;background:radial-gradient(ellipse at top,#30207a,#130e35 60%,#08091c);color:#fcebc7;font-family:Georgia,serif} #preview{width:1040px;margin:0 auto;padding:24px;box-sizing:border-box}h1{font-size:34px;margin:4px 0 6px;text-align:center;letter-spacing:4px}p{text-align:center;font:12px Arial,sans-serif;color:#cfc1e8;margin:0 0 23px}.samples{display:grid;grid-template-columns:repeat(4,1fr);gap:17px;justify-items:center}.sample{margin:0;text-align:center;width:181px}.sample img{display:block;width:181px;height:auto;filter:drop-shadow(0 10px 10px #000a)}.sample figcaption{font-size:15px;color:#ffe4b3;letter-spacing:1px;margin-top:8px}';
             document.head.appendChild(style);
-            document.body.innerHTML='<div id="preview"><h1>MYSTIC ROYALE · CINEMATIC</h1><p>REAL, IN-GAME SVG CARD ASSETS · 12 ILLUSTRATED COURT CARDS · JEWELED PIPS · NO MOCKUPS</p><div class="samples">'+cards.map(s=>'<figure class="sample"><img src="./cards-mystic/'+s+'.svg" alt="'+s+'"><figcaption>'+s+'</figcaption></figure>').join('')+'</div></div>';
+            document.body.innerHTML='<div id="preview"><h1>MYSTIC ROYALE V4 · CLARITY</h1><p>REAL, IN-GAME SVG CARD ASSETS · 12 ILLUSTRATED COURT CARDS · JEWELED PIPS · NO MOCKUPS</p><div class="samples">'+cards.map(s=>'<figure class="sample"><img src="./cards-mystic/'+s+'.svg" alt="'+s+'"><figcaption>'+s+'</figcaption></figure>').join('')+'</div></div>';
         }""",cards)
         count=page.evaluate("""async () => {
             const imgs=[...document.querySelectorAll('#preview img')];
@@ -41,7 +41,7 @@ try:
             style.textContent='body{background:radial-gradient(ellipse at top,#182356,#080f23 75%)} #board-preview{width:770px;margin:10px auto;color:#fff4d0;font-family:Georgia,serif}#board-preview h1{font-size:25px;margin:10px 0 5px}#board-preview p{color:#ddd2ed;font:12px Arial,sans-serif}#board-preview .battlefield{display:grid;grid-template-columns:repeat(4,68px);gap:6px;background:#071f1a;border:2px solid #ddbd83;padding:16px;border-radius:12px;width:max-content;margin-top:14px}#board-preview img{width:68px;height:95px;display:block}';
             document.head.appendChild(style);
             const chosen=[...cards,...cards];
-            document.body.innerHTML='<div id="board-preview"><h1>MYSTIC ROYALE V3 · ACTUAL BATTLEFIELD SCALE</h1><p>68px wide × 95px tall — screenshot QA of the 52-card set, at real gameplay scale.</p><div class="battlefield">'+chosen.map(x=>'<img src="./cards-mystic/'+x+'.svg" alt="'+x+'">').join('')+'</div></div>';
+            document.body.innerHTML='<div id="board-preview"><h1>MYSTIC ROYALE V4 · ACTUAL BATTLEFIELD SCALE</h1><p>68px wide × 95px tall — screenshot QA of the 52-card set, at real gameplay scale.</p><div class="battlefield">'+chosen.map(x=>'<img src="./cards-mystic/'+x+'.svg" alt="'+x+'">').join('')+'</div></div>';
         }""",cards)
         assert page.locator('#board-preview img').count()==16
         assert page.evaluate("""async () => {
