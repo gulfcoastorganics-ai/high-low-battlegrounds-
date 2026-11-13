@@ -96,7 +96,7 @@ function tacticSummary(m,i){
       ${card?'<button class="tactic-clear" type="button" data-act="clear" aria-label="Cancel tactical ability">✕</button>':''}
     </div>
     ${effect}
-    <div class="tactic-target" aria-label="Selected position">${esc(targetText)}${card?.target==='enemy'&&state.target!=null?' · ENEMY '+(state.target+1):''}</div>
+    <div class="tactic-target" aria-label="Selected position"><span>${esc(targetText)}${card?.target==='enemy'&&state.target!=null?' · ENEMY '+(state.target+1):''}</span>${selected?'<button type="button" class="inspect-playing-btn" data-act="view-playing" aria-label="Enlarge selected playing card" title="Enlarge selected card">⌕</button>':''}</div>
     <div class="turn-steps" aria-label="Steps to complete your turn">${steps.map(([num,label,done],index)=>`<span class="turn-step ${done?'is-complete':''} ${index===current?'is-current':''}"><b>${done?'✓':num}</b><span>${label}</span></span>`).join('')}</div>
     <p class="tactic-next" role="status">${esc(next)}</p>
   </div>`;
@@ -158,6 +158,18 @@ function inspectModal(){
 }
 function modalView(){
 const m=state.m,k=state.overlay;if(!k)return '';if(k==='inspect')return inspectModal();if(k==='builder')return builder();
+if(k==='view-playing'){
+ const selected=state.chosen!=null?m?.players[me()]?.board[state.chosen]:null;
+ if(!selected?.alive)return '';
+ const code=A.cardCode(selected.card),ranks={A:'Ace',K:'King',Q:'Queen',J:'Jack'},suits={S:'Spades',H:'Hearts',D:'Diamonds',C:'Clubs'};
+ const suit=code[0],rank=code.slice(2),label=(ranks[rank]||rank)+' of '+(suits[suit]||'Unknown');
+ return `<div class="modal playing-card-inspector" role="dialog" aria-modal="true" aria-label="Enlarged playing card">
+  <div class="overline">MYSTIC ROYALE · CARD INSPECTOR</div><h2>${esc(label)}</h2>
+  <img src="${image(selected.card)}" alt="${esc(label)}" width="240" height="336">
+  <p>Territory ${state.chosen+1} · Rank ${A.rank(selected.card)} · Current selection is preserved.</p>
+  <button type="button" class="cta" data-act="close-playing">RETURN TO DECISION</button>
+ </div>`;
+}
 if(k==='pass')return `<div class="modal" role="dialog" aria-modal="true" style="max-width:540px;text-align:center"><div class="overline">DECISION LOCKED & SEALED</div><h2>PASS THE TABLE.</h2><p>Player 1 has committed a hidden decision. Hand the device to Player 2 without revealing the tactical hand.</p><button class="cta" data-act="ready">PLAYER 2 IS READY →</button></div>`;
 if(k==='sudden')return `<div class="modal" role="dialog" aria-modal="true" style="max-width:570px;text-align:center"><div class="overline">A DRAW AFTER REGULATION</div><h2>SUDDEN DEATH.</h2><p>Three new dealer draws. Equal fresh battlegrounds. No collectible abilities. If the game remains tied, a draw is declared.</p><button class="cta" data-act="sudden">BEGIN SUDDEN DEATH →</button></div>`;
 const ev=m.last;if(!ev)return '';
@@ -195,6 +207,8 @@ if(x==='builder'){state.editor=Number(b.dataset.player);state.overlay='builder';
 if(x==='inspect'){state.inspect=id;state.returnOverlay=state.overlay;state.overlay='inspect';}
 if(x==='close-inspect'){state.overlay=state.returnOverlay||null;state.inspect=null;state.returnOverlay=null;}
 if(x==='close')state.overlay=null;
+if(x==='view-playing'&&m?.phase==='commit'&&state.chosen!=null&&m.players[me()]?.board[state.chosen]?.alive){state.overlay='view-playing';}
+if(x==='close-playing')state.overlay=null;
 if(x==='add'){const d=state.decks[state.editor];if(d.length<12&&d.filter(k=>k===id).length<2)d.push(id);}
 if(x==='remove'){const d=state.decks[state.editor],idx=d.indexOf(id);if(idx>=0)d.splice(idx,1);}
 if(x==='save'&&!A.validateDeck(state.decks[state.editor])){try{localStorage.setItem('hl-arena-decks-v1',JSON.stringify(state.decks));}catch(_){}state.overlay=null;}
@@ -240,6 +254,9 @@ if(b.dataset.change==='cpu-difficulty'&&CPU.DIFFICULTIES[b.value])state.cpuDiffi
 if(b.dataset.change==='preset'&&A.STARTERS[b.value])state.decks[Number(b.dataset.player)]=A.STARTERS[b.value].slice();
 if(b.dataset.change==='starter'&&A.STARTERS[b.value])state.decks[state.editor]=A.STARTERS[b.value].slice();
 render();
+});
+document.addEventListener('keydown',event=>{
+ if(event.key==='Escape'&&state.overlay==='view-playing'){state.overlay=null;render();}
 });
 globalThis.ArenaApp={getState:()=>state,render,start};
 render();
