@@ -214,7 +214,7 @@ ${cornerFiligree()}
  }
  function back(){
   const c={...suits.S,key:"S"};
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="Mystic Royale V3 dealer card back" data-theme="mystic-royale-v3">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 336" width="240" height="336" role="img" aria-label="Mystic Royale V4 dealer card back" data-theme="mystic-royale-v4">
  ${defs(c)}
  ${frame(c)}
  <circle cx="120" cy="166" r="99" fill="url(#halo)" opacity=".38"/>
