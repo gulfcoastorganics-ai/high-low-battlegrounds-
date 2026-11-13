@@ -51,6 +51,14 @@ try:
             assert cards.first.evaluate("(el)=>el.complete&&el.naturalWidth>0")
             assert "cards-mystic/back.svg" in page.locator(".dealer-panel .shoe").evaluate("(el)=>getComputedStyle(el).backgroundImage")
             page.locator(".war-panel.player .play-tile.eligible").first.click()
+            chosen_before=page.evaluate("window.ArenaApp.getState().chosen")
+            page.locator('[data-act="view-playing"]').click()
+            assert page.locator(".playing-card-inspector img").count()==1
+            assert page.locator(".playing-card-inspector img").first.evaluate("(img)=>img.complete&&img.naturalWidth>0")
+            assert page.evaluate("window.ArenaApp.getState().chosen")==chosen_before
+            page.keyboard.press("Escape")
+            assert page.evaluate("window.ArenaApp.getState().overlay") is None
+            assert page.evaluate("window.ArenaApp.getState().chosen")==chosen_before
             page.locator('[data-act="guess"][data-value="HIGHER"]').click()
             page.locator('[data-act="lock"]').click()
             page.get_by_text("THE CARD REVEALS.").wait_for()
